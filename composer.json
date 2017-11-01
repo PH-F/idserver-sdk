@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "illuminate/support": "5.5.*"
+        "illuminate/support": "5.5.*",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "orchestra/testbench": "3.5.*",
@@ -19,14 +20,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Xingo\\IdServer\\": "src/",
+            "Xingo\\IDServer\\": "src/",
             "Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Xingo\\IdServer\\IdServerServiceProvider"
+                "Xingo\\IDServer\\IDServerServiceProvider"
             ]
         }
     }
