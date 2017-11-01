@@ -1,0 +1,33 @@
+{
+    "name": "xingo/idserver-sdk",
+    "description": "The Xingo IDServer SDK in PHP",
+    "homepage": "http://github.com/jgrossi/idserver-sdk",
+    "authors": [
+        {
+            "name": "Junior Grossi",
+            "email": "juniorgro@gmail.com",
+            "homepage": "http://jgrossi.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "illuminate/support": "5.5.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "3.5.*",
+        "phpunit/phpunit": "~6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Xingo\\IdServer\\": "src/",
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Xingo\\IdServer\\IdServerServiceProvider"
+            ]
+        }
+    }
+}
