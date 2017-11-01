@@ -9,12 +9,6 @@
             "homepage": "http://jgrossi.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/PH-F/idserver-sdk"
-        }
-    ],
     "require": {
         "php": ">=7.0.0",
         "illuminate/support": "5.5.*",
