@@ -8,7 +8,6 @@ use Xingo\IDServer\Entities\User;
 
 class UsersTest extends TestCase
 {
-    use Concerns\DefaultClient;
     use Concerns\MockResponse;
 
     /**
