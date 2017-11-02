@@ -2,7 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Client;
+use GuzzleHttp\Client;
 
 /**
  * Class Resource
