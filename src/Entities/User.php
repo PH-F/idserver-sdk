@@ -2,7 +2,7 @@
 
 namespace Xingo\IDServer\Entities;
 
-class User
+class User extends Entity
 {
 
 }
