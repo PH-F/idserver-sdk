@@ -4,6 +4,7 @@ namespace Tests\Unit\Resources;
 
 use ReflectionMethod;
 use Tests\TestCase;
+use Xingo\IDServer\Entities\User as UserEntity;
 use Xingo\IDServer\Resources\User;
 
 class ResourceTest extends TestCase
@@ -26,5 +27,23 @@ class ResourceTest extends TestCase
         $this->assertEquals(200, $response['status']);
         $this->assertArrayHasKey('title', $response);
         $this->assertArrayHasKey('body', $response);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_make_an_entity_instance()
+    {
+        $user = app()->make(User::class);
+
+        $method = new ReflectionMethod($user, 'makeEntity');
+        $method->setAccessible(true);
+
+        $entity = $method->invokeArgs(
+            $user, [UserEntity::class, ['name' => 'John']]
+        );
+
+        $this->assertInstanceOf(UserEntity::class, $entity);
+        $this->assertEquals('John', $entity->name);
     }
 }

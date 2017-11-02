@@ -3,6 +3,9 @@
 namespace Xingo\IDServer\Resources;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Str;
+use ReflectionClass;
+use Xingo\IDServer\Entities\Entity;
 
 abstract class Resource
 {
@@ -40,5 +43,21 @@ abstract class Resource
             json_decode($contents, true),
             ['status' => $response->getStatusCode()]
         );
+    }
+
+    /**
+     * @param string $class
+     * @param array $attributes
+     * @return Entity
+     */
+    protected function makeEntity(string $class, array $attributes): Entity
+    {
+        if (class_exists($class)) {
+            return new $class($attributes);
+        }
+
+        $entity = (new ReflectionClass($class))->getShortName();
+
+        return sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
     }
 }
