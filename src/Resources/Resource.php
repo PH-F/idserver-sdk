@@ -4,11 +4,6 @@ namespace Xingo\IDServer\Resources;
 
 use GuzzleHttp\Client;
 
-/**
- * Class Resource
- *
- * @package Xingo\IDServer\Resources
- */
 abstract class Resource
 {
     /**

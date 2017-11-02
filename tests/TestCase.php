@@ -3,12 +3,8 @@
 namespace Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Xingo\IDServer\ServiceProvider;
 
-/**
- * Class TestCase
- *
- * @package Tests
- */
 class TestCase extends BaseTestCase
 {
     /**
@@ -17,9 +13,7 @@ class TestCase extends BaseTestCase
      */
     protected function getPackageProviders($app): array
     {
-        return [
-            \Xingo\IDServer\ServiceProvider::class,
-        ];
+        return [ServiceProvider::class];
     }
 
     /**

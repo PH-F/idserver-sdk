@@ -4,11 +4,6 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 
-/**
- * Class AuthTest
- *
- * @package Tests
- */
 class AuthTest extends TestCase
 {
     /**

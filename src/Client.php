@@ -5,11 +5,6 @@ namespace Xingo\IDServer;
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Support\Str;
 
-/**
- * Class Client
- *
- * @package Xingo\IDServer
- */
 class Client
 {
     /**
