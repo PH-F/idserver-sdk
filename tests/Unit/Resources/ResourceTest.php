@@ -39,9 +39,7 @@ class ResourceTest extends TestCase
         $method = new ReflectionMethod($user, 'makeEntity');
         $method->setAccessible(true);
 
-        $entity = $method->invokeArgs(
-            $user, [UserEntity::class, ['name' => 'John']]
-        );
+        $entity = $method->invokeArgs($user, [['name' => 'John']]);
 
         $this->assertInstanceOf(UserEntity::class, $entity);
         $this->assertEquals('John', $entity->name);
