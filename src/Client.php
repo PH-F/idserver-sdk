@@ -3,6 +3,7 @@
 namespace Xingo\IDServer;
 
 use GuzzleHttp\Client as HttpClient;
+use Illuminate\Support\Str;
 
 /**
  * Class Client
@@ -39,8 +40,17 @@ class Client
         return new HttpClient($config);
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function __get($name)
     {
+        $resource = Str::studly(Str::singular($name));
+        $class = "Xingo\\IDServer\\Resources\\{$resource}.php";
 
+        if (class_exists($class)) {
+            return app()->make($class);
+        }
     }
 }
