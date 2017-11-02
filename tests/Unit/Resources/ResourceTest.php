@@ -22,7 +22,8 @@ class ResourceTest extends TestCase
 
         $response = $method->invokeArgs($user, ['GET', $uri]);
 
-        $this->assertCount(4, $response);
+        $this->assertCount(5, $response);
+        $this->assertEquals(200, $response['status']);
         $this->assertArrayHasKey('title', $response);
         $this->assertArrayHasKey('body', $response);
     }

@@ -34,8 +34,11 @@ abstract class Resource
             $option => $params,
         ]);
 
-        return json_decode(
-            $response->getBody()->getContents(), true
+        $contents = $response->getBody()->getContents();
+
+        return array_merge(
+            json_decode($contents, true),
+            ['status' => $response->getStatusCode()]
         );
     }
 }
