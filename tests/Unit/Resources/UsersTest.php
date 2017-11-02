@@ -10,7 +10,6 @@ class UsersTest extends TestCase
 {
     use Concerns\DefaultClient;
     use Concerns\MockResponse;
-    use Concerns\ResourceFactory;
 
     /**
      * @test
