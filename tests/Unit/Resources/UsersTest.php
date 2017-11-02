@@ -2,26 +2,30 @@
 
 namespace Tests\Unit\Resources;
 
-use Tests\Concerns\ResourceFactory;
+use Tests\Concerns;
 use Tests\TestCase;
-use Xingo\IDServer\Entity\User;
+use Xingo\IDServer\Entities\User;
 
 class UsersTest extends TestCase
 {
-    use ResourceFactory;
+    use Concerns\DefaultClient;
+    use Concerns\MockResponse;
+    use Concerns\ResourceFactory;
 
     /**
      * @test
      */
     public function it_can_create_a_new_user()
     {
-        $user = $this->client->users->create([
-            'email' => 'john@example.com',
-            'password' => 'secret',
+        $this->mockResponse(201, [
+            'id' => 1,
+            'email' => 'jgrossi@example.com',
         ]);
 
+        $user = $this->client->users->create([]); // Mock request
+
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals('john@example.com', $user->email);
+        $this->assertEquals('jgrossi@example.com', $user->email);
         $this->assertGreaterThan(0, $user->id);
     }
 
@@ -30,7 +34,7 @@ class UsersTest extends TestCase
      */
     public function it_can_login_a_user()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Fix');
 
         $this->createUser('mary@example.com', 'secret');
 
