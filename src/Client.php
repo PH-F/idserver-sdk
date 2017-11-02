@@ -16,7 +16,9 @@ class Client
         $class = "Xingo\\IDServer\\Resources\\$resource";
 
         if (class_exists($class)) {
-            return app()->make($class);
+            return app()->make($class, [
+                app()->make(\GuzzleHttp\Client::class)
+            ]);
         }
     }
 }

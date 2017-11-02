@@ -13,7 +13,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->app->instance(Client::class, function (Application $app) {
+        $this->app->singleton(Client::class, function (Application $app) {
             return new Client($this->options($app));
         });
     }
