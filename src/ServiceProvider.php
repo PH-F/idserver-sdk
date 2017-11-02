@@ -33,7 +33,7 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/config/idserver.php' => config_path('idserver.php'),
+            __DIR__ . '/../onfig/idserver.php' => config_path('idserver.php'),
         ]);
     }
 }
