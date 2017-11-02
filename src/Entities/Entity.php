@@ -1,6 +1,6 @@
 <?php
 
-namespace Xingo\IDServer\Entity;
+namespace Xingo\IDServer\Entities;
 
 abstract class Entity
 {
