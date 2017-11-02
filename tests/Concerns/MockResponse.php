@@ -10,6 +10,11 @@ use GuzzleHttp\Psr7\Response;
 trait MockResponse
 {
     /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
      * @param int $status
      * @param array $body
      * @param array $headers
@@ -22,9 +27,11 @@ trait MockResponse
 
         $mock = new MockHandler([$response]);
         $handler = HandlerStack::create($mock);
-        $client = new Client(['handler' => $handler]);
 
-        app()->instance(Client::class, $client);
+        $httpClient = new Client(['handler' => $handler]);
+        app()->instance(Client::class, $httpClient);
+
+        $this->client = app()->make(\Xingo\IDServer\Client::class);
     }
 
     /**
