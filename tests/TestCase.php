@@ -15,13 +15,4 @@ class TestCase extends BaseTestCase
     {
         return [ServiceProvider::class];
     }
-
-    /**
-     * @param  \Illuminate\Foundation\Application $app
-     * @return void
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('idserver.url', 'http://example.com');
-    }
 }
