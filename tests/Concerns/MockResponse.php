@@ -22,7 +22,7 @@ trait MockResponse
     public function mockResponse(int $status, array $body, array $headers = [])
     {
         $response = new Response(
-            $status, $headers, $this->prepareBody($body)
+            $status, $headers, json_encode($body)
         );
 
         $mock = new MockHandler([$response]);
@@ -32,19 +32,6 @@ trait MockResponse
         app()->instance(Client::class, $httpClient);
 
         $this->client = app()->make(\Xingo\IDServer\Client::class);
-    }
-
-    /**
-     * @param array $body
-     * @return string
-     */
-    protected function prepareBody(array $body): string
-    {
-        if (!array_key_exists('data', $body)) {
-            $body = ['data' => $body];
-        }
-
-        return json_encode($body);
     }
 }
 
