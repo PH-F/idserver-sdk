@@ -32,9 +32,9 @@ abstract class Resource
      * @param string $method
      * @param string $uri
      * @param array $params
-     * @return array
+     * @return Response
      */
-    protected function call(string $method, string $uri, array $params = []): array
+    protected function call(string $method, string $uri, array $params = []): Response
     {
         $option = strtoupper($method) === 'GET' ?
             'query' : 'form_params';
@@ -44,31 +44,19 @@ abstract class Resource
         ]);
 
         $json = $response->getBody()->getContents();
+        $this->contents = json_decode($json, true);
 
-        $this->contents = array_merge(
-            json_decode($json, true),
-            ['status' => $response->getStatusCode()]
-        );
-
-        return $this->contents;
-    }
-
-    /**
-     * @return Entity
-     */
-    protected function entity()
-    {
-        if ($this->success()) {
-            return $this->makeEntity($this->contents['data']);
-        }
+        return $response;
     }
 
     /**
      * @param array $attributes
      * @return Entity
      */
-    protected function makeEntity(array $attributes): Entity
+    protected function makeEntity(array $attributes = null): Entity
     {
+        $attributes = $attributes ?: $this->contents['data'];
+
         $entity = (new ReflectionClass(static::class))->getShortName();
         $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
 
