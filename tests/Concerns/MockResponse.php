@@ -10,7 +10,7 @@ use GuzzleHttp\Psr7\Response;
 trait MockResponse
 {
     /**
-     * @var Client
+     * @var \Xingo\IDServer\Client
      */
     protected $client;
 
