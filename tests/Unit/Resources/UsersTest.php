@@ -17,13 +17,14 @@ class UsersTest extends TestCase
     {
         $this->mockResponse(201, [
             'id' => 1,
-            'email' => 'jgrossi@example.com',
+            'email' => 'john@example.com',
         ]);
 
-        $user = $this->client->users->create([]); // Mock request
+        $user = $this->client->users
+            ->create([]);
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals('jgrossi@example.com', $user->email);
+        $this->assertEquals('john@example.com', $user->email);
         $this->assertGreaterThan(0, $user->id);
     }
 
@@ -32,14 +33,17 @@ class UsersTest extends TestCase
      */
     public function it_can_login_a_user()
     {
-        $this->markTestSkipped('Fix');
+        $this->mockResponse(200, [
+            'token' => 'foo',
+            'data' => ['email' => 'john@example.com'],
+        ]);
 
-        $this->createUser('mary@example.com', 'secret');
-
-        $user = $this->client->users->login('mary@example.com', 'secret');
+        /** @var User $user */
+        $user = $this->client->users
+            ->login('john@example.com', 'secret');
 
         $this->assertInstanceOf(User::class, $user);
-
+        $this->assertNotEmpty($user->jwtToken());
     }
 
     /**
