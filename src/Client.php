@@ -4,6 +4,11 @@ namespace Xingo\IDServer;
 
 use Illuminate\Support\Str;
 
+/**
+ * Class Client
+ *
+ * @property \Xingo\IDServer\Resources\User users
+ */
 class Client
 {
     /**

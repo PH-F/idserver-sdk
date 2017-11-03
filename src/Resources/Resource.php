@@ -3,10 +3,13 @@
 namespace Xingo\IDServer\Resources;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Str;
+use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use Xingo\IDServer\Entities\Entity;
+use Xingo\IDServer\Exceptions\ValidationException;
 
 abstract class Resource
 {
@@ -39,12 +42,15 @@ abstract class Resource
         $option = strtoupper($method) === 'GET' ?
             'query' : 'form_params';
 
-        $response = $this->client->request($method, $uri, [
-            $option => $params,
-        ]);
+        try {
+            $response = $this->client->request($method, $uri, [
+                $option => $params,
+            ]);
+        } catch (ClientException $e) {
+            $this->checkValidation($e->getResponse());
+        }
 
-        $json = $response->getBody()->getContents();
-        $this->contents = json_decode($json, true);
+        $this->contents = json_decode($response->getBody(), true);
 
         return $response;
     }
@@ -70,5 +76,17 @@ abstract class Resource
     {
         return $this->contents['status'] === 200 ||
             $this->contents['status'] === 201;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws ValidationException
+     */
+    private function checkValidation(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 422) {
+            $content = json_decode($response->getBody(), true);
+            throw new ValidationException($content['errors']);
+        }
     }
 }
