@@ -7,18 +7,25 @@ use Xingo\IDServer\Entities\User as UserEntity;
 
 class User extends Resource
 {
+    public function login(string $email, string $password)
+    {
+        $response = $this->call(
+            'POST', '/auth/login', compact($email, $password)
+        );
+
+//        if ($response['status'])
+    }
+
     /**
      * @param array $attributes
      * @return Entity|UserEntity
      */
     public function create(array $attributes): UserEntity
     {
-        $response = $this->call('POST', '/users', [
+        $this->call('POST', '/users', [
             'form_params' => [$attributes],
         ]);
 
-        if ($response['status'] === 201) {
-            return $this->makeEntity($response['data']);
-        }
+        return $this->entity();
     }
 }

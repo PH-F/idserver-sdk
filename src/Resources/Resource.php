@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use Xingo\IDServer\Entities\Entity;
@@ -13,6 +14,11 @@ abstract class Resource
      * @var Client
      */
     protected $client;
+
+    /**
+     * @var array
+     */
+    protected $contents;
 
     /**
      * @param Client $client
@@ -37,12 +43,24 @@ abstract class Resource
             $option => $params,
         ]);
 
-        $contents = $response->getBody()->getContents();
+        $json = $response->getBody()->getContents();
 
-        return array_merge(
-            json_decode($contents, true),
+        $this->contents = array_merge(
+            json_decode($json, true),
             ['status' => $response->getStatusCode()]
         );
+
+        return $this->contents;
+    }
+
+    /**
+     * @return Entity
+     */
+    protected function entity()
+    {
+        if ($this->success()) {
+            return $this->makeEntity($this->contents['data']);
+        }
     }
 
     /**
@@ -55,5 +73,14 @@ abstract class Resource
         $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
 
         return new $class($attributes);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function success()
+    {
+        return $this->contents['status'] === 200 ||
+            $this->contents['status'] === 201;
     }
 }
