@@ -5,6 +5,7 @@ namespace Tests\Unit\Resources;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User;
+use Xingo\IDServer\Exceptions\AuthorizationException;
 use Xingo\IDServer\Exceptions\ValidationException;
 
 class UsersTest extends TestCase
@@ -14,7 +15,7 @@ class UsersTest extends TestCase
     /**
      * @test
      */
-    public function it_can_create_a_new_user()
+    public function it_creates_a_user_with_201_status()
     {
         $this->mockResponse(201, [
             'data' => [
@@ -34,7 +35,7 @@ class UsersTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_an_exception_if_the_validation_failed()
+    public function it_checks_validation_when_creating_user_with_422_status()
     {
         $this->mockResponse(422, [
             'errors' => ['name' => 'Name is required'],
@@ -50,7 +51,7 @@ class UsersTest extends TestCase
     /**
      * @test
      */
-    public function it_can_login_a_user()
+    public function it_logs_in_a_user_with_200_status()
     {
         $this->mockResponse(200, [
             'token' => 'foo',
@@ -67,7 +68,22 @@ class UsersTest extends TestCase
     /**
      * @test
      */
-    public function it_saves_the_user_jwt_in_the_session_after_login()
+    public function it_checks_for_login_with_401_status()
+    {
+        $this->mockResponse(401, ['data' => []]);
+
+        $this->expectExceptionCode(401);
+        $this->expectException(AuthorizationException::class);
+
+        /** @var User $user */
+        $user = $this->client->users
+            ->login('john@example.com', 'secret');
+    }
+
+    /**
+     * @test
+     */
+    public function it_saves_the_user_jwt_in_the_session_after_login_with_200_status()
     {
         $this->mockResponse(200, [
             'token' => 'foo',

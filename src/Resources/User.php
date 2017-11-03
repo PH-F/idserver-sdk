@@ -14,17 +14,11 @@ class User extends Resource
      */
     public function login(string $email, string $password)
     {
-        $response = $this->call(
-            'POST', '/auth/login', compact($email, $password)
-        );
+        $this->call('POST', '/auth/login', compact($email, $password));
 
-        if ($response->getStatusCode() === 200) {
-            session()->put('jwt_token', $this->contents['token']);
+        session()->put('jwt_token', $this->contents['token']);
 
-            return $this->makeEntity();
-        }
-
-        // TODO 401 and 403
+        return $this->makeEntity();
     }
 
     /**
@@ -33,14 +27,8 @@ class User extends Resource
      */
     public function create(array $attributes): UserEntity
     {
-        $response = $this->call('POST', '/users', [
-            'form_params' => [$attributes],
-        ]);
+        $this->call('POST', '/users', ['form_params' => [$attributes]]);
 
-        if ($response->getStatusCode() === 201) {
-            return $this->makeEntity();
-        }
-
-        // TODO 403, 404, etc
+        return $this->makeEntity();
     }
 }

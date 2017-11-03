@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use Xingo\IDServer\Entities\Entity;
+use Xingo\IDServer\Exceptions\AuthorizationException;
+use Xingo\IDServer\Exceptions\ForbiddenException;
 use Xingo\IDServer\Exceptions\ValidationException;
 
 abstract class Resource
@@ -48,6 +50,8 @@ abstract class Resource
             ]);
         } catch (ClientException $e) {
             $this->checkValidation($e->getResponse());
+            $this->checkAuthorization($e->getResponse());
+            $this->checkForbidden($e->getResponse());
         }
 
         $this->contents = json_decode($response->getBody(), true);
@@ -87,6 +91,28 @@ abstract class Resource
         if ($response->getStatusCode() === 422) {
             $content = json_decode($response->getBody(), true);
             throw new ValidationException($content['errors']);
+        }
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws AuthorizationException
+     */
+    private function checkAuthorization(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 401) {
+            throw new AuthorizationException;
+        }
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws ForbiddenException
+     */
+    private function checkForbidden(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 403) {
+            throw new ForbiddenException;
         }
     }
 }
