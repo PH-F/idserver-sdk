@@ -43,7 +43,6 @@ class UsersTest extends TestCase
             ->login('john@example.com', 'secret');
 
         $this->assertInstanceOf(User::class, $user);
-        $this->assertNotEmpty($user->jwtToken());
     }
 
     /**
@@ -51,6 +50,14 @@ class UsersTest extends TestCase
      */
     public function it_saves_the_user_jwt_in_the_session_after_login()
     {
-        $this->markTestSkipped();
+        $this->mockResponse(200, [
+            'token' => 'foo',
+            'data' => [],
+        ]);
+
+        $this->client->users
+            ->login('john@example.com', 'secret');
+
+        $this->assertNotEmpty(session()->get('jwt_token'));
     }
 }
