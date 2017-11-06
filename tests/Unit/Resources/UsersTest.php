@@ -21,6 +21,7 @@ class UsersTest extends TestCase
             'data' => [
                 'id' => 1,
                 'email' => 'john@example.com',
+            ]
         ]);
 
         $user = $this->client->users
