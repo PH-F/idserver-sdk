@@ -19,6 +19,8 @@ class RequestTest extends TestCase
 
         $this->assertArrayHasKey('X-XINGO-Client-ID', $headers);
         $this->assertArrayHasKey('X-XINGO-Secret-Key', $headers);
+        $this->assertEquals('foo', $headers['X-XINGO-Client-ID']);
+        $this->assertEquals('bar', $headers['X-XINGO-Secret-Key']);
     }
 
     /**
