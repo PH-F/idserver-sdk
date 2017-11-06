@@ -56,6 +56,22 @@ class RequestTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function the_next_request_after_login_has_the_jwt()
+    {
+        $this->mockResponse(200, ['token' => 'jwt123', 'data' => []]);
+        $this->client->users->login('foo@bar.com', 'secret');
+
+        /** @var Client $httpClient */
+        $httpClient = app()->make(Client::class);
+        $headers = $httpClient->getConfig('headers');
+
+        $this->assertArrayHasKey('Authorization', $headers);
+        $this->assertEquals('jwt123', $headers['Authorization']);
+    }
+
+    /**
      * @param Application $app
      */
     protected function getEnvironmentSetUp($app)

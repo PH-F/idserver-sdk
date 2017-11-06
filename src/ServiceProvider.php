@@ -3,7 +3,6 @@
 namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -13,7 +12,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Client::class, function (Application $app) {
+        $this->app->instance(Client::class, function () {
             return new Client(
                 array_merge($this->baseOptions(), $this->jwtOptions())
             );
