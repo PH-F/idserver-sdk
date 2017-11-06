@@ -14,7 +14,9 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->app->singleton(Client::class, function (Application $app) {
-            return new Client($this->options());
+            return new Client(
+                array_merge($this->baseOptions(), $this->jwtOptions())
+            );
         });
     }
 
@@ -31,7 +33,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * @return array
      */
-    protected function options(): array
+    protected function baseOptions(): array
     {
         return [
             'base_uri' => config('idserver.url'),
@@ -40,5 +42,19 @@ class ServiceProvider extends BaseServiceProvider
                 'X-XINGO-Secret-Key' => config('idserver.store.secret_key'),
             ],
         ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function jwtOptions(): array
+    {
+        return session()->has('jwt_token') ? [
+            'headers' => [
+                'Authorization' => sprintf(
+                    'Bearer %s', session()->get('jwt_token')
+                ),
+            ],
+        ] : [];
     }
 }
