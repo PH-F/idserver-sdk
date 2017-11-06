@@ -22,11 +22,12 @@ class ResourceTest extends TestCase
         $method->setAccessible(true);
 
         $response = $method->invokeArgs($user, ['GET', $uri]);
+        $contents = json_decode($response->getBody(), true);
 
-        $this->assertCount(5, $response);
-        $this->assertEquals(200, $response['status']);
-        $this->assertArrayHasKey('title', $response);
-        $this->assertArrayHasKey('body', $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertCount(4, $contents);
+        $this->assertArrayHasKey('title', $contents);
+        $this->assertArrayHasKey('body', $contents);
     }
 
     /**
