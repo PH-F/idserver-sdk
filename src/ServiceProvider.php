@@ -14,7 +14,7 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->app->singleton(Client::class, function (Application $app) {
-            return new Client($this->options($app));
+            return new Client($this->options());
         });
     }
 
@@ -29,15 +29,15 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * @param Application $app
      * @return array
      */
-    protected function options(Application $app): array
+    protected function options(): array
     {
         return [
-            'base_uri' => $app['config']->get('idserver.url'),
+            'base_uri' => config('idserver.url'),
             'headers' => [
-                'foo' => config('idserver.store.signature'),
+                'X-XINGO-Client-ID' => config('idserver.store.client_id'),
+                'X-XINGO-Secret-Key' => config('idserver.store.secret_key'),
             ],
         ];
     }
