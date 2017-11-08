@@ -2,7 +2,6 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Manager;
 use Xingo\IDServer\Entities\Entity;
 use Xingo\IDServer\Entities\User as UserEntity;
 
@@ -15,7 +14,7 @@ class User extends Resource
      */
     public function login(string $email, string $password)
     {
-        $this->call('POST', '/auth/login', compact($email, $password));
+        $this->call('POST', 'auth/login', compact('email', 'password'));
 
         app('idserver.manager')->setToken($this->contents['token']);
 
@@ -28,7 +27,7 @@ class User extends Resource
      */
     public function create(array $attributes): UserEntity
     {
-        $this->call('POST', '/users', ['form_params' => [$attributes]]);
+        $this->call('POST', 'users', ['form_params' => [$attributes]]);
 
         return $this->makeEntity();
     }
