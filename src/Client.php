@@ -45,9 +45,12 @@ class Client
      * Set the given JWT token as token to use for connection to the IDServer.
      *
      * @param string $token
+     * @return $this
      */
-    public function setToken(string $token): void
+    public function setToken(string $token)
     {
         session()->put(self::TOKEN_NAME, $token);
+        
+        return $this
     }
 }
