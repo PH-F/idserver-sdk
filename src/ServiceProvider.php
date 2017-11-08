@@ -41,7 +41,7 @@ class ServiceProvider extends BaseServiceProvider
         return [
             'base_uri' => $app['config']->get('idserver.url'),
             'headers' => [
-                'foo' => config('idserver.store.signature'),
+                'X-ELEKTOR-Signature' => $app['config']->get('idserver.store.signature'),
             ],
         ];
     }
