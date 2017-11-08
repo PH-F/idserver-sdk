@@ -13,8 +13,12 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Client::class, function (Application $app) {
+        $this->app->singleton('idserver.client', function (Application $app) {
             return new Client($this->options($app));
+        });
+
+        $this->app->singleton('idserver.manager', function (Application $app) {
+            return new Manager($app->make('idserver.client'));
         });
     }
 

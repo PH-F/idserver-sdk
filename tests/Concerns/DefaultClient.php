@@ -2,14 +2,14 @@
 
 namespace Tests\Concerns;
 
-use Xingo\IDServer\Client;
+use Xingo\IDServer\Manager;
 
 trait DefaultClient
 {
     /**
-     * @var Client
+     * @var Manager
      */
-    protected $client;
+    protected $manager;
 
     /**
      * @before
@@ -17,6 +17,7 @@ trait DefaultClient
     protected function setupClient()
     {
         parent::setUp();
-        $this->client = app(Client::class);
+
+        $this->manager = app('idserver.manager');
     }
 }
