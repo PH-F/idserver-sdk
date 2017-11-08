@@ -42,9 +42,7 @@ class Manager
         $class = "Xingo\\IDServer\\Resources\\$resource";
 
         if (class_exists($class)) {
-            return app()->make($class, [
-                'client' => $this->client
-            ]);
+            return new $class($this->client);
         }
     }
 
