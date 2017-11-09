@@ -4,6 +4,7 @@ namespace Tests\Unit\Resources;
 
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Client;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions\AuthorizationException;
 use Xingo\IDServer\Exceptions\ValidationException;
@@ -93,7 +94,7 @@ class UsersTest extends TestCase
         $user = $this->client->users
             ->login('john@example.com', 'secret');
 
-        $this->assertNotEmpty($jwt = session()->get('jwt_token'));
+        $this->assertNotEmpty($jwt = session()->get(Client::TOKEN_NAME));
         $this->assertEquals($jwt, $user->jwtToken());
     }
 }
