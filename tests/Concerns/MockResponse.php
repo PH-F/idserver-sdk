@@ -6,13 +6,14 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Xingo\IDServer\Manager;
 
 trait MockResponse
 {
     /**
-     * @var \Xingo\IDServer\Client
+     * @var \Xingo\IDServer\Manager
      */
-    protected $client;
+    protected $manager;
 
     /**
      * @param int $status
@@ -28,10 +29,11 @@ trait MockResponse
         $mock = new MockHandler([$response]);
         $handler = HandlerStack::create($mock);
 
-        $httpClient = new Client(['handler' => $handler]);
-        app()->instance(Client::class, $httpClient);
+        $client = new Client(['handler' => $handler]);
+        app()->instance('idserver.client', $client);
 
-        $this->client = app()->make(\Xingo\IDServer\Client::class);
+        $this->manager = new Manager($client);
+        app()->instance('idserver.manager', $this->manager);
     }
 }
 

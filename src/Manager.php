@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer;
 
+use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
 /**
@@ -9,12 +10,27 @@ use Illuminate\Support\Str;
  *
  * @property \Xingo\IDServer\Resources\User users
  */
-class Client
+class Manager
 {
     /**
      * The name of the token in the session.
      */
     const TOKEN_NAME = 'jwt_token';
+
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * Manager constructor.
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
 
     /**
      * @param string $name
@@ -26,9 +42,7 @@ class Client
         $class = "Xingo\\IDServer\\Resources\\$resource";
 
         if (class_exists($class)) {
-            return app()->make($class, [
-                app()->make(\GuzzleHttp\Client::class)
-            ]);
+            return new $class($this->client);
         }
     }
 
@@ -38,7 +52,7 @@ class Client
      */
     public function getToken(): string
     {
-        return (string) session(self::TOKEN_NAME);
+        return (string)session(self::TOKEN_NAME);
     }
 
     /**
@@ -51,6 +65,6 @@ class Client
     {
         session()->put(self::TOKEN_NAME, $token);
         
-        return $this
+        return $this;
     }
 }
