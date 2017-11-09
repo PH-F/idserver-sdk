@@ -49,6 +49,24 @@ class UsersTest extends TestCase
             ->create([]);
     }
 
+    /** @test */
+    function it_gets_a_user_with_a_200_status()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'id' => 1,
+                'email' => 'john@example.com',
+            ],
+        ]);
+
+        $user = $this->manager->users
+            ->get(1);
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals('john@example.com', $user->email);
+        $this->assertEquals(1, $user->id);
+    }
+
     /**
      * @test
      */
@@ -76,8 +94,7 @@ class UsersTest extends TestCase
         $this->expectExceptionCode(401);
         $this->expectException(AuthorizationException::class);
 
-        /** @var User $user */
-        $user = $this->manager->users
+        $this->manager->users
             ->login('john@example.com', 'secret');
     }
 

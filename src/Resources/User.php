@@ -31,4 +31,15 @@ class User extends Resource
 
         return $this->makeEntity();
     }
+
+    /**
+     * @param int $id
+     * @return Entity|UserEntity
+     */
+    public function get(int $id): UserEntity
+    {
+        $this->call('GET', 'users/' . $id);
+
+        return $this->makeEntity();
+    }
 }
