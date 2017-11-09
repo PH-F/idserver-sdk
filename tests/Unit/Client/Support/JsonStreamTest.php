@@ -2,11 +2,11 @@
 
 namespace Tests\Client\Support;
 
-use Tests\TestCase;
-use RuntimeException;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use RuntimeException;
 use Tests\Concerns\MockGuzzleClient;
+use Tests\TestCase;
 use Xingo\IDServer\Client\Support\JsonStream;
 
 class JsonStreamTest extends TestCase

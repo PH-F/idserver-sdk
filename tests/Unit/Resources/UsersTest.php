@@ -5,9 +5,9 @@ namespace Tests\Unit\Resources;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User;
-use Xingo\IDServer\Manager;
 use Xingo\IDServer\Exceptions\AuthorizationException;
 use Xingo\IDServer\Exceptions\ValidationException;
+use Xingo\IDServer\Manager;
 
 class UsersTest extends TestCase
 {

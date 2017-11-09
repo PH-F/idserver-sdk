@@ -3,9 +3,9 @@
 namespace Tests\Concerns;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Handler\MockHandler;
 
 trait MockGuzzleClient
 {

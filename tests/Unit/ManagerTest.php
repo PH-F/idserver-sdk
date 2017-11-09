@@ -7,9 +7,7 @@ use Xingo\IDServer\Resources\User;
 
 class ManagerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    /** @test */
     public function it_gets_the_correct_resource_using_magic_methods()
     {
         $manager = app('idserver.manager');
@@ -25,7 +23,6 @@ class ManagerTest extends TestCase
 
         $this->assertEquals('my-token', $manager->getToken());
     }
-
 
     /** @test */
     public function it_will_return_an_empty_string_when_no_token_is_set_in_the_session()
