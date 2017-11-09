@@ -26,6 +26,11 @@ abstract class Resource
     protected $contents;
 
     /**
+     * @var Resource
+     */
+    protected $instance;
+
+    /**
      * @param Client $client
      */
     public function __construct(Client $client)
@@ -33,9 +38,19 @@ abstract class Resource
         $this->client = $client;
     }
 
-    public function __invoke()
+    /**
+     * @param int|Entity $param
+     * @return Resource|$this
+     */
+    public function __invoke($param): Resource
     {
+        if (is_int($param)) {
+            $param = $this->get($param);
+        }
 
+        $this->instance = $param;
+
+        return $this;
     }
 
     /**
@@ -63,6 +78,12 @@ abstract class Resource
 
         return $response;
     }
+
+    /**
+     * @param int $id
+     * @return Entity
+     */
+    abstract public function get(int $id);
 
     /**
      * @param array $attributes
