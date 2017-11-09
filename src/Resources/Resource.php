@@ -54,6 +54,12 @@ abstract class Resource
     }
 
     /**
+     * @param int $id
+     * @return Entity
+     */
+    abstract public function get(int $id);
+
+    /**
      * @param string $method
      * @param string $uri
      * @param array $params
@@ -77,35 +83,6 @@ abstract class Resource
         $this->contents = $response->getBody()->asJson();
 
         return $response;
-    }
-
-    /**
-     * @param int $id
-     * @return Entity
-     */
-    abstract public function get(int $id);
-
-    /**
-     * @param array $attributes
-     * @return Entity
-     */
-    protected function makeEntity(array $attributes = null): Entity
-    {
-        $attributes = $attributes ?: $this->contents['data'];
-
-        $entity = (new ReflectionClass(static::class))->getShortName();
-        $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
-
-        return new $class($attributes);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function success()
-    {
-        return $this->contents['status'] === 200 ||
-            $this->contents['status'] === 201;
     }
 
     /**
@@ -141,5 +118,28 @@ abstract class Resource
         if ($response->getStatusCode() === 403) {
             throw new ForbiddenException;
         }
+    }
+
+    /**
+     * @param array $attributes
+     * @return Entity
+     */
+    protected function makeEntity(array $attributes = null): Entity
+    {
+        $attributes = $attributes ?: $this->contents['data'];
+
+        $entity = (new ReflectionClass(static::class))->getShortName();
+        $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
+
+        return new $class($attributes);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function success()
+    {
+        return $this->contents['status'] === 200 ||
+            $this->contents['status'] === 201;
     }
 }
