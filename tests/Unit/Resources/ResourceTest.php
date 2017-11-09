@@ -64,10 +64,14 @@ class ResourceTest extends TestCase
     public function it_is_callable_and_returns_a_resource_instance()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
+
         $manager = app()->make('idserver.manager');
+        $resource = $manager->users(1);
+        $user = $resource->instance;
 
         $this->assertTrue(is_callable($manager->users));
-        $this->assertInstanceOf(Resource::class, $manager->users(1));
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertEquals($user, $manager->users($user)->instance);
     }
 
     /** @test */
