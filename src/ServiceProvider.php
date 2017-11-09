@@ -57,7 +57,8 @@ class ServiceProvider extends BaseServiceProvider
             'base_uri' => $app['config']->get('idserver.url'),
             'handler' => $handler,
             'headers' => [
-                'X-ELEKTOR-Signature' => $app['config']->get('idserver.store.signature'),
+                'X-XINGO-Client-ID' => $app['config']->get('idserver.store.client_id'),
+                'X-XINGO-Secret-Key' => $app['config']->get('idserver.store.secret_key'),
             ],
         ];
     }
