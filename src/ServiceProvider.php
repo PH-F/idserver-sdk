@@ -3,8 +3,13 @@
 namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Xingo\IDServer\Client\Middleware\JwtToken;
+use Xingo\IDServer\Client\Support\JsonStream;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -38,8 +43,19 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function options(Application $app): array
     {
+        $handler = HandlerStack::create();
+
+        $handler->push(new JwtToken(), 'jwt-token');
+
+        $handler->push(Middleware::mapResponse(function (Response $response) {
+            $stream = new JsonStream($response->getBody());
+
+            return $response->withBody($stream);
+        }));
+
         return [
             'base_uri' => $app['config']->get('idserver.url'),
+            'handler' => $handler,
             'headers' => [
                 'X-ELEKTOR-Signature' => $app['config']->get('idserver.store.signature'),
             ],
