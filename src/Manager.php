@@ -65,6 +65,6 @@ class Manager
     {
         session()->put(self::TOKEN_NAME, $token);
         
-        return $this
+        return $this;
     }
 }
