@@ -42,4 +42,16 @@ class User extends Resource
 
         return $this->makeEntity();
     }
+
+    /**
+     * @param int $id
+     * @param $attributes
+     * @return Entity|UserEntity
+     */
+    public function update(int $id, array $attributes): UserEntity
+    {
+        $this->call('PUT', 'users/' . $id, $attributes);
+
+        return $this->makeEntity();
+    }
 }
