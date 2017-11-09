@@ -5,7 +5,10 @@ namespace Tests\Concerns;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Xingo\IDServer\Client\Middleware\JwtToken;
+use Xingo\IDServer\Client\Support\JsonStream;
 use Xingo\IDServer\Manager;
 
 trait MockResponse
@@ -20,16 +23,42 @@ trait MockResponse
      * @param array $body
      * @param array $headers
      */
-    public function mockResponse(int $status, array $body, array $headers = [])
+    public function mockResponse(int $status = 200, array $body = [], array $headers = [])
     {
         $response = new Response(
             $status, $headers, json_encode($body)
         );
 
-        $mock = new MockHandler([$response]);
-        $handler = HandlerStack::create($mock);
+        $this->setUpClient($response);
+    }
 
-        $client = new Client(['handler' => $handler]);
+    /**
+     * Create a mock handler for the given response.
+     *
+     * @param Response $response
+     * @return HandlerStack
+     */
+    private function createHandler(Response $response): HandlerStack
+    {
+        $stack = HandlerStack::create(new MockHandler([$response]));
+
+        $stack->push(new JwtToken(), 'jwt-token');
+
+        $stack->push(Middleware::mapResponse(function (Response $response) {
+            $stream = new JsonStream($response->getBody());
+
+            return $response->withBody($stream);
+        }));
+
+        return $stack;
+    }
+
+    /**
+     * @param Response $response
+     */
+    private function setUpClient(Response $response): void
+    {
+        $client = new Client(['handler' => $this->createHandler($response)]);
         app()->instance('idserver.client', $client);
 
         $this->manager = new Manager($client);

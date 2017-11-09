@@ -34,12 +34,24 @@ class User extends Resource
 
     /**
      * @param int $id
-     * @return UserEntity
+     * @return Entity|UserEntity
      */
-    public function show(int $id): UserEntity
+    public function get(int $id): UserEntity
     {
-        $this->call('GET', '/users/' . $id);
+        $this->call('GET', 'users/' . $id);
 
-        $this->makeEntity();
+        return $this->makeEntity();
+    }
+
+    /**
+     * @param int $id
+     * @param $attributes
+     * @return Entity|UserEntity
+     */
+    public function update(int $id, array $attributes): UserEntity
+    {
+        $this->call('PUT', 'users/' . $id, $attributes);
+
+        return $this->makeEntity();
     }
 }
