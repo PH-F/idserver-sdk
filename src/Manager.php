@@ -4,6 +4,7 @@ namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
+use Xingo\IDServer\Resources\Resource;
 
 /**
  * Class Client
@@ -43,6 +44,20 @@ class Manager
 
         if (class_exists($class)) {
             return new $class($this->client);
+        }
+    }
+
+    /**
+     * @param string $name
+     * @param array $arguments
+     * @return $this|Resource
+     */
+    public function __call(string $name, array $arguments)
+    {
+        $resource = $this->$name;
+
+        if ($resource instanceof Resource && is_callable($resource)) {
+            return $resource(array_first($arguments));
         }
     }
 
