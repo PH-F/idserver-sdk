@@ -3,6 +3,7 @@
 namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -12,10 +13,12 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->app->instance(Client::class, function () {
-            return new Client(
-                array_merge($this->baseOptions(), $this->jwtOptions())
-            );
+        $this->app->singleton('idserver.client', function (Application $app) {
+            return new Client($this->options($app));
+        });
+
+        $this->app->singleton('idserver.manager', function (Application $app) {
+            return new Manager($app->make('idserver.client'));
         });
     }
 
@@ -30,30 +33,17 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
+     * @param Application $app
      * @return array
      */
-    protected function baseOptions(): array
+    protected function options(Application $app): array
     {
         return [
-            'base_uri' => config('idserver.url'),
+            'base_uri' => $app['config']->get('idserver.url'),
             'headers' => [
-                'X-XINGO-Client-ID' => config('idserver.store.client_id'),
-                'X-XINGO-Secret-Key' => config('idserver.store.secret_key'),
+                'X-XINGO-Client-ID' => $app['config']->get('idserver.store.client_id'),
+                'X-XINGO-Secret-Key' => $app['config']->get('idserver.store.secret_key'),
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    protected function jwtOptions(): array
-    {
-        return session()->has('jwt_token') ? [
-            'headers' => [
-                'Authorization' => sprintf(
-                    'Bearer %s', session()->get('jwt_token')
-                ),
-            ],
-        ] : [];
     }
 }

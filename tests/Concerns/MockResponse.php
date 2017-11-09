@@ -6,13 +6,14 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Xingo\IDServer\Manager;
 
 trait MockResponse
 {
     /**
-     * @var \Xingo\IDServer\Client
+     * @var \Xingo\IDServer\Manager
      */
-    protected $client;
+    protected $manager;
 
     /**
      * @param int $status
@@ -28,30 +29,11 @@ trait MockResponse
         $mock = new MockHandler([$response]);
         $handler = HandlerStack::create($mock);
 
-        app()->instance(Client::class, $this->createClient($handler));
+        $client = new Client(['handler' => $handler]);
+        app()->instance('idserver.client', $client);
 
-        $this->client = app()->make(\Xingo\IDServer\Client::class);
-    }
-
-    /**
-     * @param HandlerStack $handler
-     * @return Client
-     */
-    protected function createClient(HandlerStack $handler)
-    {
-        $headers = [];
-
-        if (session()->has('jwt_token')) {
-            $headers['Authorization'] = 'Bearer ' . session('jwt_token');
-        }
-
-        $headers['X-XINGO-Client-ID'] = config('idserver.store.client_id');
-        $headers['X-XINGO-Secret-Key'] = config('idserver.store.secret_key');
-
-        return new Client([
-            'handler' => $handler,
-            'headers' => $headers,
-        ]);
+        $this->manager = new Manager($client);
+        app()->instance('idserver.manager', $this->manager);
     }
 }
 

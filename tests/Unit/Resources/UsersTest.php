@@ -4,6 +4,7 @@ namespace Tests\Unit\Resources;
 
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Manager;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions\AuthorizationException;
 use Xingo\IDServer\Exceptions\ValidationException;
@@ -24,7 +25,7 @@ class UsersTest extends TestCase
             ]
         ]);
 
-        $user = $this->client->users
+        $user = $this->manager->users
             ->create([]);
 
         $this->assertInstanceOf(User::class, $user);
@@ -44,7 +45,7 @@ class UsersTest extends TestCase
         $this->expectExceptionCode(422);
         $this->expectException(ValidationException::class);
 
-        $this->client->users
+        $this->manager->users
             ->create([]);
     }
 
@@ -59,7 +60,7 @@ class UsersTest extends TestCase
         ]);
 
         /** @var User $user */
-        $user = $this->client->users
+        $user = $this->manager->users
             ->login('john@example.com', 'secret');
 
         $this->assertInstanceOf(User::class, $user);
@@ -76,7 +77,7 @@ class UsersTest extends TestCase
         $this->expectException(AuthorizationException::class);
 
         /** @var User $user */
-        $user = $this->client->users
+        $user = $this->manager->users
             ->login('john@example.com', 'secret');
     }
 
@@ -91,10 +92,10 @@ class UsersTest extends TestCase
         ]);
 
         /** @var User $user */
-        $user = $this->client->users
+        $user = $this->manager->users
             ->login('john@example.com', 'secret');
 
-        $this->assertNotEmpty($jwt = session()->get('jwt_token'));
+        $this->assertNotEmpty($jwt = session()->get(Manager::TOKEN_NAME));
         $this->assertEquals($jwt, $user->jwtToken());
     }
 }

@@ -14,9 +14,9 @@ class User extends Resource
      */
     public function login(string $email, string $password)
     {
-        $this->call('POST', '/auth/login', compact($email, $password));
+        $this->call('POST', 'auth/login', compact('email', 'password'));
 
-        session()->put('jwt_token', $this->contents['token']);
+        app('idserver.manager')->setToken($this->contents['token']);
 
         return $this->makeEntity();
     }
@@ -27,7 +27,7 @@ class User extends Resource
      */
     public function create(array $attributes): UserEntity
     {
-        $this->call('POST', '/users', ['form_params' => [$attributes]]);
+        $this->call('POST', 'users', ['form_params' => [$attributes]]);
 
         return $this->makeEntity();
     }
