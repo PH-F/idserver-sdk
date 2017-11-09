@@ -64,14 +64,23 @@ class ResourceTest extends TestCase
     public function it_is_callable_and_returns_a_resource_instance()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
-
         $manager = app()->make('idserver.manager');
-        $resource = $manager->users(1);
 
         $this->assertTrue(is_callable($manager->users));
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(Resource::class, $manager->users(1));
+    }
 
-//        $this->mockResponse(200, ['data' => ['id' => 1]]); // TODO mock is empty
-//        $this->assertEquals($resource, $manager->users->get(1));
+    /** @test */
+    public function it_can_have_an_instance_and_it_matches_get_method()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+
+        $resource = $manager->users(1);
+
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+
+        $this->assertEquals($resource->instance, $manager->users->get(1));
     }
 }

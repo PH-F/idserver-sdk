@@ -16,6 +16,11 @@ use Xingo\IDServer\Exceptions\ValidationException;
 abstract class Resource
 {
     /**
+     * @var Resource
+     */
+    public $instance;
+
+    /**
      * @var Client
      */
     protected $client;
@@ -24,11 +29,6 @@ abstract class Resource
      * @var array
      */
     protected $contents;
-
-    /**
-     * @var Resource
-     */
-    protected $instance;
 
     /**
      * @param Client $client
