@@ -58,4 +58,12 @@ class ResourceTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    /** @test */
+    public function it_is_callable()
+    {
+        $user = app()->make(User::class);
+
+        $this->assertTrue(is_callable($user));
+    }
 }

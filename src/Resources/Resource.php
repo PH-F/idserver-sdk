@@ -33,6 +33,11 @@ abstract class Resource
         $this->client = $client;
     }
 
+    public function __invoke()
+    {
+
+    }
+
     /**
      * @param string $method
      * @param string $uri
