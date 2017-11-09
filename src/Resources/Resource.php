@@ -54,7 +54,7 @@ abstract class Resource
             $this->checkForbidden($e->getResponse());
         }
 
-        $this->contents = json_decode($response->getBody(), true);
+        $this->contents = $response->getBody()->asJson();
 
         return $response;
     }
@@ -89,7 +89,8 @@ abstract class Resource
     private function checkValidation(ResponseInterface $response)
     {
         if ($response->getStatusCode() === 422) {
-            $content = json_decode($response->getBody(), true);
+            $content = $response->getBody()->asJson();
+
             throw new ValidationException($content['errors']);
         }
     }
