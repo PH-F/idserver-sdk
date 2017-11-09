@@ -3,6 +3,7 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use ReflectionMethod;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
@@ -16,23 +17,20 @@ class ResourceTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_an_array_when_calling_a_json_endpoint()
+    public function it_returns_a_psr7_response_when_calling_a_json_endpoint()
     {
+        $this->mockResponse();
+
         $uri = 'https://jsonplaceholder.typicode.com/posts/1';
 
-        $user = app()->make(User::class);
+        $user = $this->manager->users;
 
         $method = new ReflectionMethod($user, 'call');
         $method->setAccessible(true);
 
         $response = $method->invokeArgs($user, ['GET', $uri]);
 
-        $this->markTestIncomplete('This is changed to a guzzle response and test needs to be rewritten.');
-
-        $this->assertCount(5, $response);
-        $this->assertEquals(200, $response['status']);
-        $this->assertArrayHasKey('title', $response);
-        $this->assertArrayHasKey('body', $response);
+        $this->assertInstanceOf(Response::class, $response);
     }
 
     /**
