@@ -7,15 +7,13 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
+use Tests\Concerns\MockGuzzleClient;
 use Tests\TestCase;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 
 class JwtTokenTest extends TestCase
 {
-    /**
-     * @var Client
-     */
-    protected $client = null;
+    use MockGuzzleClient;
 
     /** @test */
     function it_will_automatically_attach_the_jwt_token_if_found_in_session()
@@ -50,19 +48,16 @@ class JwtTokenTest extends TestCase
      */
     protected function setUpMockClientWithJwtTokenMiddleware($assertion)
     {
-        $mockHandler = new MockHandler([
+        $this->stack = HandlerStack::create(new MockHandler([
             function (RequestInterface $request) use ($assertion) {
                 $assertion($request);
 
-                return new Response(200, [], json_encode(['data' => 'pong']));
+                return new Response();
             },
-        ]);
+        ]));
 
-        $handler = HandlerStack::create($mockHandler);
-        $handler->push(new JwtToken());
+        $this->stack->push(new JwtToken());
 
-        $this->client = new Client(['handler' => $handler]);
-
-        return $this->client;
+        return $this->client();
     }
 }
