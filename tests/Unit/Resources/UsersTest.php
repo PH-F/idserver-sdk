@@ -4,8 +4,8 @@ namespace Tests\Unit\Resources;
 
 use Tests\Concerns;
 use Tests\TestCase;
-use Xingo\IDServer\Manager;
 use Xingo\IDServer\Entities\User;
+use Xingo\IDServer\Manager;
 use Xingo\IDServer\Exceptions\AuthorizationException;
 use Xingo\IDServer\Exceptions\ValidationException;
 
@@ -13,9 +13,7 @@ class UsersTest extends TestCase
 {
     use Concerns\MockResponse;
 
-    /**
-     * @test
-     */
+    /** @test */
     function it_creates_a_user_with_201_status()
     {
         $this->mockResponse(201, [
@@ -33,9 +31,7 @@ class UsersTest extends TestCase
         $this->assertGreaterThan(0, $user->id);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     function it_checks_validation_when_creating_user_with_422_status()
     {
         $this->mockResponse(422, [
@@ -109,9 +105,7 @@ class UsersTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     function it_logs_in_a_user_with_200_status()
     {
         $this->mockResponse(200, [
@@ -126,9 +120,7 @@ class UsersTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     function it_checks_for_login_with_401_status()
     {
         $this->mockResponse(401, ['data' => []]);
@@ -140,9 +132,7 @@ class UsersTest extends TestCase
             ->login('john@example.com', 'secret');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     function it_saves_the_user_jwt_in_the_session_after_login_with_200_status()
     {
         $this->mockResponse(200, [
