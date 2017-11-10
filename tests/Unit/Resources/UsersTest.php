@@ -147,4 +147,14 @@ class UsersTest extends TestCase
         $this->assertNotEmpty($jwt = session()->get(Manager::TOKEN_NAME));
         $this->assertEquals($jwt, $user->jwtToken());
     }
+
+    /** @test */
+    function it_can_refresh_the_jwt()
+    {
+        $this->mockResponse(200, [], ['Authentication' => 'Bearer new-token']);
+
+        $this->manager->users->refreshToken();
+
+        $this->assertEquals('new-token', $this->manager->getToken());
+    }
 }
