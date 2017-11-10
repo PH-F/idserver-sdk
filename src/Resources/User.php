@@ -7,6 +7,8 @@ use Xingo\IDServer\Entities\User as UserEntity;
 
 class User extends Resource
 {
+    private const JWT_HEADER = 'Authentication';
+
     /**
      * @param string $email
      * @param string $password
@@ -19,6 +21,20 @@ class User extends Resource
         app('idserver.manager')->setToken($this->contents['token']);
 
         return $this->makeEntity();
+    }
+
+    /**
+     * @return void
+     */
+    public function refreshToken()
+    {
+        $response = $this->call('PUT', 'auth/refresh');
+
+        if ($response->hasHeader(static::JWT_HEADER)) {
+            $header = $response->getHeaderLine(static::JWT_HEADER);
+            $token = str_replace('Bearer ', '', $header);
+            app('idserver.manager')->setToken($token);
+        }
     }
 
     /**
