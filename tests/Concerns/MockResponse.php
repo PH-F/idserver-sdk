@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Xingo\IDServer\Client\Middleware\InvalidToken;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Support\JsonStream;
 use Xingo\IDServer\Manager;
@@ -17,6 +18,16 @@ trait MockResponse
      * @var \Xingo\IDServer\Manager
      */
     protected $manager;
+
+    /**
+     * @var HandlerStack
+     */
+    private $stack;
+
+    /**
+     * @var MockHandler
+     */
+    private $handler;
 
     /**
      * @param int $status
@@ -40,9 +51,18 @@ trait MockResponse
      */
     private function createHandler(Response $response): HandlerStack
     {
-        $stack = HandlerStack::create(new MockHandler([$response]));
+        if ($this->handler && $this->stack) {
+            $this->handler->append($response);
+            $this->stack->setHandler($this->handler);
+
+            return $this->stack;
+        }
+
+        $this->handler = new MockHandler([$response]);
+        $stack = HandlerStack::create($this->handler);
 
         $stack->push(new JwtToken(), 'jwt-token');
+        $stack->push(new InvalidToken(), 'jwt-invalid-token');
 
         $stack->push(Middleware::mapResponse(function (Response $response) {
             $stream = new JsonStream($response->getBody());
@@ -50,7 +70,7 @@ trait MockResponse
             return $response->withBody($stream);
         }));
 
-        return $stack;
+        return $this->stack = $stack;
     }
 
     /**
