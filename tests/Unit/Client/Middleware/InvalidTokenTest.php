@@ -21,7 +21,6 @@ class InvalidTokenTest extends TestCase
         $manager = app('idserver.manager');
         $manager->setToken('invalid-token');
 
-        // TODO fix this. It's not calling the same endpoint again
         $user = $manager->users->create([]);
 
         $this->assertEquals('valid-token', $manager->getToken());

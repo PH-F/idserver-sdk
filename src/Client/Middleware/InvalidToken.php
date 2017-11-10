@@ -9,21 +9,45 @@ use Xingo\IDServer\Manager;
 class InvalidToken
 {
     /**
-     * @param Response $response
-     * @return ResponseInterface
+     * @param callable $handler
+     * @return callable
      */
-    public function __invoke(Response $response)
+    public function __invoke(callable $handler)
+    {
+        return function ($request, array $options) use ($handler) {
+            return $handler($request, $options)->then(
+                function (Response $response) use ($handler, $request, $options) {
+                    if ($this->invalidToken($response)) {
+                        $this->refreshToken();
+
+                        return $handler($request, $options);
+                    }
+
+                    return $response;
+                }
+            );
+        };
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return bool
+     */
+    public function invalidToken(ResponseInterface $response): bool
     {
         $json = $response->getBody()->asJson();
-
-        if (in_array('token_invalid', $json)) {
-            /** @var Manager $manager */
-            $manager = app()->make('idserver.manager');
-            $manager->users->refreshToken();
-        }
-
         $response->getBody()->rewind();
 
-        return $response;
+        return in_array('token_invalid', $json);
+    }
+
+    /**
+     * @return void
+     */
+    private function refreshToken()
+    {
+        /** @var Manager $manager */
+        $manager = app()->make('idserver.manager');
+        $manager->users->refreshToken();
     }
 }

@@ -92,8 +92,7 @@ trait MockResponse
     private function pushMiddleware(HandlerStack $stack): HandlerStack
     {
         $stack->push(new JwtToken(), 'jwt-token');
-
-        $stack->push(Middleware::mapResponse(new InvalidToken));
+        $stack->push(new InvalidToken(), 'invalid-token');
 
         $stack->push(Middleware::mapResponse(function (Response $response) {
             $stream = new JsonStream($response->getBody());
