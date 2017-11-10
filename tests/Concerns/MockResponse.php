@@ -52,25 +52,13 @@ trait MockResponse
     private function createHandler(Response $response): HandlerStack
     {
         if ($this->handler && $this->stack) {
-            $this->handler->append($response);
-            $this->stack->setHandler($this->handler);
-
-            return $this->stack;
+            return $this->appendResponse($response);
         }
 
         $this->handler = new MockHandler([$response]);
         $stack = HandlerStack::create($this->handler);
 
-        $stack->push(new JwtToken(), 'jwt-token');
-        $stack->push(new InvalidToken(), 'jwt-invalid-token');
-
-        $stack->push(Middleware::mapResponse(function (Response $response) {
-            $stream = new JsonStream($response->getBody());
-
-            return $response->withBody($stream);
-        }));
-
-        return $this->stack = $stack;
+        return $this->stack = $this->pushMiddleware($stack);
     }
 
     /**
@@ -84,5 +72,34 @@ trait MockResponse
         $this->manager = new Manager($client);
         app()->instance('idserver.manager', $this->manager);
     }
-}
 
+    /**
+     * @param Response $response
+     * @return HandlerStack
+     */
+    private function appendResponse(Response $response): HandlerStack
+    {
+        $this->handler->append($response);
+        $this->stack->setHandler($this->handler);
+
+        return $this->stack;
+    }
+
+    /**
+     * @param HandlerStack $stack
+     * @return HandlerStack
+     */
+    private function pushMiddleware(HandlerStack $stack): HandlerStack
+    {
+        $stack->push(new JwtToken(), 'jwt-token');
+        $stack->push(new InvalidToken(), 'jwt-invalid-token');
+
+        $stack->push(Middleware::mapResponse(function (Response $response) {
+            $stream = new JsonStream($response->getBody());
+
+            return $response->withBody($stream);
+        }));
+
+        return $stack;
+    }
+}
