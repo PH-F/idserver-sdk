@@ -30,11 +30,9 @@ class User extends Resource
     {
         $response = $this->call('PUT', 'auth/refresh');
 
-        if ($response->hasHeader(static::JWT_HEADER)) {
-            $header = $response->getHeaderLine(static::JWT_HEADER);
-            $token = str_replace('Bearer ', '', $header);
-            app('idserver.manager')->setToken($token);
-        }
+        $header = $response->getHeaderLine(static::JWT_HEADER);
+        $token = str_replace('Bearer ', '', $header);
+        app('idserver.manager')->setToken($token);
     }
 
     /**
