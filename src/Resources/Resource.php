@@ -126,7 +126,7 @@ abstract class Resource
      */
     protected function makeEntity(array $attributes = null): Entity
     {
-        $attributes = $attributes ?: $this->contents['data'];
+        $attributes = $attributes ?: $this->contents['data'] ?? [];
 
         $entity = (new ReflectionClass(static::class))->getShortName();
         $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
