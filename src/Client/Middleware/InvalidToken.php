@@ -18,11 +18,7 @@ class InvalidToken
         return function (RequestInterface $request, array $options) use ($handler) {
             return $handler($request, $options)->then(
                 function (ResponseInterface $response) {
-                    if ($this->tokenInvalid($response)) {
-                        $this->refreshToken();
-                    }
-
-                    return $response;
+                    return $this->refreshToken($response);
                 }
             );
         };
@@ -30,22 +26,18 @@ class InvalidToken
 
     /**
      * @param ResponseInterface $response
-     * @return bool
+     * @return ResponseInterface
      */
-    private function tokenInvalid(ResponseInterface $response): bool
+    private function refreshToken(ResponseInterface $response)
     {
-        $json = $response->getBody()->asJson();
+        $json = json_decode($response->getBody(), true);
 
-        return array_key_exists('token_invalid', $json);
-    }
+        if (in_array('token_invalid', $json)) {
+            /** @var Manager $manager */
+            $manager = app()->make('idserver.manager');
+            $manager->users->refreshToken();
+        }
 
-    /**
-     * @return void
-     */
-    private function refreshToken()
-    {
-        /** @var Manager $manager */
-        $manager = app()->make('idserver.manager');
-        $manager->users->refreshToken();
+        return $response;
     }
 }
