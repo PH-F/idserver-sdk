@@ -67,11 +67,11 @@ class ResourceTest extends TestCase
 
         $manager = app()->make('idserver.manager');
         $resource = $manager->users(1);
-        $user = $resource->instance;
 
         $this->assertTrue(is_callable($manager->users));
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertEquals($user, $manager->users($user)->instance);
+        $this->assertInternalType('integer', $resource->id);
+        $this->assertEquals($resource->id, $manager->users($resource->id)->id);
     }
 
     /** @test */
@@ -84,7 +84,8 @@ class ResourceTest extends TestCase
 
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
+        $entity = $manager->users->get(1);
 
-        $this->assertEquals($resource->instance, $manager->users->get(1));
+        $this->assertEquals($resource->id, $entity->id);
     }
 }
