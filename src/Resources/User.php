@@ -71,4 +71,17 @@ class User extends Resource
 
         return $this->makeEntity();
     }
+
+    /**
+     * @param int|null $id
+     * @return bool
+     */
+    public function delete(?int $id = null): bool
+    {
+        $id = $id ?: $this->id;
+
+        $response = $this->call('DELETE', "users/{$id}");
+
+        return 204 === $response->getStatusCode();
+    }
 }

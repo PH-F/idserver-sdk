@@ -170,4 +170,17 @@ class UsersTest extends TestCase
         $user = $this->manager->users->get(1);
         $this->assertEquals(1, $user->id);
     }
+
+    /** @test */
+    function it_can_be_deleted()
+    {
+        $this->mockResponse(204);
+        $this->mockResponse(204);
+
+        $result = $this->manager->users->delete(1);
+        $this->assertTrue($result);
+
+        $result = $this->manager->users(1)->delete();
+        $this->assertTrue($result);
+    }
 }
