@@ -8,6 +8,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Xingo\IDServer\Client\Middleware\InvalidToken;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Support\JsonStream;
 
@@ -46,6 +47,7 @@ class ServiceProvider extends BaseServiceProvider
         $handler = HandlerStack::create();
 
         $handler->push(new JwtToken(), 'jwt-token');
+        $handler->push(new InvalidToken(), 'jwt-invalid-token');
 
         $handler->push(Middleware::mapResponse(function (Response $response) {
             $stream = new JsonStream($response->getBody());
