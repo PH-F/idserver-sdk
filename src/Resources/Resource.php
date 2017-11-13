@@ -16,7 +16,7 @@ use Xingo\IDServer\Exceptions\ValidationException;
 abstract class Resource
 {
     /**
-     * @var Resource
+     * @var Entity
      */
     public $instance;
 
@@ -44,7 +44,7 @@ abstract class Resource
      */
     public function __invoke($param): Resource
     {
-        if (is_int($param)) {
+        if (is_int($param) && !$this->instance) {
             $param = $this->get($param);
         }
 
