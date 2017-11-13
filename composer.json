@@ -22,7 +22,10 @@
         "psr-4": {
             "Xingo\\IDServer\\": "src/",
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "extra": {
         "laravel": {
