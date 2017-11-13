@@ -7,6 +7,7 @@ use ReflectionMethod;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User as UserEntity;
+use Xingo\IDServer\Resources\Resource;
 use Xingo\IDServer\Resources\User;
 
 class ResourceTest extends TestCase
@@ -57,5 +58,34 @@ class ResourceTest extends TestCase
         });
 
         $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_is_callable_and_returns_a_resource_instance()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+
+        $manager = app()->make('idserver.manager');
+        $resource = $manager->users(1);
+
+        $this->assertTrue(is_callable($manager->users));
+        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInternalType('integer', $resource->id);
+        $this->assertEquals($resource->id, $manager->users($resource->id)->id);
+    }
+
+    /** @test */
+    public function it_can_have_an_instance_and_it_matches_get_method()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+
+        $resource = $manager->users(1);
+
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+        $entity = $manager->users->get(1);
+
+        $this->assertEquals($resource->id, $entity->id);
     }
 }
