@@ -157,4 +157,17 @@ class UsersTest extends TestCase
 
         $this->assertEquals('new-token', $this->manager->getToken());
     }
+
+    /** @test */
+    function it_can_get_a_user_by_get_method()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+
+        $user = $this->manager->users(1)->get();
+        $this->assertEquals(1, $user->id);
+
+        $user = $this->manager->users->get(1);
+        $this->assertEquals(1, $user->id);
+    }
 }

@@ -48,20 +48,25 @@ class User extends Resource
      * @param int $id
      * @return Entity|UserEntity
      */
-    public function get(int $id): UserEntity
+    public function get(?int $id = null): UserEntity
     {
-        $this->call('GET', 'users/' . $id);
+        $this->call('GET', 'users/' . $id ?: $this->id);
 
         return $this->makeEntity();
     }
 
     /**
-     * @param int $id
-     * @param $attributes
+     * @param int|array $id
+     * @param array $attributes
      * @return Entity|UserEntity
      */
-    public function update(int $id, array $attributes): UserEntity
+    public function update($id, array $attributes = []): UserEntity
     {
+        if (is_array($id) && !empty($id)) {
+            $attributes = $id;
+            $id = $this->id;
+        }
+
         $this->call('PUT', 'users/' . $id, $attributes);
 
         return $this->makeEntity();
