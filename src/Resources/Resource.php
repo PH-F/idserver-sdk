@@ -4,6 +4,7 @@ namespace Xingo\IDServer\Resources;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException as GuzzleServerException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
@@ -11,6 +12,7 @@ use ReflectionClass;
 use Xingo\IDServer\Entities\Entity;
 use Xingo\IDServer\Exceptions\AuthorizationException;
 use Xingo\IDServer\Exceptions\ForbiddenException;
+use Xingo\IDServer\Exceptions\ServerException;
 use Xingo\IDServer\Exceptions\ValidationException;
 
 abstract class Resource
@@ -80,11 +82,24 @@ abstract class Resource
             $this->checkValidation($e->getResponse());
             $this->checkAuthorization($e->getResponse());
             $this->checkForbidden($e->getResponse());
+        } catch (GuzzleServerException $e) {
+            $this->checkServerError($e->getResponse());
         }
 
         $this->contents = $response->getBody()->asJson();
 
         return $response;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws ServerException
+     */
+    private function checkServerError(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 500) {
+            throw new ServerException;
+        }
     }
 
     /**
@@ -144,4 +159,6 @@ abstract class Resource
         return $this->contents['status'] === 200 ||
             $this->contents['status'] === 201;
     }
+
+
 }

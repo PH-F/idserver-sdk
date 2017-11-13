@@ -5,8 +5,7 @@ namespace Tests\Unit\Resources;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User;
-use Xingo\IDServer\Exceptions\AuthorizationException;
-use Xingo\IDServer\Exceptions\ValidationException;
+use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Manager;
 
 class UsersTest extends TestCase
@@ -39,7 +38,7 @@ class UsersTest extends TestCase
         ]);
 
         $this->expectExceptionCode(422);
-        $this->expectException(ValidationException::class);
+        $this->expectException(Exceptions\ValidationException::class);
 
         $this->manager->users
             ->create([]);
@@ -97,7 +96,7 @@ class UsersTest extends TestCase
         ]);
 
         $this->expectExceptionCode(422);
-        $this->expectException(ValidationException::class);
+        $this->expectException(Exceptions\ValidationException::class);
 
         $this->manager->users
             ->update(1, [
@@ -126,7 +125,7 @@ class UsersTest extends TestCase
         $this->mockResponse(401, ['data' => []]);
 
         $this->expectExceptionCode(401);
-        $this->expectException(AuthorizationException::class);
+        $this->expectException(Exceptions\AuthorizationException::class);
 
         $this->manager->users
             ->login('john@example.com', 'secret');
@@ -182,5 +181,15 @@ class UsersTest extends TestCase
 
         $result = $this->manager->users(1)->delete();
         $this->assertTrue($result);
+    }
+
+    /** @test */
+    function it_can_throws_a_500_exception_error()
+    {
+        $this->mockResponse(500);
+
+        $this->expectException(Exceptions\ServerException::class);
+
+        $this->manager->users->delete(1);
     }
 }
