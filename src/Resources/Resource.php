@@ -16,9 +16,11 @@ use Xingo\IDServer\Exceptions\ValidationException;
 abstract class Resource
 {
     /**
-     * @var Entity
+     * Entity id
+     *
+     * @var int
      */
-    public $instance;
+    public $id;
 
     /**
      * @var Client
@@ -44,11 +46,11 @@ abstract class Resource
      */
     public function __invoke($param): Resource
     {
-        if (is_int($param) && !$this->instance) {
-            $param = $this->get($param);
+        if (!is_int($param)) {
+            $param = $param->id ?? null;
         }
 
-        $this->instance = $param;
+        $this->id = $param;
 
         return $this;
     }
