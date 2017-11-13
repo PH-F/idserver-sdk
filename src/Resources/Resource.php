@@ -7,16 +7,14 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException as GuzzleServerException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Str;
-use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
+use Xingo\IDServer\Concerns\CustomExceptions;
 use Xingo\IDServer\Entities\Entity;
-use Xingo\IDServer\Exceptions\AuthorizationException;
-use Xingo\IDServer\Exceptions\ForbiddenException;
-use Xingo\IDServer\Exceptions\ServerException;
-use Xingo\IDServer\Exceptions\ValidationException;
 
 abstract class Resource
 {
+    use CustomExceptions;
+
     /**
      * Entity id
      *
@@ -92,52 +90,6 @@ abstract class Resource
     }
 
     /**
-     * @param ResponseInterface $response
-     * @throws ServerException
-     */
-    private function checkServerError(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 500) {
-            throw new ServerException;
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @throws ValidationException
-     */
-    private function checkValidation(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 422) {
-            $content = $response->getBody()->asJson();
-
-            throw new ValidationException($content['errors']);
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @throws AuthorizationException
-     */
-    private function checkAuthorization(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 401) {
-            throw new AuthorizationException;
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @throws ForbiddenException
-     */
-    private function checkForbidden(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 403) {
-            throw new ForbiddenException;
-        }
-    }
-
-    /**
      * @param array $attributes
      * @return Entity
      */
@@ -159,6 +111,4 @@ abstract class Resource
         return $this->contents['status'] === 200 ||
             $this->contents['status'] === 201;
     }
-
-
 }
