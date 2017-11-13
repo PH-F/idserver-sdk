@@ -2,40 +2,43 @@
 
 namespace Xingo\IDServer\Client\Middleware;
 
-use Closure;
 use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Xingo\IDServer\Manager;
 
 class InvalidToken
 {
     /**
      * @param callable $handler
-     * @return Closure
+     * @return callable
      */
     public function __invoke(callable $handler)
     {
-        return function (RequestInterface $request, array $options) use ($handler) {
-            $response = $handler($request, $options);
+        return function ($request, array $options) use ($handler) {
+            return $handler($request, $options)->then(
+                function (Response $response) use ($handler, $request, $options) {
+                    if ($this->invalidToken($response)) {
+                        $this->refreshToken();
 
-            if ($this->tokenInvalid($response)) {
-                $this->refreshToken();
-                $response = $handler($request, $options);
-            }
+                        return $handler($request, $options);
+                    }
 
-            return $response;
+                    return $response;
+                }
+            );
         };
     }
 
     /**
-     * @param Response $response
+     * @param ResponseInterface $response
      * @return bool
      */
-    private function tokenInvalid(Response $response): bool
+    public function invalidToken(ResponseInterface $response): bool
     {
         $json = $response->getBody()->asJson();
+        $response->getBody()->rewind();
 
-        return array_key_exists('token_invalid', $json);
+        return in_array('token_invalid', $json);
     }
 
     /**

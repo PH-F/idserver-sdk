@@ -22,6 +22,18 @@ class User extends Resource
     }
 
     /**
+     * @return void
+     */
+    public function refreshToken()
+    {
+        $response = $this->call('PUT', 'auth/refresh');
+
+        $header = $response->getHeaderLine('Authentication');
+        $token = str_replace('Bearer ', '', $header);
+        app('idserver.manager')->setToken($token);
+    }
+
+    /**
      * @param array $attributes
      * @return Entity|UserEntity
      */

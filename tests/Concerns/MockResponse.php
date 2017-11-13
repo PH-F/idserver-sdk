@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Xingo\IDServer\Client\Middleware\InvalidToken;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Support\JsonStream;
 use Xingo\IDServer\Manager;
@@ -17,6 +18,16 @@ trait MockResponse
      * @var \Xingo\IDServer\Manager
      */
     protected $manager;
+
+    /**
+     * @var HandlerStack
+     */
+    private $stack;
+
+    /**
+     * @var MockHandler
+     */
+    private $handler;
 
     /**
      * @param int $status
@@ -40,17 +51,14 @@ trait MockResponse
      */
     private function createHandler(Response $response): HandlerStack
     {
-        $stack = HandlerStack::create(new MockHandler([$response]));
+        if ($this->handler && $this->stack) {
+            return $this->appendResponse($response);
+        }
 
-        $stack->push(new JwtToken(), 'jwt-token');
+        $this->handler = new MockHandler([$response]);
+        $stack = HandlerStack::create($this->handler);
 
-        $stack->push(Middleware::mapResponse(function (Response $response) {
-            $stream = new JsonStream($response->getBody());
-
-            return $response->withBody($stream);
-        }));
-
-        return $stack;
+        return $this->stack = $this->pushMiddleware($stack);
     }
 
     /**
@@ -64,5 +72,34 @@ trait MockResponse
         $this->manager = new Manager($client);
         app()->instance('idserver.manager', $this->manager);
     }
-}
 
+    /**
+     * @param Response $response
+     * @return HandlerStack
+     */
+    private function appendResponse(Response $response): HandlerStack
+    {
+        $this->handler->append($response);
+        $this->stack->setHandler($this->handler);
+
+        return $this->stack;
+    }
+
+    /**
+     * @param HandlerStack $stack
+     * @return HandlerStack
+     */
+    private function pushMiddleware(HandlerStack $stack): HandlerStack
+    {
+        $stack->push(new JwtToken(), 'jwt-token');
+        $stack->push(new InvalidToken(), 'invalid-token');
+
+        $stack->push(Middleware::mapResponse(function (Response $response) {
+            $stream = new JsonStream($response->getBody());
+
+            return $response->withBody($stream);
+        }));
+
+        return $stack;
+    }
+}
