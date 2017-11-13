@@ -16,6 +16,13 @@ use Xingo\IDServer\Exceptions\ValidationException;
 abstract class Resource
 {
     /**
+     * Entity id
+     *
+     * @var int
+     */
+    public $id;
+
+    /**
      * @var Client
      */
     protected $client;
@@ -32,6 +39,27 @@ abstract class Resource
     {
         $this->client = $client;
     }
+
+    /**
+     * @param int|Entity $param
+     * @return Resource|$this
+     */
+    public function __invoke($param): Resource
+    {
+        if (!is_int($param)) {
+            $param = $param->id ?? null;
+        }
+
+        $this->id = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param int $id
+     * @return Entity
+     */
+    abstract public function get(int $id);
 
     /**
      * @param string $method
@@ -57,29 +85,6 @@ abstract class Resource
         $this->contents = $response->getBody()->asJson();
 
         return $response;
-    }
-
-    /**
-     * @param array $attributes
-     * @return Entity
-     */
-    protected function makeEntity(array $attributes = null): Entity
-    {
-        $attributes = $attributes ?: $this->contents['data'];
-
-        $entity = (new ReflectionClass(static::class))->getShortName();
-        $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
-
-        return new $class($attributes);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function success()
-    {
-        return $this->contents['status'] === 200 ||
-            $this->contents['status'] === 201;
     }
 
     /**
@@ -115,5 +120,28 @@ abstract class Resource
         if ($response->getStatusCode() === 403) {
             throw new ForbiddenException;
         }
+    }
+
+    /**
+     * @param array $attributes
+     * @return Entity
+     */
+    protected function makeEntity(array $attributes = null): Entity
+    {
+        $attributes = $attributes ?: $this->contents['data'];
+
+        $entity = (new ReflectionClass(static::class))->getShortName();
+        $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
+
+        return new $class($attributes);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function success()
+    {
+        return $this->contents['status'] === 200 ||
+            $this->contents['status'] === 201;
     }
 }
