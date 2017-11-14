@@ -38,6 +38,14 @@ class Manager
     }
 
     /**
+     * @return Client
+     */
+    public function client()
+    {
+        return $this->client;
+    }
+
+    /**
      * Get the JWT token which is used to connect to the IDServer
      * @return string
      */

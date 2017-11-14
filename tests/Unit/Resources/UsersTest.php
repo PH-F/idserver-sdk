@@ -234,4 +234,17 @@ class UsersTest extends TestCase
         $this->assertEquals(1, $user->id);
         $this->assertEquals(['foo', 'bar'], $user->tags);
     }
+
+    /** @test */
+    function it_can_reset_the_password()
+    {
+        $this->mockResponse(201, [
+            'user_id' => 1,
+            'token' => 'temporary-token',
+        ]);
+
+        $token = $this->manager->users(1)->resetPassword();
+
+        $this->assertEquals('temporary-token', $token);
+    }
 }

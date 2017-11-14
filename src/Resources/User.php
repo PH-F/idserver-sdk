@@ -139,9 +139,14 @@ class User extends Resource
 
     }
 
-    public function resetPassword()
+    /**
+     * @return string
+     */
+    public function resetPassword(): string
     {
+        $this->call('POST', "users/{$this->id}/reset-password");
 
+        return $this->contents['token'];
     }
 
     public function changePassword()
