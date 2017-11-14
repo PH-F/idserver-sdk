@@ -8,12 +8,13 @@ use GuzzleHttp\Exception\ServerException as GuzzleServerException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use Xingo\IDServer\Concerns\CallableResources;
 use Xingo\IDServer\Concerns\CustomExceptions;
 use Xingo\IDServer\Entities\Entity;
 
 abstract class Resource
 {
-    use CustomExceptions;
+    use CallableResources, CustomExceptions;
 
     /**
      * Entity id
