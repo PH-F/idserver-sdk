@@ -192,4 +192,32 @@ class UsersTest extends TestCase
 
         $this->manager->users->delete(1);
     }
+
+    /** @test */
+    function it_can_be_confirmed()
+    {
+        $this->mockResponse(422, ['errors' => ['token' => 'Required']]);
+        $this->expectException(Exceptions\ValidationException::class);
+        $this->manager->users(1)->confirm('fake-token');
+
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $user = $this->manager->users(1)->confirm('fake-token');
+        $this->assertEquals(1, $user->id);
+    }
+
+    /** @test */
+    function it_can_change_avatar()
+    {
+        $this->mockResponse(200, [
+            'user' => ['id' => 1],
+            'avatar' => ['url' => 'http://google.com'],
+        ]);
+
+        $user = $this->manager->users(1)
+            ->changeAvatar('http://placehold.it/30x30');
+
+        $this->assertEquals(1, $user->id);
+        $this->assertArrayHasKey('url', $user->avatar);
+        $this->assertEquals('http://google.com', $user->avatar['url']);
+    }
 }
