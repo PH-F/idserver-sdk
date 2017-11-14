@@ -98,7 +98,7 @@ trait MockResponse
     private function pushMiddleware(HandlerStack $stack): HandlerStack
     {
         // Make possible to test requests and responses later
-        $this->history = collect();
+        $this->history = $this->history ?: collect();
         $stack->push(Middleware::history($this->history));
 
         $stack->push(new JwtToken(), 'jwt-token');
