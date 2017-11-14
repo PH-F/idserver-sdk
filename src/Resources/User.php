@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Intervention\Image\ImageManager;
 use Xingo\IDServer\Entities\Entity;
 use Xingo\IDServer\Entities\User as UserEntity;
 
@@ -79,9 +80,64 @@ class User extends Resource
     public function delete(?int $id = null): bool
     {
         $id = $id ?: $this->id;
-
         $response = $this->call('DELETE', "users/{$id}");
 
         return 204 === $response->getStatusCode();
+    }
+
+    /**
+     * @param string $token
+     * @return Entity
+     */
+    public function confirm(string $token): Entity
+    {
+        $this->call('PATCH', "users/{$this->id}/confirm", [
+            'token' => $token,
+        ]);
+
+        return $this->makeEntity();
+    }
+
+    /**
+     * @param string $avatar
+     * @return Entity
+     */
+    public function changeAvatar(string $avatar): Entity
+    {
+        $this->call('PATCH', "users/{$this->id}/avatar", [
+            'avatar' => base64_encode(
+                (new ImageManager())->make($avatar)
+            ),
+        ]);
+
+        return $this->makeEntity(array_merge(
+            $this->contents['user'],
+            ['avatar' => $this->contents['avatar']]
+        ));
+    }
+
+    public function subscriptions()
+    {
+
+    }
+
+    public function tags()
+    {
+
+    }
+
+    public function addresses()
+    {
+
+    }
+
+    public function resetPassword()
+    {
+
+    }
+
+    public function changePassword()
+    {
+
     }
 }
