@@ -16,7 +16,7 @@ class TagsTest extends TestCase
             'tags' => ['foo', 'bar'],
         ]);
 
-        $tags = $this->manager->users
+        $tags = $this->manager->users(1)
             ->tags->create(['foo', 'bar']);
 
         $this->assertTrue(is_array($tags));

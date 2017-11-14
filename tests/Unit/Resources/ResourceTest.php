@@ -100,5 +100,6 @@ class ResourceTest extends TestCase
         $this->assertTrue(is_callable($tags));
         $this->assertInstanceOf(NestedResource::class, $tags);
         $this->assertInstanceOf(User::class, $tags->parent);
+        $this->assertEquals(1, $tags->parent->id);
     }
 }

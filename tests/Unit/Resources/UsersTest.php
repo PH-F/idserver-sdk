@@ -229,7 +229,7 @@ class UsersTest extends TestCase
             'user' => ['id' => 1],
         ]);
 
-        $user = $this->manager->users->tags();
+        $user = $this->manager->users(1)->tags();
 
         $this->assertEquals(1, $user->id);
         $this->assertEquals(['foo', 'bar'], $user->tags);

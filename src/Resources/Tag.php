@@ -10,7 +10,7 @@ class Tag extends NestedResource
      */
     public function create($tag)
     {
-        $this->call('POST', "users/{$this->id}/tags", [
+        $this->call('POST', "users/{$this->parent->id}/tags", [
             'tag' => $tag,
         ]);
 
