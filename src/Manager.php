@@ -4,12 +4,15 @@ namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
+use Xingo\IDServer\Entities\User as UserEntity;
 use Xingo\IDServer\Resources\Resource;
+use Xingo\IDServer\Resources\User;
 
 /**
  * Class Client
  *
- * @property \Xingo\IDServer\Resources\User users
+ * @property User users
+ * @method User users(int | UserEntity $resource)
  */
 class Manager
 {
