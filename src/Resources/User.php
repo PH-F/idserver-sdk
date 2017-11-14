@@ -118,7 +118,7 @@ class User extends Resource
 
     public function subscriptions()
     {
-
+        // TODO
     }
 
     public function tags()
