@@ -20,6 +20,11 @@ trait MockResponse
     protected $manager;
 
     /**
+     * @var array
+     */
+    protected $history = [];
+
+    /**
      * @var HandlerStack
      */
     private $stack;
@@ -91,6 +96,9 @@ trait MockResponse
      */
     private function pushMiddleware(HandlerStack $stack): HandlerStack
     {
+        // Make possible to test requests and responses later
+        $stack->push(Middleware::history($this->history));
+
         $stack->push(new JwtToken(), 'jwt-token');
         $stack->push(new InvalidToken(), 'invalid-token');
 
