@@ -3,9 +3,8 @@
 namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
-use Illuminate\Support\Str;
+use Xingo\IDServer\Concerns\CallableResources;
 use Xingo\IDServer\Entities\User as UserEntity;
-use Xingo\IDServer\Resources\Resource;
 use Xingo\IDServer\Resources\User;
 
 /**
@@ -16,6 +15,8 @@ use Xingo\IDServer\Resources\User;
  */
 class Manager
 {
+    use CallableResources;
+
     /**
      * The name of the token in the session.
      */
@@ -34,34 +35,6 @@ class Manager
     public function __construct(Client $client)
     {
         $this->client = $client;
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        $resource = Str::studly(Str::singular($name));
-        $class = "Xingo\\IDServer\\Resources\\$resource";
-
-        if (class_exists($class)) {
-            return new $class($this->client);
-        }
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return $this|Resource
-     */
-    public function __call(string $name, array $arguments)
-    {
-        $resource = $this->$name;
-
-        if ($resource instanceof Resource && is_callable($resource)) {
-            return $resource(array_first($arguments));
-        }
     }
 
     /**
