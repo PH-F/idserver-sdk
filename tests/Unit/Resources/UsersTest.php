@@ -220,4 +220,18 @@ class UsersTest extends TestCase
         $this->assertArrayHasKey('url', $user->avatar);
         $this->assertEquals('http://google.com', $user->avatar['url']);
     }
+
+    /** @test */
+    function it_can_have_tags()
+    {
+        $this->mockResponse(200, [
+            'tags' => ['foo', 'bar'],
+            'user' => ['id' => 1],
+        ]);
+
+        $user = $this->manager->users->tags();
+
+        $this->assertEquals(1, $user->id);
+        $this->assertEquals(['foo', 'bar'], $user->tags);
+    }
 }

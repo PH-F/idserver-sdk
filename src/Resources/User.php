@@ -121,9 +121,17 @@ class User extends Resource
         // TODO
     }
 
-    public function tags()
+    /**
+     * @return Entity
+     */
+    public function tags(): Entity
     {
+        $this->call('GET', "users/{$this->id}/tags");
 
+        return $this->makeEntity(array_merge(
+            $this->contents['user'],
+            ['tags' => $this->contents['tags']]
+        ));
     }
 
     public function addresses()
