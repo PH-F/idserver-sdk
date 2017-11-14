@@ -56,12 +56,6 @@ abstract class Resource
     }
 
     /**
-     * @param int $id
-     * @return Entity
-     */
-    abstract public function get(int $id);
-
-    /**
      * @param string $method
      * @param string $uri
      * @param array $params
