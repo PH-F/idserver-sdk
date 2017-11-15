@@ -21,5 +21,10 @@ class TagsTest extends TestCase
 
         $this->assertTrue(is_array($tags));
         $this->assertEquals(['foo', 'bar'], $tags);
+
+        /** @var \GuzzleHttp\Psr7\Request $request */
+        $request = $this->history->last()['request'];
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('users/1/tags', $request->getUri()->getPath());
     }
 }

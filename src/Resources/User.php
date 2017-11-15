@@ -51,7 +51,7 @@ class User extends Resource
      */
     public function get(?int $id = null): UserEntity
     {
-        $this->call('GET', 'users/' . $id ?: $this->id);
+        $this->call('GET', sprintf('users/%d', $id ?: $this->id));
 
         return $this->makeEntity();
     }
