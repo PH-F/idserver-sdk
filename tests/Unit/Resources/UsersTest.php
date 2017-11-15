@@ -313,4 +313,20 @@ class UsersTest extends TestCase
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('users/2/reset-password', $request->getUri()->getPath());
     }
+
+    /** @test */
+    function it_can_update_the_password()
+    {
+        $this->mockResponse(204);
+
+        $result = $this->manager->users(3)
+            ->changePassword('fake-token', 'abc123');
+
+        $this->assertTrue($result);
+
+        /** @var Request $request */
+        $request = $this->history->first()['request'];
+        $this->assertEquals('PATCH', $request->getMethod());
+        $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
+    }
 }

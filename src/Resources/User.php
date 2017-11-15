@@ -149,8 +149,18 @@ class User extends Resource
         return $this->contents['token'];
     }
 
-    public function changePassword()
+    /**
+     * @param string $token
+     * @param string $password
+     * @return bool
+     */
+    public function changePassword(string $token, string $password): bool
     {
+        $response = $this->call('PATCH', "users/{$this->id}/change-password", [
+            'token' => $token,
+            'password' => $password,
+        ]);
 
+        return 204 === $response->getStatusCode();
     }
 }
