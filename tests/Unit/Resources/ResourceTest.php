@@ -7,6 +7,7 @@ use ReflectionMethod;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User as UserEntity;
+use Xingo\IDServer\Resources\NestedResource;
 use Xingo\IDServer\Resources\Resource;
 use Xingo\IDServer\Resources\User;
 
@@ -87,5 +88,18 @@ class ResourceTest extends TestCase
         $entity = $manager->users->get(1);
 
         $this->assertEquals($resource->id, $entity->id);
+    }
+
+    /** @test */
+    function it_can_have_nested_resources_and_they_are_callable_as_well()
+    {
+        $manager = app()->make('idserver.manager');
+
+        $tags = $manager->users(1)->tags;
+
+        $this->assertTrue(is_callable($tags));
+        $this->assertInstanceOf(NestedResource::class, $tags);
+        $this->assertInstanceOf(User::class, $tags->parent);
+        $this->assertEquals(1, $tags->parent->id);
     }
 }

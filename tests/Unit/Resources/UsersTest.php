@@ -6,8 +6,7 @@ use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User;
-use Xingo\IDServer\Exceptions\AuthorizationException;
-use Xingo\IDServer\Exceptions\ValidationException;
+use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Manager;
 
 class UsersTest extends TestCase
@@ -45,7 +44,7 @@ class UsersTest extends TestCase
         ]);
 
         $this->expectExceptionCode(422);
-        $this->expectException(ValidationException::class);
+        $this->expectException(Exceptions\ValidationException::class);
 
         $this->manager->users
             ->create([]);
@@ -113,7 +112,7 @@ class UsersTest extends TestCase
         ]);
 
         $this->expectExceptionCode(422);
-        $this->expectException(ValidationException::class);
+        $this->expectException(Exceptions\ValidationException::class);
 
         $this->manager->users
             ->update(1, [
@@ -147,7 +146,7 @@ class UsersTest extends TestCase
         $this->mockResponse(401, ['data' => []]);
 
         $this->expectExceptionCode(401);
-        $this->expectException(AuthorizationException::class);
+        $this->expectException(Exceptions\AuthorizationException::class);
 
         $this->manager->users
             ->login('john@example.com', 'secret');
@@ -182,5 +181,152 @@ class UsersTest extends TestCase
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('auth/refresh', $request->getUri()->getPath());
         });
+    }
+
+    /** @test */
+    function it_can_get_a_user_by_get_method()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $this->mockResponse(200, ['data' => ['id' => 2]]);
+
+        $user = $this->manager->users(1)->get();
+        $this->assertEquals(1, $user->id);
+
+        /** @var Request $request */
+        $request = $this->history->get(0)['request'];
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('users/1', $request->getUri()->getPath());
+
+        $user = $this->manager->users->get(2);
+        $this->assertEquals(2, $user->id);
+
+        /** @var Request $request */
+        $request = $this->history->get(1)['request'];
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('users/2', $request->getUri()->getPath());
+    }
+
+    /** @test */
+    function it_can_be_deleted()
+    {
+        $this->mockResponse(204);
+        $this->mockResponse(204);
+
+        $result = $this->manager->users->delete(1);
+        $this->assertTrue($result);
+
+        /** @var Request $request */
+        $request = $this->history->first()['request'];
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('users/1', $request->getUri()->getPath());
+
+        $result = $this->manager->users(2)->delete();
+        $this->assertTrue($result);
+
+        /** @var Request $request */
+        $request = $this->history->last()['request'];
+        $this->assertEquals('DELETE', $request->getMethod());
+        $this->assertEquals('users/2', $request->getUri()->getPath());
+    }
+
+    /** @test */
+    function it_can_throws_a_500_exception_error()
+    {
+        $this->mockResponse(500);
+
+        $this->expectException(Exceptions\ServerException::class);
+
+        $this->manager->users->delete(1);
+    }
+
+    /** @test */
+    function it_can_be_confirmed()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $user = $this->manager->users(1)->confirm('fake-token');
+        $this->assertEquals(1, $user->id);
+
+        /** @var Request $request */
+        $request = $this->history->first()['request'];
+        $this->assertEquals('PATCH', $request->getMethod());
+        $this->assertEquals('users/1/confirm', $request->getUri()->getPath());
+
+        $this->mockResponse(422, ['errors' => ['token' => 'Required']]);
+        $this->expectException(Exceptions\ValidationException::class);
+        $this->manager->users(1)->confirm('fake-token');
+    }
+
+    /** @test */
+    function it_can_change_avatar()
+    {
+        $this->mockResponse(200, [
+            'user' => ['id' => 1],
+            'avatar' => ['url' => 'http://google.com'],
+        ]);
+
+        $user = $this->manager->users(1)
+            ->changeAvatar('http://placehold.it/30x30');
+
+        $this->assertEquals(1, $user->id);
+        $this->assertArrayHasKey('url', $user->avatar);
+        $this->assertEquals('http://google.com', $user->avatar['url']);
+
+        /** @var Request $request */
+        $request = $this->history->first()['request'];
+        $this->assertEquals('PATCH', $request->getMethod());
+        $this->assertEquals('users/1/avatar', $request->getUri()->getPath());
+    }
+
+    /** @test */
+    function it_can_have_tags()
+    {
+        $this->mockResponse(200, [
+            'tags' => ['foo', 'bar'],
+            'user' => ['id' => 1],
+        ]);
+
+        $user = $this->manager->users(1)->tags();
+
+        $this->assertEquals(1, $user->id);
+        $this->assertEquals(['foo', 'bar'], $user->tags);
+
+        /** @var Request $request */
+        $request = $this->history->first()['request'];
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('users/1/tags', $request->getUri()->getPath());
+    }
+
+    /** @test */
+    function it_can_reset_the_password()
+    {
+        $this->mockResponse(201, [
+            'user_id' => 2,
+            'token' => 'temporary-token',
+        ]);
+
+        $token = $this->manager->users(2)->resetPassword();
+
+        $this->assertEquals('temporary-token', $token);
+
+        /** @var Request $request */
+        $request = $this->history->first()['request'];
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('users/2/reset-password', $request->getUri()->getPath());
+    }
+
+    /** @test */
+    function it_can_update_the_password()
+    {
+        $this->mockResponse(204);
+
+        $result = $this->manager->users(3)
+            ->changePassword('fake-token', 'abc123');
+
+        $this->assertTrue($result);
+
+        /** @var Request $request */
+        $request = $this->history->first()['request'];
+        $this->assertEquals('PATCH', $request->getMethod());
+        $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
     }
 }
