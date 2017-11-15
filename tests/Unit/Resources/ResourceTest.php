@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Resources;
 
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use ReflectionMethod;
 use Tests\Concerns\MockResponse;
@@ -49,16 +51,20 @@ class ResourceTest extends TestCase
     /** @test */
     public function it_will_have_the_token_automatically_in_the_request_when_available()
     {
-        $this->markTestSkipped('Fix');
+        $this->mockResponse(200, ['data' => ['id' => 10]]);
+        $this->manager->setToken('foo');
 
+        /** @var \GuzzleHttp\HandlerStack $handler */
         $handler = app('idserver.client')->getConfig('handler');
 
-        // Try to remove the jwt-token middleware. If that middleware is not available it will throw an exception.
-        $handler->before('jwt-token', function ($request) {
-            // Fake middleware
-        });
+        $handler->after('jwt-token', Middleware::mapRequest(function (Request $request) {
+            $this->assertArrayHasKey('Authorization', $request->getHeaders());
+            $this->assertEquals('Bearer foo', $request->getHeaderLine('Authorization'));
 
-        $this->assertTrue(true);
+            return $request;
+        }));
+
+        $this->manager->users(10)->get();
     }
 
     /** @test */
