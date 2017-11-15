@@ -31,10 +31,10 @@ class UsersTest extends TestCase
         $this->assertEquals('john@example.com', $user->email);
         $this->assertGreaterThan(0, $user->id);
 
-        /** @var Request $request */
-        $request = $this->history->first()['request'];
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('users', $request->getUri()->getPath());
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -68,10 +68,10 @@ class UsersTest extends TestCase
         $this->assertEquals('john@example.com', $user->email);
         $this->assertEquals(1, $user->id);
 
-        /** @var Request $request */
-        $request = $this->history->first()['request'];
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('users/1', $request->getUri()->getPath());
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users/1', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -94,10 +94,10 @@ class UsersTest extends TestCase
         $this->assertEquals('foo', $user->first_name);
         $this->assertEquals(1, $user->id);
 
-        /** @var Request $request */
-        $request = $this->history->first()['request'];
-        $this->assertEquals('PUT', $request->getMethod());
-        $this->assertEquals('users/1', $request->getUri()->getPath());
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('users/1', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -135,10 +135,10 @@ class UsersTest extends TestCase
 
         $this->assertInstanceOf(User::class, $user);
 
-        /** @var Request $request */
-        $request = $this->history->first()['request'];
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('auth/login', $request->getUri()->getPath());
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('auth/login', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -178,9 +178,9 @@ class UsersTest extends TestCase
 
         $this->assertEquals('new-token', $this->manager->getToken());
 
-        /** @var Request $request */
-        $request = $this->history->first()['request'];
-        $this->assertEquals('PUT', $request->getMethod());
-        $this->assertEquals('auth/refresh', $request->getUri()->getPath());
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('auth/refresh', $request->getUri()->getPath());
+        });
     }
 }
