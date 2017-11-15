@@ -50,6 +50,18 @@ trait MockResponse
     }
 
     /**
+     * @param callable $assertion
+     * @param int $callPosition
+     */
+    protected function assertRequest(callable $assertion, int $callPosition = 0)
+    {
+        $request = $this->history
+            ->get($callPosition)['request'];
+
+        $assertion($request);
+    }
+
+    /**
      * Create a mock handler for the given response.
      *
      * @param Response $response
