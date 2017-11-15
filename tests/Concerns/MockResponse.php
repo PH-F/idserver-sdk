@@ -51,13 +51,10 @@ trait MockResponse
 
     /**
      * @param callable $assertion
-     * @param int $callPosition
      */
-    protected function assertRequest(callable $assertion, int $callPosition = 0)
+    protected function assertRequest(callable $assertion)
     {
-        $request = $this->history
-            ->get($callPosition)['request'];
-
+        $request = $this->history->shift()['request'];
         $assertion($request);
     }
 
