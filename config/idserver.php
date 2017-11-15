@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'url' => 'http://idserver.xingo.nl/v1/',
+    'url' => env('IDSERVER_URL', 'http://idserver.xingo.nl/v1/'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return [
         |
         */
 
-        'client_id' => '',
+        'client_id' => env('IDSERVER_CLIENT_ID'),
 
         /*
         |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
         |
         */
 
-        'secret_key' => '',
+        'secret_key' => env('IDSERVER_SECRET_KEY'),
 
     ]
 
