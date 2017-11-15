@@ -1,8 +1,10 @@
 <?php
 
-namespace Xingo\IDServer\Resources;
+namespace Xingo\IDServer\Concerns;
 
-class NestedResource extends Resource
+use Xingo\IDServer\Resources\Resource;
+
+trait NestedResource
 {
     /**
      * @var Resource

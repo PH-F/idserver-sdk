@@ -6,8 +6,8 @@ use GuzzleHttp\Psr7\Response;
 use ReflectionMethod;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
+use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Entities\User as UserEntity;
-use Xingo\IDServer\Resources\NestedResource;
 use Xingo\IDServer\Resources\Resource;
 use Xingo\IDServer\Resources\User;
 
@@ -98,7 +98,7 @@ class ResourceTest extends TestCase
         $tags = $manager->users(1)->tags;
 
         $this->assertTrue(is_callable($tags));
-        $this->assertInstanceOf(NestedResource::class, $tags);
+        $this->assertTrue(in_array(NestedResource::class, class_uses($tags)));
         $this->assertInstanceOf(User::class, $tags->parent);
         $this->assertEquals(1, $tags->parent->id);
     }

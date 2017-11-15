@@ -3,7 +3,6 @@
 namespace Xingo\IDServer\Concerns;
 
 use Illuminate\Support\Str;
-use Xingo\IDServer\Resources\NestedResource;
 use Xingo\IDServer\Resources\Resource;
 
 trait CallableResources
@@ -20,7 +19,11 @@ trait CallableResources
         if (class_exists($class)) {
             $instance = new $class($this->client);
 
-            return $instance instanceof NestedResource && $this instanceof Resource ?
+            $nestedResource = in_array(
+                NestedResource::class, class_uses($instance)
+            );
+
+            return $nestedResource && $this instanceof Resource ?
                 $instance->parent($this) : $instance;
         }
     }

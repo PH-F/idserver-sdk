@@ -2,8 +2,12 @@
 
 namespace Xingo\IDServer\Resources;
 
-class Tag extends NestedResource
+use Xingo\IDServer\Concerns\NestedResource;
+
+class Tag extends Resource
 {
+    use NestedResource;
+
     /**
      * @param array|string $tag
      * @return array
