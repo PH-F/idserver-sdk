@@ -46,41 +46,32 @@ class User extends Resource
     }
 
     /**
-     * @param int $id
      * @return Entity|UserEntity
      */
-    public function get(?int $id = null): UserEntity
+    public function get(): UserEntity
     {
-        $this->call('GET', sprintf('users/%d', $id ?: $this->id));
+        $this->call('GET', sprintf("users/{$this->id}"));
 
         return $this->makeEntity();
     }
 
     /**
-     * @param int|array $id
      * @param array $attributes
      * @return Entity|UserEntity
      */
-    public function update($id, array $attributes = []): UserEntity
+    public function update(array $attributes = []): UserEntity
     {
-        if (is_array($id) && !empty($id)) {
-            $attributes = $id;
-            $id = $this->id;
-        }
-
-        $this->call('PUT', 'users/' . $id, $attributes);
+        $this->call('PUT', "users/{$this->id}", $attributes);
 
         return $this->makeEntity();
     }
 
     /**
-     * @param int|null $id
      * @return bool
      */
-    public function delete(?int $id = null): bool
+    public function delete(): bool
     {
-        $id = $id ?: $this->id;
-        $response = $this->call('DELETE', "users/{$id}");
+        $response = $this->call('DELETE', "users/{$this->id}");
 
         return 204 === $response->getStatusCode();
     }
