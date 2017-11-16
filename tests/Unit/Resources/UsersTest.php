@@ -60,8 +60,8 @@ class UsersTest extends TestCase
             ],
         ]);
 
-        $user = $this->manager->users
-            ->get(1);
+        $user = $this->manager->users(1)
+            ->get();
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('john@example.com', $user->email);
@@ -84,10 +84,9 @@ class UsersTest extends TestCase
             ],
         ]);
 
-        $user = $this->manager->users
-            ->update(1, [
-                'first_name' => 'foo'
-            ]);
+        $user = $this->manager->users(1)->update([
+            'first_name' => 'foo'
+        ]);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('foo', $user->first_name);
@@ -114,10 +113,9 @@ class UsersTest extends TestCase
         $this->expectExceptionCode(422);
         $this->expectException(Exceptions\ValidationException::class);
 
-        $this->manager->users
-            ->update(1, [
-                'email' => ''
-            ]);
+        $this->manager->users(1)->update([
+            'email' => ''
+        ]);
     }
 
     /** @test */
@@ -196,14 +194,6 @@ class UsersTest extends TestCase
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('users/1', $request->getUri()->getPath());
         });
-
-        $user = $this->manager->users->get(2);
-        $this->assertEquals(2, $user->id);
-
-        $this->assertRequest(function (Request $request) {
-            $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('users/2', $request->getUri()->getPath());
-        });
     }
 
     /** @test */
@@ -212,20 +202,12 @@ class UsersTest extends TestCase
         $this->mockResponse(204);
         $this->mockResponse(204);
 
-        $result = $this->manager->users->delete(1);
+        $result = $this->manager->users(1)->delete();
         $this->assertTrue($result);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('DELETE', $request->getMethod());
             $this->assertEquals('users/1', $request->getUri()->getPath());
-        });
-
-        $result = $this->manager->users(2)->delete();
-        $this->assertTrue($result);
-
-        $this->assertRequest(function (Request $request) {
-            $this->assertEquals('DELETE', $request->getMethod());
-            $this->assertEquals('users/2', $request->getUri()->getPath());
         });
     }
 
