@@ -39,7 +39,7 @@ class User extends Resource
      */
     public function create(array $attributes): UserEntity
     {
-        $this->call('POST', 'users', ['form_params' => [$attributes]]);
+        $this->call('POST', 'users', $attributes);
 
         return $this->makeEntity();
     }
