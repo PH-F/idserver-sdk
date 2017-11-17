@@ -34,7 +34,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users', $request->getUri()->getPath());
-            $this->assertRequestParamsEquals($request, $data);
+            $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
 
@@ -97,7 +97,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('users/1', $request->getUri()->getPath());
-            $this->assertRequestParamsEquals($request, $data);
+            $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
 
@@ -138,10 +138,10 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('auth/login', $request->getUri()->getPath());
-            $this->assertRequestParamsEquals($request, [
+            $this->assertEquals(http_build_query([
                 'email' => 'john@example.com',
                 'password' => 'secret',
-            ]);
+            ]), $request->getBody());
         });
     }
 
@@ -238,7 +238,9 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/1/confirm', $request->getUri()->getPath());
-            $this->assertRequestParamsEquals($request, ['token' => 'fake-token']);
+            $this->assertEquals(http_build_query([
+                'token' => 'fake-token',
+            ]), $request->getBody());
         });
 
         $this->mockResponse(422, ['errors' => ['token' => 'Required']]);
@@ -264,13 +266,13 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/1/avatar', $request->getUri()->getPath());
-            $this->assertRequestParamsEquals($request, [
+            $this->assertEquals(http_build_query([
                 'avatar' => base64_encode(
                     (new ImageManager())
                         ->make('http://placehold.it/30x30')
                         ->stream()
                 ),
-            ]);
+            ]), $request->getBody());
         });
     }
 
@@ -324,10 +326,10 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
-            $this->assertRequestParamsEquals($request, [
+            $this->assertEquals(http_build_query([
                 'token' => 'fake-token',
                 'password' => 'abc123',
-            ]);
+            ]), $request->getBody());
         });
     }
 }
