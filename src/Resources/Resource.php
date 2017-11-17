@@ -86,14 +86,17 @@ abstract class Resource
 
     /**
      * @param array $attributes
+     * @param string|null $class
      * @return Entity
      */
-    protected function makeEntity(array $attributes = null): Entity
+    protected function makeEntity(array $attributes = null, ?string $class = null): Entity
     {
         $attributes = $attributes ?: $this->contents['data'] ?? [];
 
-        $entity = (new ReflectionClass(static::class))->getShortName();
-        $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
+        if ($class === null) {
+            $entity = (new ReflectionClass(static::class))->getShortName();
+            $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
+        }
 
         return new $class($attributes);
     }
