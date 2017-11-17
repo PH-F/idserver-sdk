@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Collection;
 use Xingo\IDServer\Client\Middleware\InvalidToken;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Support\JsonStream;
@@ -18,6 +19,11 @@ trait MockResponse
      * @var \Xingo\IDServer\Manager
      */
     protected $manager;
+
+    /**
+     * @var Collection
+     */
+    protected $history;
 
     /**
      * @var HandlerStack
@@ -41,6 +47,15 @@ trait MockResponse
         );
 
         $this->setUpClient($response);
+    }
+
+    /**
+     * @param callable $assertion
+     */
+    protected function assertRequest(callable $assertion)
+    {
+        $request = $this->history->shift()['request'];
+        $assertion($request);
     }
 
     /**
@@ -91,6 +106,10 @@ trait MockResponse
      */
     private function pushMiddleware(HandlerStack $stack): HandlerStack
     {
+        // Make possible to test requests and responses later
+        $this->history = $this->history ?: collect();
+        $stack->push(Middleware::history($this->history));
+
         $stack->push(new JwtToken(), 'jwt-token');
         $stack->push(new InvalidToken(), 'invalid-token');
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Resources;
 
+use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User;
@@ -29,6 +30,11 @@ class UsersTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('john@example.com', $user->email);
         $this->assertGreaterThan(0, $user->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -61,6 +67,11 @@ class UsersTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('john@example.com', $user->email);
         $this->assertEquals(1, $user->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users/1', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -82,6 +93,11 @@ class UsersTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('foo', $user->first_name);
         $this->assertEquals(1, $user->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('users/1', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -118,6 +134,11 @@ class UsersTest extends TestCase
             ->login('john@example.com', 'secret');
 
         $this->assertInstanceOf(User::class, $user);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('auth/login', $request->getUri()->getPath());
+        });
     }
 
     /** @test */
@@ -156,5 +177,10 @@ class UsersTest extends TestCase
         $this->manager->users->refreshToken();
 
         $this->assertEquals('new-token', $this->manager->getToken());
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('auth/refresh', $request->getUri()->getPath());
+        });
     }
 }
