@@ -17,22 +17,23 @@ class UsersTest extends TestCase
     function it_creates_a_user_with_201_status()
     {
         $this->mockResponse(201, [
-            'data' => [
+            'data' => $data = [
                 'id' => 1,
                 'email' => 'john@example.com',
             ],
         ]);
 
         $user = $this->manager->users
-            ->create([]);
+            ->create($data);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('john@example.com', $user->email);
         $this->assertGreaterThan(0, $user->id);
 
-        $this->assertRequest(function (Request $request) {
+        $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertParamsEquals($request, $data);
         });
     }
 

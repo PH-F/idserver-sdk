@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Collection;
 use Xingo\IDServer\Client\Middleware\InvalidToken;
@@ -54,8 +55,21 @@ trait MockResponse
      */
     protected function assertRequest(callable $assertion)
     {
+        /** @var Request $request */
         $request = $this->history->shift()['request'];
         $assertion($request);
+    }
+
+    /**
+     * @param Request $request
+     * @param array $params
+     */
+    public function assertParamsEquals(Request $request, array $params)
+    {
+        $content = $request->getBody()->getContents();
+        parse_str($content, $bodyParams);
+
+        $this->assertEquals($params, $bodyParams);
     }
 
     /**
