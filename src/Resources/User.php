@@ -4,16 +4,21 @@ namespace Xingo\IDServer\Resources;
 
 use Illuminate\Support\Collection;
 use Intervention\Image\ImageManager;
-use Xingo\IDServer\Entities\Address;
-use Xingo\IDServer\Entities\Entity;
-use Xingo\IDServer\Entities\User as UserEntity;
+use Xingo\IDServer\Entities;
 
+/**
+ * Class User
+ *
+ * @package Xingo\IDServer\Resources
+ * @property Tag tags
+ * @property \Xingo\IDServer\Resources\Address addresses
+ */
 class User extends Resource
 {
     /**
      * @param string $email
      * @param string $password
-     * @return Entity
+     * @return Entities\Entity
      */
     public function login(string $email, string $password)
     {
@@ -38,9 +43,9 @@ class User extends Resource
 
     /**
      * @param array $attributes
-     * @return Entity|UserEntity
+     * @return Entities\Entity|Entities\User
      */
-    public function create(array $attributes): UserEntity
+    public function create(array $attributes): Entities\User
     {
         $this->call('POST', 'users', $attributes);
 
@@ -48,9 +53,9 @@ class User extends Resource
     }
 
     /**
-     * @return Entity|UserEntity
+     * @return Entities\Entity|Entities\User
      */
-    public function get(): UserEntity
+    public function get(): Entities\User
     {
         $this->call('GET', sprintf("users/{$this->id}"));
 
@@ -59,9 +64,9 @@ class User extends Resource
 
     /**
      * @param array $attributes
-     * @return Entity|UserEntity
+     * @return Entities\Entity|Entities\User
      */
-    public function update(array $attributes = []): UserEntity
+    public function update(array $attributes = []): Entities\User
     {
         $this->call('PUT', "users/{$this->id}", $attributes);
 
@@ -80,9 +85,9 @@ class User extends Resource
 
     /**
      * @param string $token
-     * @return Entity
+     * @return Entities\Entity
      */
-    public function confirm(string $token): Entity
+    public function confirm(string $token): Entities\Entity
     {
         $this->call('PATCH', "users/{$this->id}/confirm", [
             'token' => $token,
@@ -93,9 +98,9 @@ class User extends Resource
 
     /**
      * @param string $avatar
-     * @return Entity
+     * @return Entities\Entity
      */
-    public function changeAvatar(string $avatar): Entity
+    public function changeAvatar(string $avatar): Entities\Entity
     {
         $this->call('PATCH', "users/{$this->id}/avatar", [
             'avatar' => base64_encode(
@@ -116,9 +121,9 @@ class User extends Resource
     }
 
     /**
-     * @return Entity
+     * @return Entities\Entity|Entities\User
      */
-    public function tags(): Entity
+    public function tags(): Entities\User
     {
         $this->call('GET', "users/{$this->id}/tags");
 
@@ -138,7 +143,7 @@ class User extends Resource
         return collect($this->contents['data'])
             ->map(function ($data) {
                 return $this->makeEntity(
-                    $data, Address::class
+                    $data, Entities\Address::class
                 );
             });
     }
