@@ -34,7 +34,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users', $request->getUri()->getPath());
-            $this->assertParamsEquals($request, $data);
+            $this->assertRequestParamsEquals($request, $data);
         });
     }
 
@@ -97,7 +97,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('users/1', $request->getUri()->getPath());
-            $this->assertParamsEquals($request, $data);
+            $this->assertRequestParamsEquals($request, $data);
         });
     }
 
@@ -138,7 +138,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('auth/login', $request->getUri()->getPath());
-            $this->assertParamsEquals($request, [
+            $this->assertRequestParamsEquals($request, [
                 'email' => 'john@example.com',
                 'password' => 'secret',
             ]);
@@ -238,7 +238,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/1/confirm', $request->getUri()->getPath());
-            $this->assertParamsEquals($request, ['token' => 'fake-token']);
+            $this->assertRequestParamsEquals($request, ['token' => 'fake-token']);
         });
 
         $this->mockResponse(422, ['errors' => ['token' => 'Required']]);
@@ -264,7 +264,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/1/avatar', $request->getUri()->getPath());
-            $this->assertParamsEquals($request, [
+            $this->assertRequestParamsEquals($request, [
                 'avatar' => base64_encode(
                     (new ImageManager())
                         ->make('http://placehold.it/30x30')
@@ -324,7 +324,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
-            $this->assertParamsEquals($request, [
+            $this->assertRequestParamsEquals($request, [
                 'token' => 'fake-token',
                 'password' => 'abc123',
             ]);

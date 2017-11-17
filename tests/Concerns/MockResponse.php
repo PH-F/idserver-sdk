@@ -64,7 +64,7 @@ trait MockResponse
      * @param Request $request
      * @param array $params
      */
-    public function assertParamsEquals(Request $request, array $params)
+    public function assertRequestParamsEquals(Request $request, array $params)
     {
         $content = $request->getBody()->getContents();
         parse_str($content, $bodyParams);
