@@ -3,6 +3,7 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Psr7\Request;
+use Intervention\Image\ImageManager;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User;
@@ -85,7 +86,7 @@ class UsersTest extends TestCase
             ],
         ]);
 
-        $user = $this->manager->users(1)->update([
+        $user = $this->manager->users(1)->update($data = [
             'first_name' => 'foo'
         ]);
 
@@ -93,9 +94,10 @@ class UsersTest extends TestCase
         $this->assertEquals('foo', $user->first_name);
         $this->assertEquals(1, $user->id);
 
-        $this->assertRequest(function (Request $request) {
+        $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('users/1', $request->getUri()->getPath());
+            $this->assertParamsEquals($request, $data);
         });
     }
 
@@ -136,6 +138,10 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('auth/login', $request->getUri()->getPath());
+            $this->assertParamsEquals($request, [
+                'email' => 'john@example.com',
+                'password' => 'secret',
+            ]);
         });
     }
 
@@ -232,6 +238,7 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/1/confirm', $request->getUri()->getPath());
+            $this->assertParamsEquals($request, ['token' => 'fake-token']);
         });
 
         $this->mockResponse(422, ['errors' => ['token' => 'Required']]);
@@ -257,6 +264,13 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/1/avatar', $request->getUri()->getPath());
+            $this->assertParamsEquals($request, [
+                'avatar' => base64_encode(
+                    (new ImageManager())
+                        ->make('http://placehold.it/30x30')
+                        ->stream()
+                ),
+            ]);
         });
     }
 
@@ -310,6 +324,10 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
+            $this->assertParamsEquals($request, [
+                'token' => 'fake-token',
+                'password' => 'abc123',
+            ]);
         });
     }
 }

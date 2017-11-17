@@ -98,6 +98,7 @@ class User extends Resource
         $this->call('PATCH', "users/{$this->id}/avatar", [
             'avatar' => base64_encode(
                 (new ImageManager())->make($avatar)
+                    ->stream()
             ),
         ]);
 
