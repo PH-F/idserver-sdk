@@ -2,7 +2,9 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Illuminate\Support\Collection;
 use Intervention\Image\ImageManager;
+use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\Entity;
 use Xingo\IDServer\Entities\User as UserEntity;
 
@@ -126,9 +128,19 @@ class User extends Resource
         ));
     }
 
-    public function addresses()
+    /**
+     * @return Collection
+     */
+    public function addresses(): Collection
     {
+        $this->call('GET', "users/$this->id/addresses");
 
+        return collect($this->contents['data'])
+            ->map(function ($data) {
+                return $this->makeEntity(
+                    $data, Address::class
+                );
+            });
     }
 
     /**

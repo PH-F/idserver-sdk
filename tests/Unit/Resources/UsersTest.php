@@ -3,9 +3,11 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Collection;
 use Intervention\Image\ImageManager;
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Manager;
@@ -294,6 +296,26 @@ class UsersTest extends TestCase
             $this->assertEquals('users/1/tags', $request->getUri()->getPath());
         });
     }
+
+    /** @test */
+    function it_can_have_addresses()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['street' => 'foo'],
+                ['street' => 'bar'],
+            ],
+        ]);
+
+        $collection = $this->manager->users(1)->addresses();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Address::class, $collection->first());
+        $this->assertEquals('foo', $collection->first()->street);
+        $this->assertEquals('bar', $collection->last()->street);
+    }
+
 
     /** @test */
     function it_can_reset_the_password()
