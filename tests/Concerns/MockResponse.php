@@ -54,6 +54,7 @@ trait MockResponse
      */
     protected function assertRequest(callable $assertion)
     {
+        /** @var \GuzzleHttp\Psr7\Request $request */
         $request = $this->history->shift()['request'];
         $assertion($request);
     }

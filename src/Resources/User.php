@@ -2,15 +2,23 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Entities\Entity;
-use Xingo\IDServer\Entities\User as UserEntity;
+use Illuminate\Support\Collection;
+use Intervention\Image\ImageManager;
+use Xingo\IDServer\Entities;
 
+/**
+ * Class User
+ *
+ * @package Xingo\IDServer\Resources
+ * @property Tag tags
+ * @property \Xingo\IDServer\Resources\Address addresses
+ */
 class User extends Resource
 {
     /**
      * @param string $email
      * @param string $password
-     * @return Entity
+     * @return Entities\Entity
      */
     public function login(string $email, string $password)
     {
@@ -35,9 +43,9 @@ class User extends Resource
 
     /**
      * @param array $attributes
-     * @return Entity|UserEntity
+     * @return Entities\Entity|Entities\User
      */
-    public function create(array $attributes): UserEntity
+    public function create(array $attributes): Entities\User
     {
         $this->call('POST', 'users', $attributes);
 
@@ -45,25 +53,123 @@ class User extends Resource
     }
 
     /**
-     * @param int $id
-     * @return Entity|UserEntity
+     * @return Entities\Entity|Entities\User
      */
-    public function get(int $id): UserEntity
+    public function get(): Entities\User
     {
-        $this->call('GET', 'users/' . $id);
+        $this->call('GET', sprintf("users/{$this->id}"));
 
         return $this->makeEntity();
     }
 
     /**
-     * @param int $id
-     * @param $attributes
-     * @return Entity|UserEntity
+     * @param array $attributes
+     * @return Entities\Entity|Entities\User
      */
-    public function update(int $id, array $attributes): UserEntity
+    public function update(array $attributes = []): Entities\User
     {
-        $this->call('PUT', 'users/' . $id, $attributes);
+        $this->call('PUT', "users/{$this->id}", $attributes);
 
         return $this->makeEntity();
+    }
+
+    /**
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        $response = $this->call('DELETE', "users/{$this->id}");
+
+        return 204 === $response->getStatusCode();
+    }
+
+    /**
+     * @param string $token
+     * @return Entities\Entity
+     */
+    public function confirm(string $token): Entities\Entity
+    {
+        $this->call('PATCH', "users/{$this->id}/confirm", [
+            'token' => $token,
+        ]);
+
+        return $this->makeEntity();
+    }
+
+    /**
+     * @param string $avatar
+     * @return Entities\Entity
+     */
+    public function changeAvatar(string $avatar): Entities\Entity
+    {
+        $this->call('PATCH', "users/{$this->id}/avatar", [
+            'avatar' => base64_encode(
+                (new ImageManager())->make($avatar)
+                    ->stream()
+            ),
+        ]);
+
+        return $this->makeEntity(array_merge(
+            $this->contents['user'],
+            ['avatar' => $this->contents['avatar']]
+        ));
+    }
+
+    public function subscriptions()
+    {
+        // TODO
+    }
+
+    /**
+     * @return Entities\Entity|Entities\User
+     */
+    public function tags(): Entities\User
+    {
+        $this->call('GET', "users/{$this->id}/tags");
+
+        return $this->makeEntity(array_merge(
+            $this->contents['user'],
+            ['tags' => $this->contents['tags']]
+        ));
+    }
+
+    /**
+     * @return Collection
+     */
+    public function addresses(): Collection
+    {
+        $this->call('GET', "users/$this->id/addresses");
+
+        return collect($this->contents['data'])
+            ->map(function ($data) {
+                return $this->makeEntity(
+                    $data, Entities\Address::class
+                );
+            });
+    }
+
+    /**
+     * @return string
+     */
+    public function resetPassword(): string
+    {
+        $this->call('POST', "users/{$this->id}/reset-password");
+
+        return $this->contents['token'];
+    }
+
+    /**
+     * @param string $token
+     * @param string $password
+     * @return bool
+     */
+    public function changePassword(string $token, string $password): bool
+    {
+        $response = $this->call('PATCH', "users/{$this->id}/change-password", [
+            'token' => $token,
+            'password' => $password,
+        ]);
+
+        return 204 === $response->getStatusCode();
     }
 }

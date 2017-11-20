@@ -3,11 +3,13 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Collection;
+use Intervention\Image\ImageManager;
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\User;
-use Xingo\IDServer\Exceptions\AuthorizationException;
-use Xingo\IDServer\Exceptions\ValidationException;
+use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Manager;
 
 class UsersTest extends TestCase
@@ -18,22 +20,23 @@ class UsersTest extends TestCase
     function it_creates_a_user_with_201_status()
     {
         $this->mockResponse(201, [
-            'data' => [
+            'data' => $data = [
                 'id' => 1,
                 'email' => 'john@example.com',
             ],
         ]);
 
         $user = $this->manager->users
-            ->create([]);
+            ->create($data);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('john@example.com', $user->email);
         $this->assertGreaterThan(0, $user->id);
 
-        $this->assertRequest(function (Request $request) {
+        $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
 
@@ -45,7 +48,7 @@ class UsersTest extends TestCase
         ]);
 
         $this->expectExceptionCode(422);
-        $this->expectException(ValidationException::class);
+        $this->expectException(Exceptions\ValidationException::class);
 
         $this->manager->users
             ->create([]);
@@ -61,8 +64,8 @@ class UsersTest extends TestCase
             ],
         ]);
 
-        $user = $this->manager->users
-            ->get(1);
+        $user = $this->manager->users(1)
+            ->get();
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('john@example.com', $user->email);
@@ -85,18 +88,18 @@ class UsersTest extends TestCase
             ],
         ]);
 
-        $user = $this->manager->users
-            ->update(1, [
-                'first_name' => 'foo'
-            ]);
+        $user = $this->manager->users(1)->update($data = [
+            'first_name' => 'foo'
+        ]);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('foo', $user->first_name);
         $this->assertEquals(1, $user->id);
 
-        $this->assertRequest(function (Request $request) {
+        $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('users/1', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
 
@@ -113,12 +116,11 @@ class UsersTest extends TestCase
         ]);
 
         $this->expectExceptionCode(422);
-        $this->expectException(ValidationException::class);
+        $this->expectException(Exceptions\ValidationException::class);
 
-        $this->manager->users
-            ->update(1, [
-                'email' => ''
-            ]);
+        $this->manager->users(1)->update([
+            'email' => ''
+        ]);
     }
 
     /** @test */
@@ -138,6 +140,10 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('auth/login', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'email' => 'john@example.com',
+                'password' => 'secret',
+            ]), $request->getBody());
         });
     }
 
@@ -147,7 +153,7 @@ class UsersTest extends TestCase
         $this->mockResponse(401, ['data' => []]);
 
         $this->expectExceptionCode(401);
-        $this->expectException(AuthorizationException::class);
+        $this->expectException(Exceptions\AuthorizationException::class);
 
         $this->manager->users
             ->login('john@example.com', 'secret');
@@ -181,6 +187,171 @@ class UsersTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('auth/refresh', $request->getUri()->getPath());
+        });
+    }
+
+    /** @test */
+    function it_can_get_a_user_by_get_method()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $this->mockResponse(200, ['data' => ['id' => 2]]);
+
+        $user = $this->manager->users(1)->get();
+        $this->assertEquals(1, $user->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users/1', $request->getUri()->getPath());
+        });
+    }
+
+    /** @test */
+    function it_can_be_deleted()
+    {
+        $this->mockResponse(204);
+        $this->mockResponse(204);
+
+        $result = $this->manager->users(1)->delete();
+        $this->assertTrue($result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('DELETE', $request->getMethod());
+            $this->assertEquals('users/1', $request->getUri()->getPath());
+        });
+    }
+
+    /** @test */
+    function it_can_throws_a_500_exception_error()
+    {
+        $this->mockResponse(500);
+
+        $this->expectException(Exceptions\ServerException::class);
+
+        $this->manager->users->delete(1);
+    }
+
+    /** @test */
+    function it_can_be_confirmed()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $user = $this->manager->users(1)->confirm('fake-token');
+        $this->assertEquals(1, $user->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('users/1/confirm', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'token' => 'fake-token',
+            ]), $request->getBody());
+        });
+
+        $this->mockResponse(422, ['errors' => ['token' => 'Required']]);
+        $this->expectException(Exceptions\ValidationException::class);
+        $this->manager->users(1)->confirm('fake-token');
+    }
+
+    /** @test */
+    function it_can_change_avatar()
+    {
+        $this->mockResponse(200, [
+            'user' => ['id' => 1],
+            'avatar' => ['url' => 'http://google.com'],
+        ]);
+
+        $user = $this->manager->users(1)
+            ->changeAvatar('http://placehold.it/30x30');
+
+        $this->assertEquals(1, $user->id);
+        $this->assertArrayHasKey('url', $user->avatar);
+        $this->assertEquals('http://google.com', $user->avatar['url']);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('users/1/avatar', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'avatar' => base64_encode(
+                    (new ImageManager())
+                        ->make('http://placehold.it/30x30')
+                        ->stream()
+                ),
+            ]), $request->getBody());
+        });
+    }
+
+    /** @test */
+    function it_can_have_tags()
+    {
+        $this->mockResponse(200, [
+            'tags' => ['foo', 'bar'],
+            'user' => ['id' => 1],
+        ]);
+
+        $user = $this->manager->users(1)->tags();
+
+        $this->assertEquals(1, $user->id);
+        $this->assertEquals(['foo', 'bar'], $user->tags);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users/1/tags', $request->getUri()->getPath());
+        });
+    }
+
+    /** @test */
+    function it_can_have_addresses()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['street' => 'foo'],
+                ['street' => 'bar'],
+            ],
+        ]);
+
+        $collection = $this->manager->users(1)->addresses();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Address::class, $collection->first());
+        $this->assertEquals('foo', $collection->first()->street);
+        $this->assertEquals('bar', $collection->last()->street);
+    }
+
+
+    /** @test */
+    function it_can_reset_the_password()
+    {
+        $this->mockResponse(201, [
+            'user_id' => 2,
+            'token' => 'temporary-token',
+        ]);
+
+        $token = $this->manager->users(2)->resetPassword();
+
+        $this->assertEquals('temporary-token', $token);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('users/2/reset-password', $request->getUri()->getPath());
+        });
+    }
+
+    /** @test */
+    function it_can_update_the_password()
+    {
+        $this->mockResponse(204);
+
+        $result = $this->manager->users(3)
+            ->changePassword('fake-token', 'abc123');
+
+        $this->assertTrue($result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'token' => 'fake-token',
+                'password' => 'abc123',
+            ]), $request->getBody());
         });
     }
 }
