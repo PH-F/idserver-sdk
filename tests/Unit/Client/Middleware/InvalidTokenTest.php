@@ -45,5 +45,8 @@ class InvalidTokenTest extends TestCase
         $manager->users->create([]);
 
         $this->assertEquals('valid-token', $manager->getToken());
+
+        $request = $this->handler->getLastRequest();
+        $this->assertEquals('Bearer valid-token', $request->getHeaderLine('Authorization'));
     }
 }
