@@ -20,8 +20,7 @@ class InvalidToken
             return $handler($request, $options)->then(
                 function (Response $response) use ($handler, $request, $options) {
                     if ($this->shouldRefreshToken($response)) {
-                        $this->refreshToken();
-                        $handler = $this->updateHandler();
+                        $handler = $this->refreshToken()->updateHandler();
 
                         return $handler($request, $options);
                     }
@@ -46,13 +45,15 @@ class InvalidToken
     }
 
     /**
-     * @return callable
+     * @return $this
      */
     private function refreshToken()
     {
         /** @var Manager $manager */
         $manager = app()->make('idserver.manager');
         $manager->users->refreshToken();
+
+        return $this;
     }
 
     /**
