@@ -18,9 +18,13 @@ class JsonStream implements StreamInterface, JsonSerializable
      */
     public function jsonSerialize()
     {
-        $decodedContent = json_decode(
-            $this->getContents(), true
-        );
+        $content = (string)$this->getContents();
+
+        if ($content === '') {
+            return [];
+        }
+
+        $decodedContent = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new RuntimeException(
