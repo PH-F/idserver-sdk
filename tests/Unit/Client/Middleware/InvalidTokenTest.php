@@ -29,6 +29,8 @@ class InvalidTokenTest extends TestCase
         $this->assertEquals('john@example.com', $user->email);
 
         $request = $this->handler->getLastRequest();
+
+        $this->assertEquals(3, count($this->history));
         $this->assertTrue($request->hasHeader('Authorization'));
         $this->assertEquals('Bearer valid-token', $request->getHeaderLine('Authorization'));
     }
