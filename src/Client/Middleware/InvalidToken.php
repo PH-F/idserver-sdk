@@ -2,6 +2,8 @@
 
 namespace Xingo\IDServer\Client\Middleware;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Xingo\IDServer\Manager;
@@ -19,6 +21,7 @@ class InvalidToken
                 function (Response $response) use ($handler, $request, $options) {
                     if ($this->shouldRefreshToken($response)) {
                         $this->refreshToken();
+                        $handler = $this->updateHandler();
 
                         return $handler($request, $options);
                     }
@@ -43,12 +46,27 @@ class InvalidToken
     }
 
     /**
-     * @return void
+     * @return callable
      */
     private function refreshToken()
     {
         /** @var Manager $manager */
         $manager = app()->make('idserver.manager');
         $manager->users->refreshToken();
+    }
+
+    /**
+     * @return HandlerStack
+     */
+    private function updateHandler(): HandlerStack
+    {
+        /** @var Client $client */
+        $client = app('idserver.client');
+
+        /** @var HandlerStack $handler */
+        $handler = $client->getConfig('handler');
+        $handler->push(new JwtToken());
+
+        return $handler;
     }
 }
