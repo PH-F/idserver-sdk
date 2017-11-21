@@ -17,7 +17,7 @@ class InvalidToken
         return function ($request, array $options) use ($handler) {
             return $handler($request, $options)->then(
                 function (Response $response) use ($handler, $request, $options) {
-                    if ($this->invalidToken($response)) {
+                    if ($this->shouldRefreshToken($response)) {
                         $this->refreshToken();
 
                         return $handler($request, $options);
@@ -33,12 +33,13 @@ class InvalidToken
      * @param ResponseInterface $response
      * @return bool
      */
-    public function invalidToken(ResponseInterface $response): bool
+    public function shouldRefreshToken(ResponseInterface $response): bool
     {
         $json = $response->getBody()->asJson();
         $response->getBody()->rewind();
 
-        return in_array('token_invalid', $json);
+        return is_array($json) &&
+            in_array('token_expired', $json);
     }
 
     /**
