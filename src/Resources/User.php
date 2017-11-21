@@ -36,7 +36,7 @@ class User extends Resource
     {
         $response = $this->call('PUT', 'auth/refresh');
 
-        $header = $response->getHeaderLine('Authentication');
+        $header = $response->getHeaderLine('Authorization');
         $token = str_replace('Bearer ', '', $header);
         app('idserver.manager')->setToken($token);
     }
