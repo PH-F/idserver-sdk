@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Xingo\IDServer\Manager;
 
-class InvalidToken
+class TokenExpired
 {
     /**
      * @param callable $handler
