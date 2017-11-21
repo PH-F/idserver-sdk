@@ -39,6 +39,17 @@ class JsonStreamTest extends TestCase
         $response->getBody()->asJson();
     }
 
+    /** @test */
+    function it_will_not_return_null_if_the_response_is_empty()
+    {
+        $response = $this->mockResponse(204, json_encode([]))
+            ->enableJsonStream()
+            ->client()
+            ->get('http://api.example.com');
+
+        $this->assertEquals([], $response->getBody()->asJson());
+    }
+
     /**
      * Enable the json stream on this client.
      *
