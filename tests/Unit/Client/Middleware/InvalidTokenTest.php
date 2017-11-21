@@ -46,21 +46,4 @@ class InvalidTokenTest extends TestCase
 
         $this->assertEquals('valid-token', $manager->getToken());
     }
-
-    /** @test */
-    function it_will_update_the_request_header_token_when_refreshed()
-    {
-        $this->mockResponse(200, ['token_expired']);
-        $this->mockResponse(204, [], ['Authorization' => 'Bearer valid-token']);
-        $this->mockResponse(201, ['data' => ['email' => 'john@example.com']]);
-
-        /** @var Manager $manager */
-        $manager = app('idserver.manager');
-        $manager->setToken('invalid-token');
-
-        $user = $manager->users->create([]);
-
-        $this->assertEquals('valid-token', $manager->getToken());
-        $this->assertEquals('john@example.com', $user->email);
-    }
 }
