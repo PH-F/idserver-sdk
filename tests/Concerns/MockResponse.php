@@ -8,7 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Collection;
-use Xingo\IDServer\Client\Middleware\InvalidToken;
+use Xingo\IDServer\Client\Middleware\TokenExpired;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Support\JsonStream;
 use Xingo\IDServer\Manager;
@@ -112,7 +112,7 @@ trait MockResponse
         $stack->push(Middleware::history($this->history));
 
         $stack->push(new JwtToken(), 'jwt-token');
-        $stack->push(new InvalidToken(), 'invalid-token');
+        $stack->push(new TokenExpired(), 'jwt-token-expired');
 
         $stack->push(Middleware::mapResponse(function (Response $response) {
             $stream = new JsonStream($response->getBody());

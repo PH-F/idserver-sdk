@@ -2,11 +2,13 @@
 
 namespace Xingo\IDServer\Client\Middleware;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Xingo\IDServer\Manager;
 
-class InvalidToken
+class TokenExpired
 {
     /**
      * @param callable $handler
@@ -17,8 +19,8 @@ class InvalidToken
         return function ($request, array $options) use ($handler) {
             return $handler($request, $options)->then(
                 function (Response $response) use ($handler, $request, $options) {
-                    if ($this->invalidToken($response)) {
-                        $this->refreshToken();
+                    if ($this->shouldRefreshToken($response)) {
+                        $handler = $this->refreshToken()->updateHandler();
 
                         return $handler($request, $options);
                     }
@@ -33,21 +35,39 @@ class InvalidToken
      * @param ResponseInterface $response
      * @return bool
      */
-    public function invalidToken(ResponseInterface $response): bool
+    public function shouldRefreshToken(ResponseInterface $response): bool
     {
         $json = $response->getBody()->asJson();
         $response->getBody()->rewind();
 
-        return in_array('token_invalid', $json);
+        return is_array($json) &&
+            in_array('token_expired', $json);
     }
 
     /**
-     * @return void
+     * @return $this
      */
     private function refreshToken()
     {
         /** @var Manager $manager */
         $manager = app()->make('idserver.manager');
         $manager->users->refreshToken();
+
+        return $this;
+    }
+
+    /**
+     * @return HandlerStack
+     */
+    private function updateHandler(): HandlerStack
+    {
+        /** @var Client $client */
+        $client = app('idserver.client');
+
+        /** @var HandlerStack $handler */
+        $handler = $client->getConfig('handler');
+        $handler->push(new JwtToken());
+
+        return $handler;
     }
 }

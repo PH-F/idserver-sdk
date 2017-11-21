@@ -19,8 +19,9 @@ class JsonStream implements StreamInterface, JsonSerializable
     public function jsonSerialize()
     {
         $content = (string)$this->getContents();
+
         if ($content === '') {
-            return null;
+            return [];
         }
 
         $decodedContent = json_decode($content, true);
@@ -31,6 +32,7 @@ class JsonStream implements StreamInterface, JsonSerializable
                 json_last_error_msg()
             );
         }
+
         return $decodedContent;
     }
 
