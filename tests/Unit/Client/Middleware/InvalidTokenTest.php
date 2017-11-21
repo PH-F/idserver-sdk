@@ -14,7 +14,7 @@ class InvalidTokenTest extends TestCase
     function it_will_refresh_the_token_if_it_is_invalid()
     {
         $this->mockResponse(200, ['token_invalid']);
-        $this->mockResponse(204, [], ['Authentication' => 'Bearer valid-token']);
+        $this->mockResponse(204, [], ['Authorization' => 'Bearer valid-token']);
         $this->mockResponse(201, ['data' => ['email' => 'john@example.com']]);
 
         /** @var Manager $manager */

@@ -178,7 +178,7 @@ class UsersTest extends TestCase
     /** @test */
     function it_can_refresh_the_jwt()
     {
-        $this->mockResponse(200, [], ['Authentication' => 'Bearer new-token']);
+        $this->mockResponse(200, [], ['Authorization' => 'Bearer new-token']);
 
         $this->manager->users->refreshToken();
 
