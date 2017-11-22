@@ -63,7 +63,19 @@ class Manager
     public function setToken(string $token)
     {
         session()->put(self::TOKEN_NAME, $token);
-        
+
+        return $this;
+    }
+
+    /**
+     * Remove JWT from the session.
+     *
+     * @return $this
+     */
+    public function removeToken()
+    {
+        session()->forget(self::TOKEN_NAME);
+
         return $this;
     }
 }

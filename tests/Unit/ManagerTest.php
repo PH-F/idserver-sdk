@@ -29,6 +29,19 @@ class ManagerTest extends TestCase
     }
 
     /** @test */
+    public function it_can_set_and_remove_the_jwt_token()
+    {
+        $manager = app('idserver.manager');
+        $manager->setToken('my-token');
+
+        $this->assertEquals('my-token', $manager->getToken());
+
+        $manager->removeToken();
+
+        $this->assertEquals(null, $manager->getToken());
+    }
+
+    /** @test */
     public function it_will_return_an_empty_string_when_no_token_is_set_in_the_session()
     {
         $manager = app('idserver.manager');
