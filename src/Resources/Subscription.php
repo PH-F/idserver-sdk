@@ -35,4 +35,15 @@ class Subscription extends Resource
 
         return $this->makeEntity();
     }
+
+    /**
+     * @param int $days
+     * @return Collection
+     */
+    public function expiring(int $days = 7): Collection
+    {
+        $this->call('GET', 'subscriptions/expiring', compact('days'));
+
+        return $this->makeCollection();
+    }
 }

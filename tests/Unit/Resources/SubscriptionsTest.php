@@ -78,4 +78,27 @@ class SubscriptionsTest extends TestCase
             $this->assertEquals('subscriptions/1', $request->getUri()->getPath());
         });
     }
+
+    /** @test */
+    function it_gets_expiring_subscriptions()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 1],
+                ['id' => 2],
+            ],
+        ]);
+
+        $items = $this->manager->subscriptions->expiring(10);
+
+        $this->assertInstanceOf(Collection::class, $items);
+        $this->assertCount(2, $items);
+        $this->assertInstanceOf(Entities\Subscription::class, $items->first());
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('subscriptions/expiring', $request->getUri()->getPath());
+            $this->assertEquals('days=10', $request->getUri()->getQuery());
+        });
+    }
 }
