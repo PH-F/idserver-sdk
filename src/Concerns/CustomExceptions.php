@@ -59,7 +59,7 @@ trait CustomExceptions
      */
     protected function checkThrottle(ResponseInterface $response)
     {
-        if ($response->getStatusCode() === 403) {
+        if ($response->getStatusCode() === 429) {
             throw new Exceptions\ThrottleException();
         }
     }
