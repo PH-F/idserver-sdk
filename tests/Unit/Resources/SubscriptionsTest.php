@@ -28,6 +28,10 @@ class SubscriptionsTest extends TestCase
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Entities\Subscription::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
+        });
     }
 
     /** @test */
@@ -55,10 +59,7 @@ class SubscriptionsTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('subscriptions', $request->getUri()->getPath());
-            $this->assertEquals(http_build_query([
-                'page' => 2,
-                'per_page' => 1,
-            ]), $request->getUri()->getQuery());
+            $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
 }
