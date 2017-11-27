@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Resources;
 
+use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities;
@@ -37,7 +38,7 @@ class SubscriptionsTest extends TestCase
                 ['id' => 2],
             ],
             'meta' => [
-                'current_page' => 1,
+                'current_page' => 2,
                 'per_page' => 1,
                 'total' => 3
             ]
@@ -50,5 +51,14 @@ class SubscriptionsTest extends TestCase
         $this->assertInternalType('array', $collection->meta);
         $this->assertEquals(1, $collection->meta['per_page']);
         $this->assertEquals(3, $collection->meta['total']);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('subscriptions', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'page' => 2,
+                'per_page' => 1,
+            ]), $request->getUri()->getQuery());
+        });
     }
 }
