@@ -62,4 +62,20 @@ class SubscriptionsTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
+
+    /** @test */
+    function it_gets_just_one_subscription_by_id()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+
+        $item = $this->manager->subscriptions(1)->get();
+
+        $this->assertInstanceOf(Entities\Subscription::class, $item);
+        $this->assertEquals(1, $item->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('subscriptions/1', $request->getUri()->getPath());
+        });
+    }
 }

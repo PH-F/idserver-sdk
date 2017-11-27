@@ -17,12 +17,22 @@ class Subscription extends Resource
      * @param int $per_page
      * @return Collection
      */
-    public function all(int $page = 1, int $per_page = 10)
+    public function all(int $page = 1, int $per_page = 10): Collection
     {
         $query = compact('page', 'per_page');
 
         $this->call('GET', 'subscriptions', $query);
 
         return $this->makeCollection();
+    }
+
+    /**
+     * @return Entities\Entity|Entities\Subscription
+     */
+    public function get(): Entities\Subscription
+    {
+        $this->call('GET', "subscriptions/$this->id");
+
+        return $this->makeEntity();
     }
 }
