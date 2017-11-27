@@ -2,7 +2,6 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Illuminate\Support\Collection;
 use Intervention\Image\ImageManager;
 use Xingo\IDServer\Entities;
 
@@ -24,8 +23,6 @@ class Subscription extends Resource
 
         $this->call('GET', "subscriptions?$query");
 
-        return collect($this->contents['data'])->map(function ($data) {
-            return $this->makeEntity($data);
-        });
+        return $this->makeCollection();
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Resources;
 
-use Illuminate\Support\Collection;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities;
+use Xingo\IDServer\Resources\Collection;
 
 class SubscriptionsTest extends TestCase
 {
@@ -47,5 +47,8 @@ class SubscriptionsTest extends TestCase
 
         $this->assertCount(1, $collection);
         $this->assertEquals(2, $collection->first()->id);
+        $this->assertInternalType('array', $collection->meta);
+        $this->assertEquals(1, $collection->meta['per_page']);
+        $this->assertEquals(3, $collection->meta['total']);
     }
 }
