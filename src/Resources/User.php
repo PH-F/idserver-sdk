@@ -165,7 +165,7 @@ class User extends Resource
      */
     public function changePassword(string $token, string $password): bool
     {
-        $response = $this->call('PATCH', "users/{$this->id}/change-password", [
+        $response = $this->call('PATCH', "users/{$this->id}/update-password", [
             'token' => $token,
             'password' => $password,
         ]);

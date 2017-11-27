@@ -347,7 +347,7 @@ class UsersTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
-            $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
+            $this->assertEquals('users/3/update-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
                 'token' => 'fake-token',
                 'password' => 'abc123',
