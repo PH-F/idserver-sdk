@@ -163,10 +163,23 @@ class User extends Resource
      * @param string $password
      * @return bool
      */
-    public function changePassword(string $token, string $password): bool
+    public function updatePassword(string $token, string $password): bool
     {
         $response = $this->call('PATCH', "users/{$this->id}/update-password", [
             'token' => $token,
+            'password' => $password,
+        ]);
+
+        return 204 === $response->getStatusCode();
+    }
+
+    /**
+     * @param string $password
+     * @return bool
+     */
+    public function changePassword(string $password): bool
+    {
+        $response = $this->call('PATCH', "users/{$this->id}/change-password", [
             'password' => $password,
         ]);
 

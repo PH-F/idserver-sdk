@@ -47,6 +47,7 @@ class Manager
 
     /**
      * Get the JWT token which is used to connect to the IDServer
+     *
      * @return string
      */
     public function getToken(): string
