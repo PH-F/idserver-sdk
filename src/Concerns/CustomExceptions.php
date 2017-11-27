@@ -3,56 +3,64 @@
 namespace Xingo\IDServer\Concerns;
 
 use Psr\Http\Message\ResponseInterface;
-use Xingo\IDServer\Exceptions\AuthorizationException;
-use Xingo\IDServer\Exceptions\ForbiddenException;
-use Xingo\IDServer\Exceptions\ServerException;
-use Xingo\IDServer\Exceptions\ValidationException;
+use Xingo\IDServer\Exceptions;
 
 trait CustomExceptions
 {
     /**
      * @param ResponseInterface $response
-     * @throws ServerException
+     * @throws Exceptions\ServerException
      */
     protected function checkServerError(ResponseInterface $response)
     {
         if ($response->getStatusCode() === 500) {
-            throw new ServerException;
+            throw new Exceptions\ServerException();
         }
     }
 
     /**
      * @param ResponseInterface $response
-     * @throws ValidationException
+     * @throws Exceptions\ValidationException
      */
     protected function checkValidation(ResponseInterface $response)
     {
         if ($response->getStatusCode() === 422) {
             $content = $response->getBody()->asJson();
 
-            throw new ValidationException($content['errors']);
+            throw new Exceptions\ValidationException($content['errors']);
         }
     }
 
     /**
      * @param ResponseInterface $response
-     * @throws AuthorizationException
+     * @throws Exceptions\AuthorizationException
      */
     protected function checkAuthorization(ResponseInterface $response)
     {
         if ($response->getStatusCode() === 401) {
-            throw new AuthorizationException;
+            throw new Exceptions\AuthorizationException();
         }
     }
 
     /**
      * @param ResponseInterface $response
-     * @throws ForbiddenException
+     * @throws Exceptions\ForbiddenException
      */
     protected function checkForbidden(ResponseInterface $response)
     {
         if ($response->getStatusCode() === 403) {
-            throw new ForbiddenException;
+            throw new Exceptions\ForbiddenException();
+        }
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws Exceptions\ThrottleException
+     */
+    protected function checkThrottle(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 403) {
+            throw new Exceptions\ThrottleException();
         }
     }
 }
