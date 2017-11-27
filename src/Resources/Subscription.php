@@ -15,11 +15,12 @@ class Subscription extends Resource
 {
     /**
      * @param int $page
+     * @param int $per_page
      * @return Collection
      */
-    public function all(int $page = 1)
+    public function all(int $page = 1, int $per_page = 10)
     {
-        $query = http_build_query(compact('page'));
+        $query = http_build_query(compact('page', 'per_page'));
 
         $this->call('GET', "subscriptions?$query");
 
