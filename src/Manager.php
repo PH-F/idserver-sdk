@@ -5,13 +5,14 @@ namespace Xingo\IDServer;
 use GuzzleHttp\Client;
 use Xingo\IDServer\Concerns\CallableResources;
 use Xingo\IDServer\Entities\User as UserEntity;
-use Xingo\IDServer\Resources\User;
+use Xingo\IDServer\Resources;
 
 /**
  * Class Client
  *
- * @property User users
- * @method User users(int | UserEntity $resource)
+ * @property Resources\Subscription subscriptions
+ * @property Resources\User users
+ * @method Resources\User users(int | UserEntity $resource)
  */
 class Manager
 {
