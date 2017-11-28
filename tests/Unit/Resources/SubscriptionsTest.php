@@ -103,7 +103,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_creates_a_new_subscription()
+    function it_creates_a_new_subscription_with_related_attributes()
     {
         $this->mockResponse(201, [
             'data' => [
@@ -140,5 +140,40 @@ class SubscriptionsTest extends TestCase
 
         $this->assertInstanceOf(Entities\Order::class, $subscription->order);
         $this->assertEquals(6, $subscription->order->id);
+    }
+
+    /** @test */
+    function it_sends_correct_parameters_when_creating_a_new_subscription()
+    {
+        $this->mockResponse(201);
+
+        $this->manager->subscriptions->create($attributes = [
+            'store_id' => 1,
+            'plan_id' => 1,
+            'currency' => 'USD',
+            'coupon' => 'NL2017',
+        ]);
+
+        $this->assertRequest(function (Request $request) use ($attributes) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('subscriptions', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($attributes), $request->getBody());
+        });
+    }
+
+    /** @test */
+    function it_do_not_send_a_missing_coupon_attribute_when_creating()
+    {
+        $this->mockResponse(201);
+
+        $this->manager->subscriptions->create($attributes = [
+            'store_id' => 1,
+            'plan_id' => 1,
+            'currency' => 'EUR',
+        ]);
+
+        $this->assertRequest(function (Request $request) use ($attributes) {
+            $this->assertEquals(http_build_query($attributes), $request->getBody());
+        });
     }
 }
