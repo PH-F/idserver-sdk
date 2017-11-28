@@ -227,7 +227,17 @@ class UsersTest extends TestCase
 
         $this->expectException(Exceptions\ServerException::class);
 
-        $this->manager->users->delete(1);
+        $this->manager->users(1)->delete();
+    }
+
+    /** @test */
+    function it_throws_a_throttle_exception_if_429_status_code_is_returned()
+    {
+        $this->mockResponse(429);
+
+        $this->expectException(Exceptions\ThrottleException::class);
+
+        $this->manager->users(2)->delete();
     }
 
     /** @test */
