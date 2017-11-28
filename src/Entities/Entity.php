@@ -12,14 +12,14 @@ abstract class Entity
     /**
      * @var array
      */
-    protected $relations = [];
+    protected static $relations = [];
 
     /**
      * @param array $attributes
      */
     public function __construct(array $attributes)
     {
-        $this->attributes = $attributes;
+        $this->attributes = $this->parseRelations($attributes);
     }
 
     /**
@@ -37,13 +37,13 @@ abstract class Entity
      */
     protected function parseRelations(array $attributes): array
     {
-        if (empty($this->relations)) {
+        if (empty(static::$relations)) {
             return $attributes;
         }
 
         return collect($attributes)->map(function ($data, $name) {
-            return is_array($data) && array_key_exists($name, $this->relations) ?
-                new $this->relations[$name]($data) :
+            return is_array($data) && array_key_exists($name, static::$relations) ?
+                new static::$relations[$name]($data) :
                 $data;
         })->all();
     }

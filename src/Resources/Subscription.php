@@ -56,12 +56,6 @@ class Subscription extends Resource
 
         $this->call('POST', 'subscriptions', $attributes);
 
-        return $this->makeEntity($this->contents['data'], Entities\Subscription::class, [
-            'store' => Entities\Store::class,
-            'user' => Entities\User::class,
-            'plan' => Entities\Plan::class,
-            'parent' => Entities\Subscription::class,
-            'order' => Entities\Order::class,
-        ]);
+        return $this->makeEntity();
     }
 }
