@@ -215,4 +215,18 @@ class SubscriptionsTest extends TestCase
             $this->assertEquals('plan_id=2', $request->getBody());
         });
     }
+
+    /** @test */
+    function it_can_be_deleted()
+    {
+        $this->mockResponse(204);
+
+        $result = $this->manager->subscriptions(2)->delete();
+        $this->assertTrue($result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('DELETE', $request->getMethod());
+            $this->assertEquals('subscriptions/2', $request->getUri()->getPath());
+        });
+    }
 }

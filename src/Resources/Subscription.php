@@ -85,4 +85,14 @@ class Subscription extends Resource
 
         return $this->makeEntity();
     }
+
+    /**
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        $response = $this->call('DELETE', "subscriptions/$this->id");
+
+        return 204 === $response->getStatusCode();
+    }
 }
