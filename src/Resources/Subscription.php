@@ -48,13 +48,27 @@ class Subscription extends Resource
 
     /**
      * @param array $attributes
-     * @return Entities\Entity
+     * @return Entities\Entity|Entities\Subscription
      */
-    public function create(array $attributes)
+    public function create(array $attributes): Entities\Subscription
     {
         $attributes = array_only($attributes, ['store_id', 'plan_id', 'currency', 'coupon']);
 
         $this->call('POST', 'subscriptions', $attributes);
+
+        return $this->makeEntity();
+    }
+
+    /**
+     * @param Entities\Plan|int $plan
+     * @return Entities\Entity|Entities\Subscription
+     */
+    public function renew($plan): Entities\Subscription
+    {
+        $plan_id = $plan instanceof Entities\Plan ?
+            $plan->id : (int)$plan;
+
+        $this->call('POST', "subscriptions/$this->id/renew", compact('plan_id'));
 
         return $this->makeEntity();
     }
