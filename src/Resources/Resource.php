@@ -87,9 +87,10 @@ abstract class Resource
     /**
      * @param array $attributes
      * @param string|null $class
+     * @param array $relations
      * @return Entity
      */
-    protected function makeEntity(array $attributes = null, ?string $class = null): Entity
+    protected function makeEntity(array $attributes = null, ?string $class = null, array $relations = []): Entity
     {
         $attributes = $attributes ?: $this->contents['data'] ?? [];
 
@@ -98,7 +99,9 @@ abstract class Resource
             $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
         }
 
-        return new $class($attributes);
+        return new $class(
+            $this->parseRelations($attributes, $relations)
+        );
     }
 
     /**
@@ -125,5 +128,23 @@ abstract class Resource
     {
         return $this->contents['status'] === 200 ||
             $this->contents['status'] === 201;
+    }
+
+    /**
+     * @param array $attributes
+     * @param array $relations
+     * @return array
+     */
+    private function parseRelations(array $attributes, array $relations): array
+    {
+        if (empty($relations)) {
+            return $attributes;
+        }
+
+        return collect($attributes)->map(function ($data, $name) use ($relations) {
+            return is_array($data) && array_key_exists($name, $relations) ?
+                $this->makeEntity($data, $relations[$name]) :
+                $data;
+        })->all();
     }
 }
