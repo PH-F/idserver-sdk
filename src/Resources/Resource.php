@@ -103,6 +103,23 @@ abstract class Resource
     }
 
     /**
+     * @param array|null $data
+     * @param array|null $meta
+     * @return Collection
+     */
+    protected function makeCollection(array $data = null, array $meta = null): Collection
+    {
+        $data = $data ?: $this->contents['data'] ?? [];
+        $meta = $meta ?: $this->contents['meta'] ?? [];
+
+        $items = collect($data)->map(function ($item) {
+            return $this->makeEntity($item);
+        })->toArray();
+
+        return new Collection($items, $meta);
+    }
+
+    /**
      * @return bool
      */
     protected function success()
