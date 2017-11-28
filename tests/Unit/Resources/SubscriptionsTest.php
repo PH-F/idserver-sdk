@@ -101,4 +101,34 @@ class SubscriptionsTest extends TestCase
             $this->assertEquals('days=10', $request->getUri()->getQuery());
         });
     }
+
+    /** @test */
+    function it_creates_a_new_subscription()
+    {
+        $this->mockResponse(201, [
+            'data' => [
+                'id' => 1,
+                'store' => ['id' => 2],
+                'user' => ['id' => 3],
+                'plan' => ['id' => 4],
+                'parent' => ['id' => 5],
+                'order' => ['id' => 6],
+            ],
+        ]);
+
+        $subscription = $this->manager->subscriptions->create([
+            'store_id' => 1,
+            'plan_id' => 1,
+            'currency' => 'USD',
+            'coupon' => 'NL2017',
+        ]);
+
+        $this->assertInstanceOf(Entities\Subscription::class, $subscription);
+        $this->assertEquals(1, $subscription->id);
+        $this->assertInstanceOf(Entities\Store::class, $subscription->store);
+        $this->assertInstanceOf(Entities\User::class, $subscription->user);
+        $this->assertInstanceOf(Entities\Plan::class, $subscription->plan);
+        $this->assertInstanceOf(Entities\Subscription::class, $subscription->parent);
+        $this->assertInstanceOf(Entities\Order::class, $subscription->order);
+    }
 }
