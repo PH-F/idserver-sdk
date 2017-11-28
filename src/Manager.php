@@ -11,8 +11,8 @@ use Xingo\IDServer\Resources;
  * Class Client
  *
  * @property Resources\Subscription subscriptions
- * @property Resources\User users
  * @method Resources\Subscription subscriptions(int | Entities\Subscription $resource)
+ * @property Resources\User users
  * @method Resources\User users(int | Entities\User $resource)
  */
 class Manager
@@ -49,6 +49,7 @@ class Manager
 
     /**
      * Get the JWT token which is used to connect to the IDServer
+     *
      * @return string
      */
     public function getToken(): string

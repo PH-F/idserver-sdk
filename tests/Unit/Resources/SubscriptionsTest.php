@@ -197,4 +197,22 @@ class SubscriptionsTest extends TestCase
         $subscription = $this->manager->subscriptions(1)->renew(2);
         $this->assertInstanceOf(Entities\Subscription::class, $subscription);
     }
+
+    /** @test */
+    function it_can_be_updated()
+    {
+        $this->mockResponse(200);
+
+        $subscription = $this->manager->subscriptions(3)->update([
+            'plan_id' => 2,
+        ]);
+
+        $this->assertInstanceOf(Entities\Subscription::class, $subscription);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('subscriptions/3', $request->getUri()->getPath());
+            $this->assertEquals('plan_id=2', $request->getBody());
+        });
+    }
 }

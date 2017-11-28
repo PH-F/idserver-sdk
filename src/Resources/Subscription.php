@@ -72,4 +72,17 @@ class Subscription extends Resource
 
         return $this->makeEntity();
     }
+
+    /**
+     * @param array $attributes
+     * @return Entities\Entity|Entities\Subscription
+     */
+    public function update(array $attributes): Entities\Subscription
+    {
+        $attributes = array_only($attributes, ['store_id', 'plan_id']);
+
+        $this->call('PUT', "subscriptions/$this->id", $attributes);
+
+        return $this->makeEntity();
+    }
 }
