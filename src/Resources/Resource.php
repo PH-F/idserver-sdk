@@ -88,10 +88,9 @@ abstract class Resource
     /**
      * @param array $attributes
      * @param string|null $class
-     * @param array $relations
      * @return Entity
      */
-    protected function makeEntity(array $attributes = null, ?string $class = null, array $relations = []): Entity
+    protected function makeEntity(array $attributes = null, ?string $class = null): Entity
     {
         $attributes = $attributes ?: $this->contents['data'] ?? [];
 
