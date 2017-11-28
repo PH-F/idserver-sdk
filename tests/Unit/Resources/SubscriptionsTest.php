@@ -125,10 +125,20 @@ class SubscriptionsTest extends TestCase
 
         $this->assertInstanceOf(Entities\Subscription::class, $subscription);
         $this->assertEquals(1, $subscription->id);
+
         $this->assertInstanceOf(Entities\Store::class, $subscription->store);
+        $this->assertEquals(2, $subscription->store->id);
+
         $this->assertInstanceOf(Entities\User::class, $subscription->user);
+        $this->assertEquals(3, $subscription->user->id);
+
         $this->assertInstanceOf(Entities\Plan::class, $subscription->plan);
+        $this->assertEquals(4, $subscription->plan->id);
+
         $this->assertInstanceOf(Entities\Subscription::class, $subscription->parent);
+        $this->assertEquals(5, $subscription->parent->id);
+
         $this->assertInstanceOf(Entities\Order::class, $subscription->order);
+        $this->assertEquals(6, $subscription->order->id);
     }
 }
