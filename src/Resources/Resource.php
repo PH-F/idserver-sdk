@@ -75,6 +75,7 @@ abstract class Resource
             $this->checkValidation($e->getResponse());
             $this->checkAuthorization($e->getResponse());
             $this->checkForbidden($e->getResponse());
+            $this->checkThrottle($e->getResponse());
         } catch (GuzzleServerException $e) {
             $this->checkServerError($e->getResponse());
         }
