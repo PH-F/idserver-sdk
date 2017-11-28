@@ -52,9 +52,9 @@ class SubscriptionsTest extends TestCase
 
         $this->assertCount(1, $collection);
         $this->assertEquals(2, $collection->first()->id);
-        $this->assertInternalType('array', $collection->meta);
-        $this->assertEquals(1, $collection->meta['per_page']);
-        $this->assertEquals(3, $collection->meta['total']);
+        $this->assertInstanceOf('stdClass', $collection->meta);
+        $this->assertEquals(1, $collection->meta->per_page);
+        $this->assertEquals(3, $collection->meta->total);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());

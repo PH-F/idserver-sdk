@@ -3,11 +3,12 @@
 namespace Xingo\IDServer\Resources;
 
 use Illuminate\Support\Collection as BaseCollection;
+use stdClass;
 
 class Collection extends BaseCollection
 {
     /**
-     * @var array
+     * @var stdClass
      */
     public $meta = [];
 
@@ -18,6 +19,6 @@ class Collection extends BaseCollection
     public function __construct($items = [], array $meta)
     {
         parent::__construct($items);
-        $this->meta = $meta;
+        $this->meta = (object)$meta;
     }
 }
