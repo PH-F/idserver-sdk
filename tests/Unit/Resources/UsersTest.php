@@ -227,7 +227,17 @@ class UsersTest extends TestCase
 
         $this->expectException(Exceptions\ServerException::class);
 
-        $this->manager->users->delete(1);
+        $this->manager->users(1)->delete();
+    }
+
+    /** @test */
+    function it_throws_a_throttle_exception_if_429_status_code_is_returned()
+    {
+        $this->mockResponse(429);
+
+        $this->expectException(Exceptions\ThrottleException::class);
+
+        $this->manager->users(2)->delete();
     }
 
     /** @test */
@@ -341,16 +351,35 @@ class UsersTest extends TestCase
         $this->mockResponse(204);
 
         $result = $this->manager->users(3)
-            ->changePassword('fake-token', 'abc123');
+            ->updatePassword('fake-token', 'abc123');
 
         $this->assertTrue($result);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
-            $this->assertEquals('users/3/change-password', $request->getUri()->getPath());
+            $this->assertEquals('users/3/update-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
                 'token' => 'fake-token',
                 'password' => 'abc123',
+            ]), $request->getBody());
+        });
+    }
+
+    /** @test */
+    function it_can_change_the_password()
+    {
+        $this->mockResponse(204);
+
+        $result = $this->manager->users(4)
+            ->changePassword('secret');
+
+        $this->assertTrue($result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('users/4/change-password', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'password' => 'secret',
             ]), $request->getBody());
         });
     }
