@@ -8,8 +8,8 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Xingo\IDServer\Client\Middleware\TokenExpired;
 use Xingo\IDServer\Client\Middleware\JwtToken;
+use Xingo\IDServer\Client\Middleware\TokenExpired;
 use Xingo\IDServer\Client\Support\JsonStream;
 
 class ServiceProvider extends BaseServiceProvider
@@ -56,7 +56,7 @@ class ServiceProvider extends BaseServiceProvider
         }));
 
         return [
-            'base_uri' => $app['config']->get('idserver.url'),
+            'base_uri' => trim($app['config']->get('idserver.url'), '/') . '/',
             'handler' => $handler,
             'headers' => [
                 'X-XINGO-Client-ID' => $app['config']->get('idserver.store.client_id'),
