@@ -78,6 +78,28 @@ class UsersTest extends TestCase
     }
 
     /** @test */
+    function it_gets_all_users()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 1],
+                ['id' => 2],
+            ],
+        ]);
+
+        $collection = $this->manager->users->all();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(User::class, $collection->first());
+        $this->assertEquals(2, $collection->last()->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
+        });
+    }
+
+    /** @test */
     function it_updates_a_user_with_a_200_status()
     {
         $this->mockResponse(200, [

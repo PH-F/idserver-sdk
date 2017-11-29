@@ -42,6 +42,20 @@ class User extends Resource
     }
 
     /**
+     * @param int $page
+     * @param int $per_page
+     * @return Collection
+     */
+    public function all(int $page = 1, int $per_page = 10): Collection
+    {
+        $query = compact('page', 'per_page');
+
+        $this->call('GET', 'users', $query);
+
+        return $this->makeCollection();
+    }
+
+    /**
      * @param array $attributes
      * @return Entities\Entity|Entities\User
      */
