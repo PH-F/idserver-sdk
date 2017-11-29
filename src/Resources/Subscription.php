@@ -2,7 +2,6 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Intervention\Image\ImageManager;
 use Xingo\IDServer\Entities;
 
 /**
@@ -45,5 +44,32 @@ class Subscription extends Resource
         $this->call('GET', 'subscriptions/expiring', compact('days'));
 
         return $this->makeCollection();
+    }
+
+    /**
+     * @param array $attributes
+     * @return Entities\Entity|Entities\Subscription
+     */
+    public function create(array $attributes): Entities\Subscription
+    {
+        $attributes = array_only($attributes, ['store_id', 'plan_id', 'currency', 'coupon']);
+
+        $this->call('POST', 'subscriptions', $attributes);
+
+        return $this->makeEntity();
+    }
+
+    /**
+     * @param Entities\Plan|int $plan
+     * @return Entities\Entity|Entities\Subscription
+     */
+    public function renew($plan): Entities\Subscription
+    {
+        $plan_id = $plan instanceof Entities\Plan ?
+            $plan->id : (int)$plan;
+
+        $this->call('POST', "subscriptions/$this->id/renew", compact('plan_id'));
+
+        return $this->makeEntity();
     }
 }
