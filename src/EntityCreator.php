@@ -33,7 +33,7 @@ class EntityCreator
             $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
         }
 
-        return new $class($attributes);
+        return $this->createInstance($class, $attributes);
     }
 
     /**
@@ -48,5 +48,19 @@ class EntityCreator
         })->toArray();
 
         return new Collection($items, $meta);
+    }
+
+    /**
+     * @param string $class
+     * @param array $attributes
+     * @return mixed
+     */
+    protected function createInstance(string $class, array $attributes)
+    {
+        $relation = array_get(config('idserver.classes'), $class);
+
+        return $relation ?
+            new $relation($attributes) :
+            new $class($attributes);
     }
 }

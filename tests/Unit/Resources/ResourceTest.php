@@ -49,6 +49,24 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
+    function it_can_replace_an_entity_instance_by_a_custom_one()
+    {
+        $this->app['config']->set('idserver.classes', [
+            UserEntity::class => \Tests\Stub\FakeUser::class,
+        ]);
+
+        $user = app()->make(User::class);
+
+        $method = new ReflectionMethod($user, 'makeEntity');
+        $method->setAccessible(true);
+
+        $entity = $method->invokeArgs($user, [['name' => 'John']]);
+
+        $this->assertInstanceOf(\Tests\Stub\FakeUser::class, $entity);
+        $this->assertEquals('John', $entity->name);
+    }
+
+    /** @test */
     public function it_will_have_the_token_automatically_in_the_request_when_available()
     {
         $this->mockResponse(200, ['data' => ['id' => 10]]);

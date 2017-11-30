@@ -69,8 +69,8 @@ return [
     */
 
     'classes' => [
-//        'user' => App\Entities\User::class,
-//        'subscription' => App\Entities\Subscription::class,
+//        \Xingo\IDServer\Entities\User::class => App\Entities\User::class,
+//        \Xingo\IDServer\Entities\Subscription::class => App\Entities\Subscription::class,
     ],
 
 ];
