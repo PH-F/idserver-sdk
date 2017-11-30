@@ -19,7 +19,10 @@ abstract class Entity
     /**
      * @var array
      */
-    protected static $dates = [];
+    protected static $dates = [
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * @param array $attributes
@@ -60,9 +63,10 @@ abstract class Entity
         }
 
         foreach (static::$dates as $field) {
-            $value = array_get($attributes, $field);
-            $carbon = $this->createCarbonInstance($value);
-            array_set($attributes, $field, $carbon);
+            if ($value = array_get($attributes, $field)) {
+                $carbon = $this->createCarbonInstance($value);
+                array_set($attributes, $field, $carbon);
+            }
         }
 
         return $attributes;
