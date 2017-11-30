@@ -16,4 +16,12 @@ class Subscription extends Entity
         'parent' => Entities\Subscription::class,
         'order' => Entities\Order::class,
     ];
+
+    /**
+     * @var array
+     */
+    protected static $dates = [
+        'start_date',
+        'end_date',
+    ];
 }
