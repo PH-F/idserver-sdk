@@ -15,7 +15,6 @@ class EntityCreatorTest extends TestCase
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => Stub\FakeUser::class,
-            Entities\Subscription::class => Stub\FakeSubscription::class,
         ]);
 
         $creator = new EntityCreator(Resources\User::class);
