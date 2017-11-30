@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Entities;
 
+use Carbon\Carbon;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Entities;
@@ -48,5 +49,34 @@ class EntityTest extends TestCase
 
         $this->assertInstanceOf(Entities\Order::class, $subscription->order);
         $this->assertEquals(6, $subscription->order->id);
+    }
+
+    /** @test */
+    function it_converts_string_date_fields_to_carbon_instances()
+    {
+        $this->mockResponse(200, ['data' => ['created_at' => '2017-12-31 01:02:03']]);
+
+        $user = $this->manager->users(1)->get();
+
+        $this->assertInstanceOf(Carbon::class, $user->created_at);
+        $this->assertEquals('31-12-2017', $user->created_at->format('d-m-Y'));
+    }
+
+    /** @test */
+    function it_converts_array_date_fields_to_carbon_instances()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'created_at' => [
+                    'date' => '2017-11-20 13:31:31.000000',
+                    'timezone' => 'UTC',
+                ],
+            ],
+        ]);
+
+        $user = $this->manager->users(1)->get();
+
+        $this->assertInstanceOf(Carbon::class, $user->created_at);
+        $this->assertEquals('20-11-2017', $user->created_at->format('d-m-Y'));
     }
 }
