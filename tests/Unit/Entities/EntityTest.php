@@ -79,4 +79,32 @@ class EntityTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $user->created_at);
         $this->assertEquals('20-11-2017', $user->created_at->format('d-m-Y'));
     }
+
+    /** @test */
+    function user_has_custom_date_fields()
+    {
+        $this->mockResponse(200, [
+            'data' => ['date_of_birth' => '2017-12-31'],
+        ]);
+
+        $user = $this->manager->users(1)->get();
+
+        $this->assertInstanceOf(Carbon::class, $user->date_of_birth);
+    }
+
+    /** @test */
+    function subscription_has_custom_date_fields()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'start_date' => '2017-12-30',
+                'end_date' => '2017-12-31',
+            ],
+        ]);
+
+        $user = $this->manager->subscriptions(1)->get();
+
+        $this->assertInstanceOf(Carbon::class, $user->start_date);
+        $this->assertInstanceOf(Carbon::class, $user->end_date);
+    }
 }

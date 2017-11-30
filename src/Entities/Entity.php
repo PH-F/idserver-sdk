@@ -62,7 +62,9 @@ abstract class Entity
             return $attributes;
         }
 
-        foreach (static::$dates as $field) {
+        $dateFields = array_merge(static::$dates, self::$dates);
+
+        foreach ($dateFields as $field) {
             if ($value = array_get($attributes, $field)) {
                 $carbon = $this->createCarbonInstance($value);
                 array_set($attributes, $field, $carbon);
