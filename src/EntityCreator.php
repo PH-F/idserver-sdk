@@ -59,6 +59,12 @@ class EntityCreator
     {
         $relation = array_get(config('idserver.classes'), $class);
 
+        if ($relation && get_parent_class($relation) !== $class) {
+            throw new \DomainException(
+                'Custom entity classes must extend the original one'
+            );
+        }
+
         return $relation ?
             new $relation($attributes) :
             new $class($attributes);
