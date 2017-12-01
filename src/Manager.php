@@ -4,6 +4,7 @@ namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
 use Xingo\IDServer\Concerns\CallableResources;
+use Xingo\IDServer\Concerns\TokenSupport;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources;
 
@@ -17,12 +18,7 @@ use Xingo\IDServer\Resources;
  */
 class Manager
 {
-    use CallableResources;
-
-    /**
-     * The name of the token in the session.
-     */
-    const TOKEN_NAME = 'jwt_token';
+    use CallableResources, TokenSupport;
 
     /**
      * @var Client
@@ -45,48 +41,5 @@ class Manager
     public function client()
     {
         return $this->client;
-    }
-
-    /**
-     * Get the JWT token which is used to connect to the IDServer
-     *
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return (string)session(self::TOKEN_NAME);
-    }
-
-    /**
-     * Set the given JWT token as token to use for connection to the IDServer.
-     *
-     * @param string $token
-     * @return $this
-     */
-    public function setToken(string $token)
-    {
-        session()->put(self::TOKEN_NAME, $token);
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasToken(): bool
-    {
-        return session()->has(self::TOKEN_NAME);
-    }
-
-    /**
-     * Remove JWT from the session.
-     *
-     * @return $this
-     */
-    public function removeToken()
-    {
-        session()->forget(self::TOKEN_NAME);
-
-        return $this;
     }
 }
