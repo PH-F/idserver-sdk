@@ -6,11 +6,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException as GuzzleServerException;
 use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Str;
-use ReflectionClass;
 use Xingo\IDServer\Concerns\CallableResources;
 use Xingo\IDServer\Concerns\CustomExceptions;
 use Xingo\IDServer\Entities\Entity;
+use Xingo\IDServer\EntityCreator;
 
 abstract class Resource
 {
@@ -29,6 +28,11 @@ abstract class Resource
     protected $client;
 
     /**
+     * @var EntityCreator
+     */
+    protected $creator;
+
+    /**
      * @var array
      */
     protected $contents;
@@ -39,6 +43,7 @@ abstract class Resource
     public function __construct(Client $client)
     {
         $this->client = $client;
+        $this->creator = new EntityCreator(static::class);
     }
 
     /**
@@ -80,6 +85,7 @@ abstract class Resource
             $this->checkServerError($e->getResponse());
         }
 
+        // TODO throw an exception if there's no response variable
         $this->contents = $response->getBody()->asJson();
 
         return $response;
@@ -94,12 +100,7 @@ abstract class Resource
     {
         $attributes = $attributes ?: $this->contents['data'] ?? [];
 
-        if ($class === null) {
-            $entity = (new ReflectionClass(static::class))->getShortName();
-            $class = sprintf('Xingo\\IDServer\\Entities\\%s', Str::studly($entity));
-        }
-
-        return new $class($attributes);
+        return $this->creator->entity($attributes, $class);
     }
 
     /**
@@ -112,11 +113,7 @@ abstract class Resource
         $data = $data ?: $this->contents['data'] ?? [];
         $meta = $meta ?: $this->contents['meta'] ?? [];
 
-        $items = collect($data)->map(function ($item) {
-            return $this->makeEntity($item);
-        })->toArray();
-
-        return new Collection($items, $meta);
+        return $this->creator->collection($data, $meta);
     }
 
     /**

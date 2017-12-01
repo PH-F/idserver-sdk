@@ -53,6 +53,24 @@ return [
 
         'secret_key' => env('IDSERVER_SECRET_KEY'),
 
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Class Instances
+    |--------------------------------------------------------------------------
+    |
+    | When using the IDServer API you receive entities classes, like
+    | Xingo\IDServer\Entities\User, for example. You can customize this
+    | setting adding a new relation to your custom class, allowing you to customize
+    | the returned class to another one from your app, not the SDK package,
+    | making possible to add new methods, properties and custom logic.
+    |
+    */
+
+    'classes' => [
+//        \Xingo\IDServer\Entities\User::class => App\Entities\User::class,
+//        \Xingo\IDServer\Entities\Subscription::class => App\Entities\Subscription::class,
+    ],
 
 ];
