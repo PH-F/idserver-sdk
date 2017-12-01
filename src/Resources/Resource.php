@@ -80,12 +80,12 @@ abstract class Resource
             $this->checkValidation($e->getResponse());
             $this->checkAuthorization($e->getResponse());
             $this->checkForbidden($e->getResponse());
+            $this->checkNotFound($e->getResponse());
             $this->checkThrottle($e->getResponse());
         } catch (GuzzleServerException $e) {
             $this->checkServerError($e->getResponse());
         }
 
-        // TODO throw an exception if there's no response variable
         $this->contents = $response->getBody()->asJson();
 
         return $response;
