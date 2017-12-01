@@ -4,7 +4,7 @@ namespace Xingo\IDServer\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Xingo\IDServer\Exceptions\AuthorizationException;
+use Xingo\IDServer\Exceptions\MissingJwtException;
 use Xingo\IDServer\Manager;
 
 class Auth
@@ -14,7 +14,7 @@ class Auth
      * @param Closure $next
      * @param string|null $guard
      * @return mixed
-     * @throws AuthorizationException
+     * @throws MissingJwtException
      */
     public function handle($request, Closure $next, $guard = null)
     {
@@ -22,7 +22,7 @@ class Auth
         $manager = app()->make(Manager::class);
 
         if (!$manager->hasToken()) {
-            throw new AuthorizationException('Missing JWT in the session');
+            throw new MissingJwtException();
         }
 
         return $next($request);
