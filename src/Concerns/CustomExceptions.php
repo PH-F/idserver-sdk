@@ -9,30 +9,6 @@ trait CustomExceptions
 {
     /**
      * @param ResponseInterface $response
-     * @throws Exceptions\ServerException
-     */
-    protected function checkServerError(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 500) {
-            throw new Exceptions\ServerException();
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @throws Exceptions\ValidationException
-     */
-    protected function checkValidation(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 422) {
-            $content = $response->getBody()->asJson();
-
-            throw new Exceptions\ValidationException($content['errors']);
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
      * @throws Exceptions\AuthorizationException
      */
     protected function checkAuthorization(ResponseInterface $response)
@@ -55,12 +31,47 @@ trait CustomExceptions
 
     /**
      * @param ResponseInterface $response
+     * @throws Exceptions\NotFoundException
+     */
+    protected function checkNotFound(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 404) {
+            throw new Exceptions\NotFoundException();
+        }
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws Exceptions\ValidationException
+     */
+    protected function checkValidation(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 422) {
+            $content = $response->getBody()->asJson();
+
+            throw new Exceptions\ValidationException($content['errors']);
+        }
+    }
+
+    /**
+     * @param ResponseInterface $response
      * @throws Exceptions\ThrottleException
      */
     protected function checkThrottle(ResponseInterface $response)
     {
         if ($response->getStatusCode() === 429) {
             throw new Exceptions\ThrottleException();
+        }
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws Exceptions\ServerException
+     */
+    protected function checkServerError(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() === 500) {
+            throw new Exceptions\ServerException();
         }
     }
 }
