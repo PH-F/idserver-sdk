@@ -71,6 +71,14 @@ class Manager
     }
 
     /**
+     * @return bool
+     */
+    public function hasToken(): bool
+    {
+        return session()->has(self::TOKEN_NAME);
+    }
+
+    /**
      * Remove JWT from the session.
      *
      * @return $this
