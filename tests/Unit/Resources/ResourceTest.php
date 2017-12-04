@@ -11,7 +11,7 @@ use Tests\TestCase;
 use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Entities\User as UserEntity;
 use Xingo\IDServer\Resources\Resource;
-use Xingo\IDServer\Resources\User;
+use Xingo\IDServer\Resources;
 
 class ResourceTest extends TestCase
 {
@@ -37,7 +37,7 @@ class ResourceTest extends TestCase
     /** @test */
     public function it_can_make_an_entity_instance()
     {
-        $user = app()->make(User::class);
+        $user = app()->make(Resources\User::class);
 
         $method = new ReflectionMethod($user, 'makeEntity');
         $method->setAccessible(true);
@@ -105,7 +105,20 @@ class ResourceTest extends TestCase
 
         $this->assertTrue(is_callable($tags));
         $this->assertTrue(in_array(NestedResource::class, class_uses($tags)));
-        $this->assertInstanceOf(User::class, $tags->parent);
+        $this->assertInstanceOf(Resources\User::class, $tags->parent);
         $this->assertEquals(1, $tags->parent->id);
+    }
+
+    /** @test */
+    function it_gets_the_resource_name_from_class_name()
+    {
+        $class = app(Resources\User::class);
+        $this->assertEquals('users', $class->toShortName());
+
+        $class = app(Resources\Subscription::class);
+        $this->assertEquals('subscriptions', $class->toShortName());
+
+        $class = app(Resources\Address::class);
+        $this->assertEquals('addresses', $class->toShortName());
     }
 }
