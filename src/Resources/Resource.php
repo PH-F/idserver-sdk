@@ -4,7 +4,7 @@ namespace Xingo\IDServer\Resources;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException as GuzzleServerException;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
 use Xingo\IDServer\Concerns\CallableResources;
 use Xingo\IDServer\Concerns\CustomExceptions;
@@ -90,16 +90,10 @@ abstract class Resource
             $response = $this->client->request($method, $uri, [
                 $option => $params,
             ]);
-        } catch (ClientException $e) {
-            $this->checkValidation($e->getResponse());
-            $this->checkAuthorization($e->getResponse());
-            $this->checkForbidden($e->getResponse());
-            $this->checkThrottle($e->getResponse());
-        } catch (GuzzleServerException $e) {
-            $this->checkServerError($e->getResponse());
+        } catch (ClientException | ServerException $e) {
+            $this->throwsException($e->getResponse());
         }
 
-        // TODO throw an exception if there's no response variable
         $this->contents = $response->getBody()->asJson();
 
         return $response;
