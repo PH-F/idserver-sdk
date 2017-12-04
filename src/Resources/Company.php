@@ -8,6 +8,7 @@ use Xingo\IDServer\Entities;
  * Class Company
  *
  * @package Xingo\IDServer\Resources
+ * @property \Xingo\IDServer\Resources\Address addresses
  */
 class Company extends Resource
 {

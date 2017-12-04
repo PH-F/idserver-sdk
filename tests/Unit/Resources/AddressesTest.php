@@ -33,4 +33,27 @@ class AddressesTest extends TestCase
             $this->assertEquals(http_build_query($params), $request->getBody());
         });
     }
+
+    /** @test */
+    function it_can_be_created_changing_the_base_resource_to_companies()
+    {
+        $this->mockResponse(201, [
+            'data' => ['street' => 'foo'],
+        ]);
+
+        $address = $this->manager
+            ->companies(2)
+            ->addresses->create(
+                $params = ['street' => 'foo']
+            );
+
+        $this->assertInstanceOf(Address::class, $address);
+        $this->assertEquals('foo', $address->street);
+
+        $this->assertRequest(function (Request $request) use ($params) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('companies/2/addresses', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($params), $request->getBody());
+        });
+    }
 }
