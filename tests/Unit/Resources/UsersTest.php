@@ -222,7 +222,7 @@ class UsersTest extends TestCase
         $user = $this->manager->users
             ->login('john@example.com', 'secret');
 
-        $this->assertNotEmpty($jwt = session()->get(Manager::TOKEN_NAME));
+        $this->assertNotEmpty($jwt = $this->manager->getToken());
         $this->assertEquals($jwt, $user->jwtToken());
     }
 

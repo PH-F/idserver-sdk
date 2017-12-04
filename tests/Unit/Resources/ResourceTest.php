@@ -10,6 +10,7 @@ use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Entities\User as UserEntity;
+use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Resources\Resource;
 use Xingo\IDServer\Resources\User;
 
@@ -107,5 +108,15 @@ class ResourceTest extends TestCase
         $this->assertTrue(in_array(NestedResource::class, class_uses($tags)));
         $this->assertInstanceOf(User::class, $tags->parent);
         $this->assertEquals(1, $tags->parent->id);
+    }
+
+    /** @test */
+    function it_throws_an_exception_if_the_uri_is_wrong()
+    {
+        $this->mockResponse(404);
+
+        $this->expectException(Exceptions\NotFoundException::class);
+
+        $this->manager->users(1)->get();
     }
 }
