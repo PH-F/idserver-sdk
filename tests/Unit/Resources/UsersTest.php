@@ -3,7 +3,6 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Collection;
 use Intervention\Image\ImageManager;
 use Tests\Concerns;
 use Tests\TestCase;
@@ -11,6 +10,7 @@ use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Manager;
+use Xingo\IDServer\Resources\Collection;
 
 class UsersTest extends TestCase
 {

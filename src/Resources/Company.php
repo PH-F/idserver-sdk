@@ -2,7 +2,6 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Illuminate\Support\Collection as BaseCollection;
 use Xingo\IDServer\Entities;
 
 /**
@@ -73,13 +72,13 @@ class Company extends Resource
     }
 
     /**
-     * @return BaseCollection
+     * @return Collection
      */
-    public function addresses(): BaseCollection
+    public function addresses(): Collection
     {
         $this->call('GET', "companies/$this->id/addresses");
 
-        return collect($this->contents['data'])
+        return (new Collection($this->contents['data']))
             ->map(function ($data) {
                 return $this->makeEntity(
                     $data, Entities\Address::class

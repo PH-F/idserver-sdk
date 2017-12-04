@@ -3,7 +3,6 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Collection as BaseCollection;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities;
@@ -143,7 +142,7 @@ class CompaniesTest extends TestCase
 
         $collection = $this->manager->companies(1)->addresses();
 
-        $this->assertInstanceOf(BaseCollection::class, $collection);
+        $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Address::class, $collection->first());
         $this->assertEquals('foo', $collection->first()->street);
