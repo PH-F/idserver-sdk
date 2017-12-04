@@ -9,58 +9,29 @@ trait CustomExceptions
 {
     /**
      * @param ResponseInterface $response
+     * @throws Exceptions\AuthorizationException
+     * @throws Exceptions\ForbiddenException
+     * @throws Exceptions\NotFoundException
      * @throws Exceptions\ServerException
-     */
-    protected function checkServerError(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 500) {
-            throw new Exceptions\ServerException();
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
+     * @throws Exceptions\ThrottleException
      * @throws Exceptions\ValidationException
      */
-    protected function checkValidation(ResponseInterface $response)
+    protected function throwsException(ResponseInterface $response)
     {
-        if ($response->getStatusCode() === 422) {
-            $content = $response->getBody()->asJson();
-
-            throw new Exceptions\ValidationException($content['errors']);
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @throws Exceptions\AuthorizationException
-     */
-    protected function checkAuthorization(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 401) {
-            throw new Exceptions\AuthorizationException();
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @throws Exceptions\ForbiddenException
-     */
-    protected function checkForbidden(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 403) {
-            throw new Exceptions\ForbiddenException();
-        }
-    }
-
-    /**
-     * @param ResponseInterface $response
-     * @throws Exceptions\ThrottleException
-     */
-    protected function checkThrottle(ResponseInterface $response)
-    {
-        if ($response->getStatusCode() === 429) {
-            throw new Exceptions\ThrottleException();
+        switch ($response->getStatusCode()) {
+            case 401:
+                throw new Exceptions\AuthorizationException();
+            case 403:
+                throw new Exceptions\ForbiddenException();
+            case 404:
+                throw new Exceptions\NotFoundException();
+            case 422:
+                $content = $response->getBody()->asJson();
+                throw new Exceptions\ValidationException($content['errors']);
+            case 429:
+                throw new Exceptions\ThrottleException();
+            default:
+                throw new Exceptions\ServerException();
         }
     }
 }
