@@ -16,7 +16,7 @@ class Collection extends BaseCollection
      * @param array $items
      * @param array $meta
      */
-    public function __construct($items = [], array $meta)
+    public function __construct($items = [], array $meta = [])
     {
         parent::__construct($items);
         $this->meta = (object)$meta;
