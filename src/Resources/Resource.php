@@ -18,7 +18,7 @@ abstract class Resource
     /**
      * Entity id
      *
-     * @var int
+     * @var int|array
      */
     public $id;
 
@@ -52,11 +52,13 @@ abstract class Resource
      */
     public function __invoke(array $param): Resource
     {
-        if (!is_int($param)) {
-            $param = $param->id ?? null;
-        }
+        $ids = collect($param)->map(function ($param) {
+            return is_int($param) ? $param : $param->id;
+        });
 
-        $this->id = $param;
+        $this->id = $ids->count() > 1 ?
+            $ids->all() :
+            $ids->first();
 
         return $this;
     }

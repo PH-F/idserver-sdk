@@ -10,7 +10,6 @@ use Tests\TestCase;
 use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
-use Xingo\IDServer\Manager;
 
 class UsersTest extends TestCase
 {
@@ -125,6 +124,46 @@ class UsersTest extends TestCase
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('users', $request->getUri()->getPath());
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
+        });
+    }
+
+    /** @test */
+    function it_can_be_filtered_by_id()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 3],
+                ['id' => 5],
+                ['id' => 7],
+            ],
+        ]);
+
+        $users = $this->manager->users(3, 5, 7)->get();
+
+        $this->assertCount(3, $users);
+
+        $users->each(function (User $user) {
+            $this->assertTrue(in_array($user->id, [3, 5, 7]));
+        });
+    }
+
+    /** @test */
+    function it_can_be_filtered_by_id_using_an_array()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 3],
+                ['id' => 5],
+                ['id' => 7],
+            ],
+        ]);
+
+        $users = $this->manager->users([3, 5, 7])->get();
+
+        $this->assertCount(3, $users);
+
+        $users->each(function (User $user) {
+            $this->assertTrue(in_array($user->id, [3, 5, 7]));
         });
     }
 
