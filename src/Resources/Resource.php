@@ -62,6 +62,20 @@ abstract class Resource
     }
 
     /**
+     * @param Resource $class
+     * @return string
+     */
+    public function toShortName(Resource $class = null): string
+    {
+        $class = $class ?: static::class;
+
+        $shortName = (new \ReflectionClass($class))
+            ->getShortName();
+
+        return str_plural(strtolower($shortName));
+    }
+
+    /**
      * @param string $method
      * @param string $uri
      * @param array $params
