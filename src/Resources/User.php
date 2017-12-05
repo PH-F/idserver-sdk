@@ -71,7 +71,9 @@ class User extends Resource
     public function get()
     {
         if (is_array($this->id) && count($this->id) > 1) {
-            $this->call('GET', sprintf('users?ids=', implode(',', $this->id)));
+            $this->call('GET', 'users', [
+                'ids' => implode(',', $this->id),
+            ]);
 
             return $this->makeCollection();
         }

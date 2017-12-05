@@ -146,6 +146,12 @@ class UsersTest extends TestCase
         $users->each(function (User $user) {
             $this->assertTrue(in_array($user->id, [3, 5, 7]));
         });
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query(['ids' => '3,5,7']), $request->getUri()->getQuery());
+        });
     }
 
     /** @test */
@@ -165,6 +171,12 @@ class UsersTest extends TestCase
 
         $users->each(function (User $user) {
             $this->assertTrue(in_array($user->id, [3, 5, 7]));
+        });
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query(['ids' => '3,5,7']), $request->getUri()->getQuery());
         });
     }
 
