@@ -6,7 +6,6 @@ use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Entities;
-use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Resources\Collection;
 
 class StoresTest extends TestCase
