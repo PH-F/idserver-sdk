@@ -62,8 +62,10 @@ class EntityCreator
 
         if ($relation && get_parent_class($relation) !== $class) {
             if (in_array(EloquentEntity::class, class_implements($relation))) {
-                return (new $relation())
-                    ->setRawAttributes($attributes);
+                $instance = new $relation();
+                $instance->setRawAttributes($attributes);
+
+                return $instance;
             }
 
             throw new \DomainException(

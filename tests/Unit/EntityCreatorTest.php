@@ -41,6 +41,21 @@ class EntityCreatorTest extends TestCase
     }
 
     /** @test */
+    function it_can_return_a_custom_instance_if_it_implements_the_right_interface()
+    {
+        $this->app['config']->set('idserver.classes', [
+            Entities\User::class => Stub\FakeEloquentEntity::class,
+        ]);
+
+        $creator = new EntityCreator(Resources\User::class);
+        $entity = $creator->entity(['name' => 'John']);
+
+        $this->assertInstanceOf(Stub\FakeEloquentEntity::class, $entity);
+        $this->assertEquals('John', $entity->name);
+        $this->assertInstanceOf(EloquentEntity::class, $entity);
+    }
+
+    /** @test */
     function it_works_if_the_base_class_is_an_eloquent_model()
     {
         $this->app['config']->set('idserver.classes', [
