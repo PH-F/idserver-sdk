@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
 use Xingo\IDServer\Concerns\CallableResources;
 use Xingo\IDServer\Concerns\CustomExceptions;
+use Xingo\IDServer\Contracts\EloquentEntity;
 use Xingo\IDServer\Entities\Entity;
 use Xingo\IDServer\EntityCreator;
 
@@ -16,9 +17,7 @@ abstract class Resource
     use CallableResources, CustomExceptions;
 
     /**
-     * Entity id
-     *
-     * @var int
+     * @var int | EloquentEntity
      */
     public $id;
 
