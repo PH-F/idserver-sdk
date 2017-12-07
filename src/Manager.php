@@ -18,7 +18,7 @@ use Xingo\IDServer\Resources;
  * @property Resources\Subscription subscriptions
  * @method Resources\Subscription subscriptions(int | Entities\Subscription $resource)
  * @property Resources\User users
- * @method Resources\User users(int | Entities\User $resource)
+ * @method Resources\User users(int | array | Entities\User ...$resource)
  */
 class Manager
 {

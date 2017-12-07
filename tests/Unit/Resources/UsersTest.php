@@ -129,6 +129,58 @@ class UsersTest extends TestCase
     }
 
     /** @test */
+    function it_can_be_filtered_by_id()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 3],
+                ['id' => 5],
+                ['id' => 7],
+            ],
+        ]);
+
+        $users = $this->manager->users(3, 5, 7)->get();
+
+        $this->assertCount(3, $users);
+
+        $users->each(function (User $user) {
+            $this->assertTrue(in_array($user->id, [3, 5, 7]));
+        });
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query(['ids' => '3,5,7']), $request->getUri()->getQuery());
+        });
+    }
+
+    /** @test */
+    function it_can_be_filtered_by_id_using_an_array()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 3],
+                ['id' => 5],
+                ['id' => 7],
+            ],
+        ]);
+
+        $users = $this->manager->users([3, 5, 7])->get();
+
+        $this->assertCount(3, $users);
+
+        $users->each(function (User $user) {
+            $this->assertTrue(in_array($user->id, [3, 5, 7]));
+        });
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query(['ids' => '3,5,7']), $request->getUri()->getQuery());
+        });
+    }
+
+    /** @test */
     function it_updates_a_user_with_a_200_status()
     {
         $this->mockResponse(200, [
