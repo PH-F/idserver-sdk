@@ -53,7 +53,7 @@ abstract class Resource
     public function __invoke(array $param): Resource
     {
         $ids = collect($param)->map(function ($param) {
-            return is_int($param) ? $param : $param->id;
+            return is_object($param) ? $param->id : $param;
         });
 
         $this->id = $ids->count() > 1 ?
