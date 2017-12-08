@@ -11,7 +11,7 @@ use Xingo\IDServer\Resources;
 class EntityCreatorTest extends TestCase
 {
     /** @test */
-    function it_can_replace_an_entity_instance_by_a_custom_one()
+    public function it_can_replace_an_entity_instance_by_a_custom_one()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => Stub\FakeUser::class,
@@ -25,7 +25,7 @@ class EntityCreatorTest extends TestCase
     }
 
     /** @test */
-    function it_cannot_return_a_custom_instance_that_does_not_extend_the_base_one()
+    public function it_cannot_return_a_custom_instance_that_does_not_extend_the_base_one()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\Subscription::class => Stub\FakeSubscription::class,

@@ -12,6 +12,7 @@ class TokenExpired
 {
     /**
      * @param callable $handler
+     *
      * @return callable
      */
     public function __invoke(callable $handler)
@@ -33,6 +34,7 @@ class TokenExpired
 
     /**
      * @param ResponseInterface $response
+     *
      * @return bool
      */
     public function shouldRefreshToken(ResponseInterface $response): bool

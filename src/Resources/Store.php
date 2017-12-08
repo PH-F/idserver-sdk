@@ -5,15 +5,14 @@ namespace Xingo\IDServer\Resources;
 use Xingo\IDServer\Entities;
 
 /**
- * Class Store
- *
- * @package Xingo\IDServer\Resources
+ * Class Store.
  */
 class Store extends Resource
 {
     /**
      * @param int $page
      * @param int $per_page
+     *
      * @return Collection
      */
     public function all(int $page = 1, int $per_page = 10): Collection
@@ -37,6 +36,7 @@ class Store extends Resource
 
     /**
      * @param array $attributes
+     *
      * @return Entities\Entity|Entities\Store
      */
     public function create(array $attributes): Entities\Store
@@ -48,6 +48,7 @@ class Store extends Resource
 
     /**
      * @param array $attributes
+     *
      * @return Entities\Entity|Entities\Store
      */
     public function update(array $attributes): Entities\Store

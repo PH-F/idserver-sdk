@@ -9,6 +9,7 @@ trait CustomExceptions
 {
     /**
      * @param ResponseInterface $response
+     *
      * @throws Exceptions\AuthorizationException
      * @throws Exceptions\ForbiddenException
      * @throws Exceptions\NotFoundException
@@ -27,6 +28,7 @@ trait CustomExceptions
                 throw new Exceptions\NotFoundException();
             case 422:
                 $content = $response->getBody()->asJson();
+
                 throw new Exceptions\ValidationException($content['errors']);
             case 429:
                 throw new Exceptions\ThrottleException();
