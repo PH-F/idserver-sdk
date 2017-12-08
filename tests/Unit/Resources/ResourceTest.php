@@ -92,7 +92,7 @@ class ResourceTest extends TestCase
 
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
-        $entity = $manager->users->get($resource);
+        $entity = $manager->users->get(1);
 
         $this->assertEquals($resource->id, $entity->id);
     }
