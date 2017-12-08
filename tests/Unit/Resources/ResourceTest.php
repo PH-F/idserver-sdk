@@ -98,7 +98,7 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_have_a_string_and_it_matches_get_method()
+    public function it_accepts_a_string_as_invoke_parameter()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
