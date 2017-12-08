@@ -9,7 +9,6 @@ use Tests\TestCase;
 use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
-use Xingo\IDServer\Manager;
 use Xingo\IDServer\Resources\Collection;
 
 class UsersTest extends TestCase
@@ -484,6 +483,31 @@ class UsersTest extends TestCase
             $this->assertEquals(http_build_query([
                 'password' => 'secret',
             ]), $request->getBody());
+        });
+    }
+
+
+    /** @test */
+    function it_can_get_a_user_in_cli_mode()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'id' => 1,
+                'email' => 'john@example.com',
+            ],
+        ]);
+
+        $user = $this->manager->asCli()
+            ->users(1)
+            ->get();
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals('john@example.com', $user->email);
+        $this->assertEquals(1, $user->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users/1', $request->getUri()->getPath());
         });
     }
 }

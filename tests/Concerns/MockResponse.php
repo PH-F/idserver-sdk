@@ -84,6 +84,7 @@ trait MockResponse
     {
         $client = new Client(['handler' => $this->createHandler($response)]);
         app()->instance('idserver.client', $client);
+        app()->instance('idserver.cli.client', $client);
 
         $this->manager = new Manager($client);
         app()->instance('idserver.manager', $this->manager);

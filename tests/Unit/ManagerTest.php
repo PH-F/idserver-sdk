@@ -71,6 +71,20 @@ class ManagerTest extends TestCase
         $this->assertInstanceOf(Resource::class, ids()->users);
     }
 
+    /** @test */
+    function it_can_run_in_cli_mode()
+    {
+        $manager = app('idserver.manager');
+
+        $manager = $manager->asCli();
+        $headers = $manager->client()->getConfig('headers');
+
+        $this->assertInstanceOf(Manager::class, $manager);
+        $this->assertInstanceOf(Resource::class, $manager->users);
+        $this->assertEquals('bar', $headers['X-XINGO-Client-ID']);
+        $this->assertEquals('foo', $headers['X-XINGO-Secret-Key']);
+    }
+
     /**
      * @param Application $app
      */
@@ -80,5 +94,7 @@ class ManagerTest extends TestCase
 
         $app['config']->set('idserver.store.client_id', 'foo');
         $app['config']->set('idserver.store.secret_key', 'bar');
+        $app['config']->set('idserver.store.cli.client_id', 'bar');
+        $app['config']->set('idserver.store.cli.secret_key', 'foo');
     }
 }

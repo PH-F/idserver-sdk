@@ -48,4 +48,14 @@ class Manager
     {
         return $this->client;
     }
+
+    /**
+     * Run the manager in CLI mode.
+     *
+     * @return Manager
+     */
+    public function asCli()
+    {
+        return app('idserver.cli.manager');
+    }
 }
