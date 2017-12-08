@@ -107,6 +107,17 @@ class ResourceTest extends TestCase
 
         $this->assertEquals($resource->id, 1);
     }
+    /** @test */
+    public function it_accepts_an_object_as_invoke_parameter()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+
+        $user = (object) ['id' => 1];
+        $resource = $manager->users($user);
+
+        $this->assertEquals($resource->id, 1);
+    }
 
     /** @test */
     function it_can_have_nested_resources_and_they_are_callable_as_well()
