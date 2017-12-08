@@ -98,6 +98,17 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_can_have_a_string_and_it_matches_get_method()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+
+        $resource = $manager->users('1');
+
+        $this->assertEquals($resource->id, 1);
+    }
+
+    /** @test */
     function it_can_have_nested_resources_and_they_are_callable_as_well()
     {
         $manager = app()->make('idserver.manager');
