@@ -64,8 +64,7 @@ abstract class Resource
     }
 
     /**
-     * @param resource $class
-     *
+     * @param self $class
      * @return string
      */
     public function toShortName(self $class = null): string
@@ -82,7 +81,6 @@ abstract class Resource
      * @param string $method
      * @param string $uri
      * @param array  $params
-     *
      * @throws \Xingo\IDServer\Exceptions\AuthorizationException
      * @throws \Xingo\IDServer\Exceptions\ForbiddenException
      * @throws \Xingo\IDServer\Exceptions\NotFoundException

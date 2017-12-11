@@ -12,7 +12,6 @@ use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Entities\User as UserEntity;
 use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Resources;
-use Xingo\IDServer\Resources\Resource;
 
 class ResourceTest extends TestCase
 {
@@ -77,7 +76,7 @@ class ResourceTest extends TestCase
         $resource = $manager->users(1);
 
         $this->assertTrue(is_callable($manager->users));
-        $this->assertInstanceOf(Resource::class, $resource);
+        $this->assertInstanceOf(Resources\Resource::class, $resource);
         $this->assertInternalType('integer', $resource->id);
         $this->assertEquals($resource->id, $manager->users($resource->id)->id);
     }
@@ -134,7 +133,7 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_if_the_uri_is_wrong()
+    function it_throws_an_exception_if_the_uri_is_wrong()
     {
         $this->mockResponse(404);
 
@@ -144,7 +143,7 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_the_resource_name_from_class_name()
+    function it_gets_the_resource_name_from_class_name()
     {
         $class = app(Resources\User::class);
         $this->assertEquals('users', $class->toShortName());
