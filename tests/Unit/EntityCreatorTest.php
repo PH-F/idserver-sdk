@@ -41,7 +41,7 @@ class EntityCreatorTest extends TestCase
     }
 
     /** @test */
-    function it_can_return_a_custom_instance_if_it_implements_the_right_interface()
+    public function it_can_return_a_custom_instance_if_it_implements_the_right_interface()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => Stub\FakeIdsEntity::class,
@@ -56,7 +56,7 @@ class EntityCreatorTest extends TestCase
     }
 
     /** @test */
-    function it_works_if_the_base_class_is_an_eloquent_model()
+    public function it_works_if_the_base_class_is_an_eloquent_model()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => Stub\FakeIdsModel::class,
