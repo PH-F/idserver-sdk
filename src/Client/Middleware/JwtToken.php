@@ -9,10 +9,9 @@ class JwtToken
     const AUTH_BEARER = 'Bearer %s';
 
     /**
-     * Called when the middleware is handled by the client.
+     * Called when the middleware is handled by the client
      *
      * @param callable $handler
-     *
      * @return callable
      */
     public function __invoke(callable $handler)
