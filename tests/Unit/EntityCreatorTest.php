@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Carbon\Carbon;
 use Tests\Stub;
 use Tests\TestCase;
-use Xingo\IDServer\Contracts\EloquentEntity;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\EntityCreator;
 use Xingo\IDServer\Resources;
@@ -44,30 +44,30 @@ class EntityCreatorTest extends TestCase
     function it_can_return_a_custom_instance_if_it_implements_the_right_interface()
     {
         $this->app['config']->set('idserver.classes', [
-            Entities\User::class => Stub\FakeEloquentEntity::class,
+            Entities\User::class => Stub\FakeIdsEntity::class,
         ]);
 
         $creator = new EntityCreator(Resources\User::class);
         $entity = $creator->entity(['name' => 'John']);
 
-        $this->assertInstanceOf(Stub\FakeEloquentEntity::class, $entity);
+        $this->assertInstanceOf(Stub\FakeIdsEntity::class, $entity);
         $this->assertEquals('John', $entity->name);
-        $this->assertInstanceOf(EloquentEntity::class, $entity);
+        $this->assertInstanceOf(IdsEntity::class, $entity);
     }
 
     /** @test */
     function it_works_if_the_base_class_is_an_eloquent_model()
     {
         $this->app['config']->set('idserver.classes', [
-            Entities\User::class => Stub\FakeEloquentModel::class,
+            Entities\User::class => Stub\FakeIdsModel::class,
         ]);
 
         $creator = new EntityCreator(Resources\User::class);
         $entity = $creator->entity(['name' => 'John', 'created_at' => '2017-02-03']);
 
-        $this->assertInstanceOf(Stub\FakeEloquentModel::class, $entity);
+        $this->assertInstanceOf(Stub\FakeIdsModel::class, $entity);
         $this->assertEquals('John', $entity->name);
         $this->assertInstanceOf(Carbon::class, $entity->created_at);
-        $this->assertInstanceOf(EloquentEntity::class, $entity);
+        $this->assertInstanceOf(IdsEntity::class, $entity);
     }
 }

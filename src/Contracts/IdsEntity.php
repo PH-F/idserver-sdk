@@ -2,7 +2,7 @@
 
 namespace Xingo\IDServer\Contracts;
 
-interface EloquentEntity
+interface IdsEntity
 {
     /**
      * @param array $attributes

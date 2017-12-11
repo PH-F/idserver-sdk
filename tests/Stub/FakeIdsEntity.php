@@ -2,9 +2,9 @@
 
 namespace Tests\Stub;
 
-use Xingo\IDServer\Contracts\EloquentEntity;
+use Xingo\IDServer\Contracts\IdsEntity;
 
-class FakeEloquentEntity implements EloquentEntity
+class FakeIdsEntity implements IdsEntity
 {
     /**
      * @var array
