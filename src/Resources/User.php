@@ -222,7 +222,9 @@ class User extends Resource
      */
     private function userIdentifierField($identifier): string
     {
-        return is_int($identifier) ?
-            'id' : 'email';
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = validator([$identifier], ['email']);
+
+        return $validator->passes() ? 'email' : 'id';
     }
 }

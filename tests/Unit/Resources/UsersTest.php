@@ -474,8 +474,8 @@ class UsersTest extends TestCase
     {
         $this->mockResponse(204);
 
-        $result = $this->manager->users(3)
-            ->updatePassword(10, 'fake-token', 'abc123');
+        $result = $this->manager->users
+            ->updatePassword('10', 'fake-token', 'abc123');
 
         $this->assertTrue($result);
 
