@@ -34,7 +34,6 @@ abstract class Entity
 
     /**
      * @param string $name
-     *
      * @return mixed|null
      */
     public function __get(string $name)
@@ -44,7 +43,6 @@ abstract class Entity
 
     /**
      * @param array $attributes
-     *
      * @return array
      */
     protected function convert(array $attributes): array
@@ -56,7 +54,6 @@ abstract class Entity
 
     /**
      * @param array $attributes
-     *
      * @return array
      */
     protected function convertDates(array $attributes): array
@@ -79,7 +76,6 @@ abstract class Entity
 
     /**
      * @param array $attributes
-     *
      * @return array
      */
     protected function convertRelations(array $attributes): array
@@ -97,7 +93,6 @@ abstract class Entity
 
     /**
      * @param string|array $value
-     *
      * @return Carbon
      */
     private function createCarbonInstance($value): Carbon

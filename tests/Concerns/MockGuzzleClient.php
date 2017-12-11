@@ -17,10 +17,9 @@ trait MockGuzzleClient
     /**
      * Mock the response of the guzzle client.
      *
-     * @param int   $status
-     * @param null  $body
+     * @param int $status
+     * @param null $body
      * @param array $headers
-     *
      * @return $this
      */
     protected function mockResponse($status = 200, $body = null, $headers = [])

@@ -9,7 +9,6 @@ class TestCase extends BaseTestCase
 {
     /**
      * @param \Illuminate\Foundation\Application $app
-     *
      * @return array
      */
     protected function getPackageProviders($app): array

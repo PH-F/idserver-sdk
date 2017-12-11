@@ -2,8 +2,10 @@
 
 namespace Tests\Unit\Client\Middleware;
 
+use GuzzleHttp\Psr7\Request;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
+use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Manager;
 
 class InvalidTokenTest extends TestCase
@@ -11,7 +13,7 @@ class InvalidTokenTest extends TestCase
     use MockResponse;
 
     /** @test */
-    public function it_will_refresh_the_token_if_it_is_invalid()
+    function it_will_refresh_the_token_if_it_is_invalid()
     {
         $this->mockResponse(200, ['token_expired']);
         $this->mockResponse(204, [], ['Authorization' => 'Bearer valid-token']);
@@ -34,7 +36,7 @@ class InvalidTokenTest extends TestCase
     }
 
     /** @test */
-    public function it_will_not_refresh_the_token_with_normal_response()
+    function it_will_not_refresh_the_token_with_normal_response()
     {
         $this->mockResponse(201);
 

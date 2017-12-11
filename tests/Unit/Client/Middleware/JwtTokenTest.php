@@ -16,7 +16,7 @@ class JwtTokenTest extends TestCase
     use MockGuzzleClient;
 
     /** @test */
-    public function it_will_automatically_attach_the_jwt_token_if_found_in_session()
+    function it_will_automatically_attach_the_jwt_token_if_found_in_session()
     {
         app('idserver.manager')
             ->setToken('test-token');
@@ -32,7 +32,7 @@ class JwtTokenTest extends TestCase
     }
 
     /** @test */
-    public function it_will_not_attach_an_auth_header_if_jwt_token_is_not_found_in_session()
+    function it_will_not_attach_an_auth_header_if_jwt_token_is_not_found_in_session()
     {
         $this->setUpMockClientWithJwtTokenMiddleware(function (RequestInterface $request) {
             $this->assertFalse($request->hasHeader('Authorization'));
@@ -44,7 +44,6 @@ class JwtTokenTest extends TestCase
      * Create a mock client which will add the given assertion on the response.
      *
      * @param callable $assertion
-     *
      * @return Client
      */
     protected function setUpMockClientWithJwtTokenMiddleware($assertion)

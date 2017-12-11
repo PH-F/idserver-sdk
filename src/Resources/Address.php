@@ -12,7 +12,6 @@ class Address extends Resource
     /**
      * @param int $page
      * @param int $per_page
-     *
      * @return Collection
      */
     public function all(int $page = 1, int $per_page = 10): Collection
@@ -36,7 +35,6 @@ class Address extends Resource
 
     /**
      * @param array $attributes
-     *
      * @return Entities\Entity|Entities\Address
      */
     public function update(array $attributes): Entities\Address
@@ -58,7 +56,6 @@ class Address extends Resource
 
     /**
      * @param array $attributes
-     *
      * @return Entities\Address|Entities\Entity
      */
     public function create(array $attributes)

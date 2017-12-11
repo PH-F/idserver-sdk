@@ -22,9 +22,8 @@ class EntityCreator
     }
 
     /**
-     * @param array       $attributes
+     * @param array $attributes
      * @param null|string $class
-     *
      * @return mixed
      */
     public function entity(array $attributes, ?string $class = null)
@@ -40,7 +39,6 @@ class EntityCreator
     /**
      * @param array $data
      * @param array $meta
-     *
      * @return Collection
      */
     public function collection(array $data, array $meta): Collection
@@ -54,8 +52,7 @@ class EntityCreator
 
     /**
      * @param string $class
-     * @param array  $attributes
-     *
+     * @param array $attributes
      * @return mixed
      */
     protected function createInstance(string $class, array $attributes)

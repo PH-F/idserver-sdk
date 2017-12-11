@@ -10,13 +10,11 @@ use Xingo\IDServer\Manager;
 class Auth
 {
     /**
-     * @param Request     $request
-     * @param Closure     $next
+     * @param Request $request
+     * @param Closure $next
      * @param string|null $guard
-     *
-     * @throws MissingJwtException
-     *
      * @return mixed
+     * @throws MissingJwtException
      */
     public function handle($request, Closure $next, $guard = null)
     {

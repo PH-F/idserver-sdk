@@ -14,7 +14,7 @@ class JsonStreamTest extends TestCase
     use MockGuzzleClient;
 
     /** @test */
-    public function it_can_convert_a_guzzle_response_stream_into_json()
+    function it_can_convert_a_guzzle_response_stream_into_json()
     {
         $response = $this->mockResponse(200, json_encode(['data' => 'pong']))
             ->enableJsonStream()
@@ -22,12 +22,12 @@ class JsonStreamTest extends TestCase
             ->get('http://api.example.com/api/ping');
 
         $this->assertEquals([
-            'data' => 'pong',
+            'data' => 'pong'
         ], $response->getBody()->asJson());
     }
 
     /** @test */
-    public function it_will_throw_an_exception_if_invalid_json_is_tried_to_be_loaded()
+    function it_will_throw_an_exception_if_invalid_json_is_tried_to_be_loaded()
     {
         $response = $this->mockResponse(200, 'invalid')
             ->enableJsonStream()
@@ -40,7 +40,7 @@ class JsonStreamTest extends TestCase
     }
 
     /** @test */
-    public function it_will_not_return_null_if_the_response_is_empty()
+    function it_will_not_return_null_if_the_response_is_empty()
     {
         $response = $this->mockResponse(204, '')
             ->enableJsonStream()

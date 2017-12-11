@@ -7,13 +7,12 @@ use Xingo\IDServer\Resources\Resource;
 trait NestedResource
 {
     /**
-     * @var resource
+     * @var Resource
      */
     public $parent;
 
     /**
-     * @param resource $parent
-     *
+     * @param Resource $parent
      * @return $this
      */
     public function parent(Resource $parent)

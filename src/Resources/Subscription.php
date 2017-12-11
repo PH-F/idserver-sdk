@@ -5,14 +5,15 @@ namespace Xingo\IDServer\Resources;
 use Xingo\IDServer\Entities;
 
 /**
- * Class Subscription.
+ * Class Subscription
+ *
+ * @package Xingo\IDServer\Resources
  */
 class Subscription extends Resource
 {
     /**
      * @param int $page
      * @param int $per_page
-     *
      * @return Collection
      */
     public function all(int $page = 1, int $per_page = 10): Collection
@@ -36,7 +37,6 @@ class Subscription extends Resource
 
     /**
      * @param int $days
-     *
      * @return Collection
      */
     public function expiring(int $days = 7): Collection
@@ -48,7 +48,6 @@ class Subscription extends Resource
 
     /**
      * @param array $attributes
-     *
      * @return Entities\Entity|Entities\Subscription
      */
     public function create(array $attributes): Entities\Subscription
@@ -62,13 +61,12 @@ class Subscription extends Resource
 
     /**
      * @param Entities\Plan|int $plan
-     *
      * @return Entities\Entity|Entities\Subscription
      */
     public function renew($plan): Entities\Subscription
     {
         $plan_id = $plan instanceof Entities\Plan ?
-            $plan->id : (int) $plan;
+            $plan->id : (int)$plan;
 
         $this->call('POST', "subscriptions/$this->id/renew", compact('plan_id'));
 
@@ -77,7 +75,6 @@ class Subscription extends Resource
 
     /**
      * @param array $attributes
-     *
      * @return Entities\Entity|Entities\Subscription
      */
     public function update(array $attributes): Entities\Subscription

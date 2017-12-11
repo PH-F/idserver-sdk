@@ -16,7 +16,7 @@ abstract class Resource
     use CallableResources, CustomExceptions;
 
     /**
-     * Entity id.
+     * Entity id
      *
      * @var int|array
      */
@@ -48,10 +48,9 @@ abstract class Resource
 
     /**
      * @param array $param
-     *
-     * @return resource|$this
+     * @return Resource|$this
      */
-    public function __invoke(array $param): self
+    public function __invoke(array $param): Resource
     {
         $ids = collect($param)->map(function ($param) {
             return is_object($param) ? $param->id : $param;
@@ -65,11 +64,10 @@ abstract class Resource
     }
 
     /**
-     * @param resource $class
-     *
+     * @param Resource $class
      * @return string
      */
-    public function toShortName(self $class = null): string
+    public function toShortName(Resource $class = null): string
     {
         $class = $class ?: static::class;
 
@@ -82,16 +80,14 @@ abstract class Resource
     /**
      * @param string $method
      * @param string $uri
-     * @param array  $params
-     *
+     * @param array $params
+     * @return Response
      * @throws \Xingo\IDServer\Exceptions\AuthorizationException
      * @throws \Xingo\IDServer\Exceptions\ForbiddenException
      * @throws \Xingo\IDServer\Exceptions\NotFoundException
      * @throws \Xingo\IDServer\Exceptions\ServerException
      * @throws \Xingo\IDServer\Exceptions\ThrottleException
      * @throws \Xingo\IDServer\Exceptions\ValidationException
-     *
-     * @return Response
      */
     protected function call(string $method, string $uri, array $params = []): Response
     {
@@ -112,9 +108,8 @@ abstract class Resource
     }
 
     /**
-     * @param array       $attributes
+     * @param array $attributes
      * @param string|null $class
-     *
      * @return Entity
      */
     protected function makeEntity(array $attributes = null, ?string $class = null): Entity
@@ -127,7 +122,6 @@ abstract class Resource
     /**
      * @param array|null $data
      * @param array|null $meta
-     *
      * @return Collection
      */
     protected function makeCollection(array $data = null, array $meta = null): Collection

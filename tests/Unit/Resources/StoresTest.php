@@ -13,7 +13,7 @@ class StoresTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    public function it_gets_all_stores()
+    function it_gets_all_stores()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,7 +35,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_stores()
+    function it_paginates_all_stores()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -43,9 +43,9 @@ class StoresTest extends TestCase
             ],
             'meta' => [
                 'current_page' => 2,
-                'per_page'     => 1,
-                'total'        => 3,
-            ],
+                'per_page' => 1,
+                'total' => 3
+            ]
         ]);
 
         $collection = $this->manager->stores->all(2, 1);
@@ -64,7 +64,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_just_one_store_by_id()
+    function it_gets_just_one_store_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -80,13 +80,13 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_store()
+    function it_sends_correct_parameters_when_creating_a_new_store()
     {
         $this->mockResponse(201);
 
         $this->manager->stores->create($attributes = [
-            'name'       => 'Acme Store',
-            'url'        => 'http://google.com',
+            'name' => 'Acme Store',
+            'url' => 'http://google.com',
             'currencies' => ['USD', 'EUR'],
         ]);
 
@@ -98,7 +98,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_updated()
+    function it_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -116,7 +116,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_deleted()
+    function it_can_be_deleted()
     {
         $this->mockResponse(204);
 

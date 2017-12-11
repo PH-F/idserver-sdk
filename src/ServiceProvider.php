@@ -34,13 +34,12 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/idserver.php' => config_path('idserver.php'),
+            __DIR__ . '/../config/idserver.php' => config_path('idserver.php'),
         ]);
     }
 
     /**
      * @param Application $app
-     *
      * @return array
      */
     protected function options(Application $app): array
@@ -57,10 +56,10 @@ class ServiceProvider extends BaseServiceProvider
         }));
 
         return [
-            'base_uri' => trim($app['config']->get('idserver.url'), '/').'/',
-            'handler'  => $handler,
-            'headers'  => [
-                'X-XINGO-Client-ID'  => $app['config']->get('idserver.store.client_id'),
+            'base_uri' => trim($app['config']->get('idserver.url'), '/') . '/',
+            'handler' => $handler,
+            'headers' => [
+                'X-XINGO-Client-ID' => $app['config']->get('idserver.store.client_id'),
                 'X-XINGO-Secret-Key' => $app['config']->get('idserver.store.secret_key'),
             ],
         ];

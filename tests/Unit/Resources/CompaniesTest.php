@@ -14,7 +14,7 @@ class CompaniesTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    public function it_gets_all_companies()
+    function it_gets_all_companies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -36,7 +36,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_companies()
+    function it_paginates_all_companies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -44,9 +44,9 @@ class CompaniesTest extends TestCase
             ],
             'meta' => [
                 'current_page' => 2,
-                'per_page'     => 1,
-                'total'        => 3,
-            ],
+                'per_page' => 1,
+                'total' => 3
+            ]
         ]);
 
         $collection = $this->manager->companies->all(2, 1);
@@ -65,7 +65,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_just_one_company_by_id()
+    function it_gets_just_one_company_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -81,14 +81,14 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_company()
+    function it_sends_correct_parameters_when_creating_a_new_company()
     {
         $this->mockResponse(201);
 
         $this->manager->companies->create($attributes = [
-            'name'       => 'Acme Inc',
+            'name' => 'Acme Inc',
             'department' => 'Information Technology',
-            'vat'        => 'VAT1234',
+            'vat' => 'VAT1234',
         ]);
 
         $this->assertRequest(function (Request $request) use ($attributes) {
@@ -99,7 +99,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_updated()
+    function it_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -117,7 +117,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_deleted()
+    function it_can_be_deleted()
     {
         $this->mockResponse(204);
 
@@ -131,7 +131,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_have_addresses()
+    function it_can_have_addresses()
     {
         $this->mockResponse(200, [
             'data' => [

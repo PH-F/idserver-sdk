@@ -13,7 +13,7 @@ class SubscriptionsTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    public function it_gets_all_subscriptions()
+    function it_gets_all_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,7 +35,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_subscriptions()
+    function it_paginates_all_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -43,9 +43,9 @@ class SubscriptionsTest extends TestCase
             ],
             'meta' => [
                 'current_page' => 2,
-                'per_page'     => 1,
-                'total'        => 3,
-            ],
+                'per_page' => 1,
+                'total' => 3
+            ]
         ]);
 
         $collection = $this->manager->subscriptions->all(2, 1);
@@ -64,7 +64,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_just_one_subscription_by_id()
+    function it_gets_just_one_subscription_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -80,7 +80,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_expiring_subscriptions()
+    function it_gets_expiring_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -103,15 +103,15 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_subscription()
+    function it_sends_correct_parameters_when_creating_a_new_subscription()
     {
         $this->mockResponse(201);
 
         $this->manager->subscriptions->create($attributes = [
             'store_id' => 1,
-            'plan_id'  => 1,
+            'plan_id' => 1,
             'currency' => 'USD',
-            'coupon'   => 'NL2017',
+            'coupon' => 'NL2017',
         ]);
 
         $this->assertRequest(function (Request $request) use ($attributes) {
@@ -122,13 +122,13 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_do_not_send_a_missing_coupon_attribute_when_creating()
+    function it_do_not_send_a_missing_coupon_attribute_when_creating()
     {
         $this->mockResponse(201);
 
         $this->manager->subscriptions->create($attributes = [
             'store_id' => 1,
-            'plan_id'  => 1,
+            'plan_id' => 1,
             'currency' => 'EUR',
         ]);
 
@@ -138,7 +138,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_renewed_using_a_plan_entity_instance_or_id()
+    function it_can_be_renewed_using_a_plan_entity_instance_or_id()
     {
         $this->mockResponse(201);
         $this->mockResponse(201);
@@ -159,7 +159,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_updated()
+    function it_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -177,7 +177,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_deleted()
+    function it_can_be_deleted()
     {
         $this->mockResponse(204);
 

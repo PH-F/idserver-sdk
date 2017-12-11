@@ -8,8 +8,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Collection;
-use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Middleware\TokenExpired;
+use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Support\JsonStream;
 use Xingo\IDServer\Manager;
 
@@ -36,7 +36,7 @@ trait MockResponse
     private $handler;
 
     /**
-     * @param int   $status
+     * @param int $status
      * @param array $body
      * @param array $headers
      */
@@ -63,7 +63,6 @@ trait MockResponse
      * Create a mock handler for the given response.
      *
      * @param Response $response
-     *
      * @return HandlerStack
      */
     private function createHandler(Response $response): HandlerStack
@@ -92,7 +91,6 @@ trait MockResponse
 
     /**
      * @param Response $response
-     *
      * @return HandlerStack
      */
     private function appendResponse(Response $response): HandlerStack
@@ -105,7 +103,6 @@ trait MockResponse
 
     /**
      * @param HandlerStack $stack
-     *
      * @return HandlerStack
      */
     private function pushMiddleware(HandlerStack $stack): HandlerStack
