@@ -4,6 +4,7 @@ namespace Xingo\IDServer;
 
 use Illuminate\Support\Str;
 use ReflectionClass;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Resources\Collection;
 
 class EntityCreator
@@ -60,8 +61,15 @@ class EntityCreator
         $relation = array_get(config('idserver.classes'), $class);
 
         if ($relation && get_parent_class($relation) !== $class) {
+            if (in_array(IdsEntity::class, class_implements($relation))) {
+                $instance = new $relation();
+                $instance->setRawAttributes($attributes);
+
+                return $instance;
+            }
+
             throw new \DomainException(
-                'Custom entity classes must extend the original one'
+                'Custom entity classes must extend the original one or implement EloquentEntity interface'
             );
         }
 
