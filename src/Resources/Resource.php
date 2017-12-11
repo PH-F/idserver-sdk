@@ -17,7 +17,7 @@ abstract class Resource
     use CallableResources, CustomExceptions;
 
     /**
-     * @var int | IdsEntity
+     * @var int | IdsEntity | array
      */
     public $id;
 
@@ -46,25 +46,29 @@ abstract class Resource
     }
 
     /**
-     * @param int|Entity $param
-     * @return Resource|$this
+     * @param array $param
+     *
+     * @return resource|$this
      */
-    public function __invoke($param): Resource
+    public function __invoke(array $param): self
     {
-        if (!is_int($param)) {
-            $param = $param->id ?? null;
-        }
+        $ids = collect($param)->map(function ($param) {
+            return is_object($param) ? $param->id : $param;
+        });
 
-        $this->id = $param;
+        $this->id = $ids->count() > 1 ?
+            $ids->all() :
+            $ids->first();
 
         return $this;
     }
 
     /**
-     * @param Resource $class
+     * @param resource $class
+     *
      * @return string
      */
-    public function toShortName(Resource $class = null): string
+    public function toShortName(self $class = null): string
     {
         $class = $class ?: static::class;
 
@@ -77,7 +81,15 @@ abstract class Resource
     /**
      * @param string $method
      * @param string $uri
-     * @param array $params
+     * @param array  $params
+     *
+     * @throws \Xingo\IDServer\Exceptions\AuthorizationException
+     * @throws \Xingo\IDServer\Exceptions\ForbiddenException
+     * @throws \Xingo\IDServer\Exceptions\NotFoundException
+     * @throws \Xingo\IDServer\Exceptions\ServerException
+     * @throws \Xingo\IDServer\Exceptions\ThrottleException
+     * @throws \Xingo\IDServer\Exceptions\ValidationException
+     *
      * @return Response
      */
     protected function call(string $method, string $uri, array $params = []): Response

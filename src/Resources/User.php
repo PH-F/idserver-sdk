@@ -6,9 +6,8 @@ use Intervention\Image\ImageManager;
 use Xingo\IDServer\Entities;
 
 /**
- * Class User
+ * Class User.
  *
- * @package Xingo\IDServer\Resources
  * @property Tag tags
  * @property \Xingo\IDServer\Resources\Address addresses
  */
@@ -17,6 +16,7 @@ class User extends Resource
     /**
      * @param string $email
      * @param string $password
+     *
      * @return Entities\Entity
      */
     public function login(string $email, string $password)
@@ -43,6 +43,7 @@ class User extends Resource
     /**
      * @param int $page
      * @param int $per_page
+     *
      * @return Collection
      */
     public function all(int $page = 1, int $per_page = 10): Collection
@@ -56,6 +57,7 @@ class User extends Resource
 
     /**
      * @param array $attributes
+     *
      * @return Entities\Entity|Entities\User
      */
     public function create(array $attributes): Entities\User
@@ -66,17 +68,26 @@ class User extends Resource
     }
 
     /**
-     * @return Entities\Entity|Entities\User
+     * @return Entities\Entity|Entities\User|Collection
      */
-    public function get(): Entities\User
+    public function get()
     {
-        $this->call('GET', sprintf("users/{$this->id}"));
+        if (is_array($this->id) && count($this->id) > 1) {
+            $this->call('GET', 'users', [
+                'ids' => implode(',', $this->id),
+            ]);
+
+            return $this->makeCollection();
+        }
+
+        $this->call('GET', sprintf('users/%d', $this->id));
 
         return $this->makeEntity();
     }
 
     /**
      * @param array $attributes
+     *
      * @return Entities\Entity|Entities\User
      */
     public function update(array $attributes = []): Entities\User
@@ -98,6 +109,7 @@ class User extends Resource
 
     /**
      * @param string $token
+     *
      * @return Entities\Entity
      */
     public function confirm(string $token): Entities\Entity
@@ -111,6 +123,7 @@ class User extends Resource
 
     /**
      * @param string $avatar
+     *
      * @return Entities\Entity
      */
     public function changeAvatar(string $avatar): Entities\Entity
@@ -174,12 +187,13 @@ class User extends Resource
     /**
      * @param string $token
      * @param string $password
+     *
      * @return bool
      */
     public function updatePassword(string $token, string $password): bool
     {
         $response = $this->call('PATCH', "users/{$this->id}/update-password", [
-            'token' => $token,
+            'token'    => $token,
             'password' => $password,
         ]);
 
@@ -188,6 +202,7 @@ class User extends Resource
 
     /**
      * @param string $password
+     *
      * @return bool
      */
     public function changePassword(string $password): bool

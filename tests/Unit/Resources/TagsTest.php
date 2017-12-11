@@ -11,7 +11,7 @@ class TagsTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    function it_can_be_created_using_nested_resource()
+    public function it_can_be_created_using_nested_resource()
     {
         $this->mockResponse(201, [
             'tags' => ['foo', 'bar'],

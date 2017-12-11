@@ -10,11 +10,11 @@ class Subscription extends Entity
      * @var array
      */
     protected static $relations = [
-        'store' => Entities\Store::class,
-        'user' => Entities\User::class,
-        'plan' => Entities\Plan::class,
+        'store'  => Entities\Store::class,
+        'user'   => Entities\User::class,
+        'plan'   => Entities\Plan::class,
         'parent' => Entities\Subscription::class,
-        'order' => Entities\Order::class,
+        'order'  => Entities\Order::class,
     ];
 
     /**

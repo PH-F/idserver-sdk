@@ -11,8 +11,8 @@ use Tests\TestCase;
 use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Entities\User as UserEntity;
 use Xingo\IDServer\Exceptions;
-use Xingo\IDServer\Resources\Resource;
 use Xingo\IDServer\Resources;
+use Xingo\IDServer\Resources\Resource;
 
 class ResourceTest extends TestCase
 {
@@ -98,7 +98,30 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
-    function it_can_have_nested_resources_and_they_are_callable_as_well()
+    public function it_accepts_a_string_as_invoke_parameter()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+
+        $resource = $manager->users('1');
+
+        $this->assertEquals($resource->id, 1);
+    }
+
+    /** @test */
+    public function it_accepts_an_object_as_invoke_parameter()
+    {
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+        $manager = app()->make('idserver.manager');
+
+        $user = (object) ['id' => 1];
+        $resource = $manager->users($user);
+
+        $this->assertEquals($resource->id, 1);
+    }
+
+    /** @test */
+    public function it_can_have_nested_resources_and_they_are_callable_as_well()
     {
         $manager = app()->make('idserver.manager');
 
@@ -111,7 +134,7 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
-    function it_throws_an_exception_if_the_uri_is_wrong()
+    public function it_throws_an_exception_if_the_uri_is_wrong()
     {
         $this->mockResponse(404);
 
@@ -121,7 +144,7 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
-    function it_gets_the_resource_name_from_class_name()
+    public function it_gets_the_resource_name_from_class_name()
     {
         $class = app(Resources\User::class);
         $this->assertEquals('users', $class->toShortName());

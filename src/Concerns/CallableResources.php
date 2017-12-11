@@ -9,6 +9,7 @@ trait CallableResources
 {
     /**
      * @param string $name
+     *
      * @return mixed
      */
     public function __get($name)
@@ -30,15 +31,20 @@ trait CallableResources
 
     /**
      * @param string $name
-     * @param array $arguments
-     * @return $this|Resource
+     * @param array  $arguments
+     *
+     * @return $this|resource
      */
     public function __call(string $name, array $arguments)
     {
         $resource = $this->$name;
 
         if ($resource instanceof Resource && is_callable($resource)) {
-            return $resource(array_first($arguments));
+            $first = array_first($arguments);
+
+            return is_array($first) ?
+                $resource($first) :
+                $resource($arguments);
         }
     }
 }

@@ -13,7 +13,7 @@ class AddressesTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    function it_gets_all_addresses()
+    public function it_gets_all_addresses()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,7 +35,7 @@ class AddressesTest extends TestCase
     }
 
     /** @test */
-    function it_paginates_all_addresses()
+    public function it_paginates_all_addresses()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -43,9 +43,9 @@ class AddressesTest extends TestCase
             ],
             'meta' => [
                 'current_page' => 2,
-                'per_page' => 1,
-                'total' => 3
-            ]
+                'per_page'     => 1,
+                'total'        => 3,
+            ],
         ]);
 
         $collection = $this->manager->addresses->all(2, 1);
@@ -64,7 +64,7 @@ class AddressesTest extends TestCase
     }
 
     /** @test */
-    function it_gets_just_one_address_by_id()
+    public function it_gets_just_one_address_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -80,7 +80,7 @@ class AddressesTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_created_using_nested_resource()
+    public function it_can_be_created_using_nested_resource()
     {
         $this->mockResponse(201, [
             'data' => ['street' => 'foo'],
@@ -103,7 +103,7 @@ class AddressesTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_created_changing_the_base_resource_to_companies()
+    public function it_can_be_created_changing_the_base_resource_to_companies()
     {
         $this->mockResponse(201, [
             'data' => ['street' => 'foo'],
@@ -126,7 +126,7 @@ class AddressesTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_updated()
+    public function it_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -144,7 +144,7 @@ class AddressesTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_deleted()
+    public function it_can_be_deleted()
     {
         $this->mockResponse(204);
 
