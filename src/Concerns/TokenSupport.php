@@ -10,19 +10,20 @@ trait TokenSupport
     private static $tokenName = 'jwt_token';
 
     /**
-     * Get the JWT token which is used to connect to the IDServer
+     * Get the JWT token which is used to connect to the IDServer.
      *
      * @return string
      */
     public function getToken(): string
     {
-        return (string)session(static::$tokenName);
+        return (string) session(static::$tokenName);
     }
 
     /**
      * Set the given JWT token as token to use for connection to the IDServer.
      *
      * @param string $token
+     *
      * @return $this
      */
     public function setToken(string $token)

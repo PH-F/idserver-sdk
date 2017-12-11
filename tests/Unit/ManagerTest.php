@@ -64,7 +64,7 @@ class ManagerTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_called_using_the_ids_helper()
+    public function it_can_be_called_using_the_ids_helper()
     {
         $this->assertTrue(function_exists('ids'));
         $this->assertInstanceOf(Manager::class, ids());

@@ -13,7 +13,8 @@ class FakeIdsEntity implements IdsEntity
 
     /**
      * @param array $attributes
-     * @param bool $sync
+     * @param bool  $sync
+     *
      * @return mixed
      */
     public function setRawAttributes(array $attributes, $sync = false)
@@ -23,6 +24,7 @@ class FakeIdsEntity implements IdsEntity
 
     /**
      * @param string $key
+     *
      * @return mixed
      */
     public function getAttribute($key)
@@ -32,6 +34,7 @@ class FakeIdsEntity implements IdsEntity
 
     /**
      * @param string $name
+     *
      * @return mixed|null
      */
     public function __get($name)

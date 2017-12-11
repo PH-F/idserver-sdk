@@ -12,24 +12,24 @@ class EntityTest extends TestCase
     use MockResponse;
 
     /** @test */
-    function it_creates_a_new_subscription_with_related_attributes()
+    public function it_creates_a_new_subscription_with_related_attributes()
     {
         $this->mockResponse(201, [
             'data' => [
-                'id' => 1,
-                'store' => ['id' => 2],
-                'user' => ['id' => 3],
-                'plan' => ['id' => 4],
+                'id'     => 1,
+                'store'  => ['id' => 2],
+                'user'   => ['id' => 3],
+                'plan'   => ['id' => 4],
                 'parent' => ['id' => 5],
-                'order' => ['id' => 6],
+                'order'  => ['id' => 6],
             ],
         ]);
 
         $subscription = $this->manager->subscriptions->create([
             'store_id' => 1,
-            'plan_id' => 1,
+            'plan_id'  => 1,
             'currency' => 'USD',
-            'coupon' => 'NL2017',
+            'coupon'   => 'NL2017',
         ]);
 
         $this->assertInstanceOf(Entities\Subscription::class, $subscription);
@@ -52,7 +52,7 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function it_converts_string_date_fields_to_carbon_instances()
+    public function it_converts_string_date_fields_to_carbon_instances()
     {
         $this->mockResponse(200, ['data' => ['created_at' => '2017-12-31 01:02:03']]);
 
@@ -63,12 +63,12 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function it_converts_array_date_fields_to_carbon_instances()
+    public function it_converts_array_date_fields_to_carbon_instances()
     {
         $this->mockResponse(200, [
             'data' => [
                 'created_at' => [
-                    'date' => '2017-11-20 13:31:31.000000',
+                    'date'     => '2017-11-20 13:31:31.000000',
                     'timezone' => 'UTC',
                 ],
             ],
@@ -81,7 +81,7 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function user_has_custom_date_fields()
+    public function user_has_custom_date_fields()
     {
         $this->mockResponse(200, [
             'data' => ['date_of_birth' => '2017-12-31'],
@@ -93,12 +93,12 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function subscription_has_custom_date_fields()
+    public function subscription_has_custom_date_fields()
     {
         $this->mockResponse(200, [
             'data' => [
                 'start_date' => '2017-12-30',
-                'end_date' => '2017-12-31',
+                'end_date'   => '2017-12-31',
             ],
         ]);
 

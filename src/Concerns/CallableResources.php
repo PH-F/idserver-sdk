@@ -9,6 +9,7 @@ trait CallableResources
 {
     /**
      * @param string $name
+     *
      * @return mixed
      */
     public function __get($name)
@@ -30,8 +31,9 @@ trait CallableResources
 
     /**
      * @param string $name
-     * @param array $arguments
-     * @return $this|Resource
+     * @param array  $arguments
+     *
+     * @return $this|resource
      */
     public function __call(string $name, array $arguments)
     {

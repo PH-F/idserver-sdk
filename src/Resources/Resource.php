@@ -47,9 +47,10 @@ abstract class Resource
 
     /**
      * @param int|Entity $param
-     * @return Resource|$this
+     *
+     * @return resource|$this
      */
-    public function __invoke($param): Resource
+    public function __invoke($param): self
     {
         if (!is_int($param)) {
             $param = $param->id ?? null;
@@ -61,10 +62,11 @@ abstract class Resource
     }
 
     /**
-     * @param Resource $class
+     * @param resource $class
+     *
      * @return string
      */
-    public function toShortName(Resource $class = null): string
+    public function toShortName(self $class = null): string
     {
         $class = $class ?: static::class;
 
@@ -77,7 +79,8 @@ abstract class Resource
     /**
      * @param string $method
      * @param string $uri
-     * @param array $params
+     * @param array  $params
+     *
      * @return Response
      */
     protected function call(string $method, string $uri, array $params = []): Response
@@ -99,8 +102,9 @@ abstract class Resource
     }
 
     /**
-     * @param array $attributes
+     * @param array       $attributes
      * @param string|null $class
+     *
      * @return Entity
      */
     protected function makeEntity(array $attributes = null, ?string $class = null): Entity
@@ -113,6 +117,7 @@ abstract class Resource
     /**
      * @param array|null $data
      * @param array|null $meta
+     *
      * @return Collection
      */
     protected function makeCollection(array $data = null, array $meta = null): Collection

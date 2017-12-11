@@ -13,7 +13,7 @@ use Xingo\IDServer\Resources;
 class EntityCreatorTest extends TestCase
 {
     /** @test */
-    function it_can_replace_an_entity_instance_by_a_custom_one()
+    public function it_can_replace_an_entity_instance_by_a_custom_one()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => Stub\FakeUser::class,
@@ -27,7 +27,7 @@ class EntityCreatorTest extends TestCase
     }
 
     /** @test */
-    function it_cannot_return_a_custom_instance_that_does_not_extend_the_base_one()
+    public function it_cannot_return_a_custom_instance_that_does_not_extend_the_base_one()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\Subscription::class => Stub\FakeSubscription::class,
@@ -41,7 +41,7 @@ class EntityCreatorTest extends TestCase
     }
 
     /** @test */
-    function it_can_return_a_custom_instance_if_it_implements_the_right_interface()
+    public function it_can_return_a_custom_instance_if_it_implements_the_right_interface()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => Stub\FakeIdsEntity::class,
@@ -56,7 +56,7 @@ class EntityCreatorTest extends TestCase
     }
 
     /** @test */
-    function it_works_if_the_base_class_is_an_eloquent_model()
+    public function it_works_if_the_base_class_is_an_eloquent_model()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => Stub\FakeIdsModel::class,

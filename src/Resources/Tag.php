@@ -10,6 +10,7 @@ class Tag extends Resource
 
     /**
      * @param array|string $tag
+     *
      * @return array
      */
     public function create($tag)
