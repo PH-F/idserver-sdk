@@ -14,7 +14,7 @@ class CompaniesTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    function it_gets_all_companies()
+    public function it_gets_all_companies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -36,7 +36,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    function it_paginates_all_companies()
+    public function it_paginates_all_companies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -65,7 +65,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    function it_gets_just_one_company_by_id()
+    public function it_gets_just_one_company_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -81,7 +81,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    function it_sends_correct_parameters_when_creating_a_new_company()
+    public function it_sends_correct_parameters_when_creating_a_new_company()
     {
         $this->mockResponse(201);
 
@@ -99,7 +99,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_updated()
+    public function it_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -117,7 +117,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_deleted()
+    public function it_can_be_deleted()
     {
         $this->mockResponse(204);
 
@@ -131,7 +131,7 @@ class CompaniesTest extends TestCase
     }
 
     /** @test */
-    function it_can_have_addresses()
+    public function it_can_have_addresses()
     {
         $this->mockResponse(200, [
             'data' => [

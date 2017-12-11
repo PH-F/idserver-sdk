@@ -13,7 +13,7 @@ class StoresTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    function it_gets_all_stores()
+    public function it_gets_all_stores()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,7 +35,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    function it_paginates_all_stores()
+    public function it_paginates_all_stores()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -64,7 +64,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    function it_gets_just_one_store_by_id()
+    public function it_gets_just_one_store_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -80,7 +80,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    function it_sends_correct_parameters_when_creating_a_new_store()
+    public function it_sends_correct_parameters_when_creating_a_new_store()
     {
         $this->mockResponse(201);
 
@@ -98,7 +98,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_updated()
+    public function it_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -116,7 +116,7 @@ class StoresTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_deleted()
+    public function it_can_be_deleted()
     {
         $this->mockResponse(204);
 

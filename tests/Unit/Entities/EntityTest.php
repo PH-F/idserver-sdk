@@ -12,7 +12,7 @@ class EntityTest extends TestCase
     use MockResponse;
 
     /** @test */
-    function it_creates_a_new_subscription_with_related_attributes()
+    public function it_creates_a_new_subscription_with_related_attributes()
     {
         $this->mockResponse(201, [
             'data' => [
@@ -52,7 +52,7 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function it_converts_string_date_fields_to_carbon_instances()
+    public function it_converts_string_date_fields_to_carbon_instances()
     {
         $this->mockResponse(200, ['data' => ['created_at' => '2017-12-31 01:02:03']]);
 
@@ -63,7 +63,7 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function it_converts_array_date_fields_to_carbon_instances()
+    public function it_converts_array_date_fields_to_carbon_instances()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -81,7 +81,7 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function user_has_custom_date_fields()
+    public function user_has_custom_date_fields()
     {
         $this->mockResponse(200, [
             'data' => ['date_of_birth' => '2017-12-31'],
@@ -93,7 +93,7 @@ class EntityTest extends TestCase
     }
 
     /** @test */
-    function subscription_has_custom_date_fields()
+    public function subscription_has_custom_date_fields()
     {
         $this->mockResponse(200, [
             'data' => [
