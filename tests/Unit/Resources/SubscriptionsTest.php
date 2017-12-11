@@ -13,7 +13,7 @@ class SubscriptionsTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    function it_gets_all_subscriptions()
+    public function it_gets_all_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,7 +35,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_paginates_all_subscriptions()
+    public function it_paginates_all_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -64,7 +64,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_gets_just_one_subscription_by_id()
+    public function it_gets_just_one_subscription_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -80,7 +80,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_gets_expiring_subscriptions()
+    public function it_gets_expiring_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -103,7 +103,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_sends_correct_parameters_when_creating_a_new_subscription()
+    public function it_sends_correct_parameters_when_creating_a_new_subscription()
     {
         $this->mockResponse(201);
 
@@ -122,7 +122,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_do_not_send_a_missing_coupon_attribute_when_creating()
+    public function it_do_not_send_a_missing_coupon_attribute_when_creating()
     {
         $this->mockResponse(201);
 
@@ -138,7 +138,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_renewed_using_a_plan_entity_instance_or_id()
+    public function it_can_be_renewed_using_a_plan_entity_instance_or_id()
     {
         $this->mockResponse(201);
         $this->mockResponse(201);
@@ -159,7 +159,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_updated()
+    public function it_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -177,7 +177,7 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
-    function it_can_be_deleted()
+    public function it_can_be_deleted()
     {
         $this->mockResponse(204);
 

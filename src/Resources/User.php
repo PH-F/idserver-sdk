@@ -66,11 +66,19 @@ class User extends Resource
     }
 
     /**
-     * @return Entities\Entity|Entities\User
+     * @return Entities\Entity|Entities\User|Collection
      */
-    public function get(): Entities\User
+    public function get()
     {
-        $this->call('GET', sprintf("users/{$this->id}"));
+        if (is_array($this->id) && count($this->id) > 1) {
+            $this->call('GET', 'users', [
+                'ids' => implode(',', $this->id),
+            ]);
+
+            return $this->makeCollection();
+        }
+
+        $this->call('GET', sprintf('users/%d', $this->id));
 
         return $this->makeEntity();
     }

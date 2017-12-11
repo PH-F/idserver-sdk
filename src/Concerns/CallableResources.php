@@ -38,7 +38,11 @@ trait CallableResources
         $resource = $this->$name;
 
         if ($resource instanceof Resource && is_callable($resource)) {
-            return $resource(array_first($arguments));
+            $first = array_first($arguments);
+
+            return is_array($first) ?
+                $resource($first) :
+                $resource($arguments);
         }
     }
 }
