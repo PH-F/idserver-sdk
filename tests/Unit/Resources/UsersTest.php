@@ -429,39 +429,82 @@ class UsersTest extends TestCase
         $this->assertEquals('bar', $collection->last()->street);
     }
 
-
     /** @test */
-    public function it_can_reset_the_password()
+    public function it_can_reset_the_password_using_id()
     {
         $this->mockResponse(201, [
             'user_id' => 2,
             'token' => 'temporary-token',
         ]);
 
-        $token = $this->manager->users(2)->resetPassword();
+        $token = $this->manager->users->resetPassword(2);
 
         $this->assertEquals('temporary-token', $token);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('users/2/reset-password', $request->getUri()->getPath());
+            $this->assertEquals('users/reset-password', $request->getUri()->getPath());
+            $this->assertEquals('id=2', $request->getBody());
         });
     }
 
     /** @test */
-    public function it_can_update_the_password()
+    public function it_can_reset_the_password_using_email()
+    {
+        $this->mockResponse(201, [
+            'user_id' => 2,
+            'token' => 'temporary-token',
+        ]);
+
+        $token = $this->manager->users->resetPassword('foo@bar.com');
+
+        $this->assertEquals('temporary-token', $token);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('users/reset-password', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'email' => 'foo@bar.com',
+            ]), (string)$request->getBody());
+        });
+    }
+
+    /** @test */
+    public function it_can_update_the_password_using_id()
     {
         $this->mockResponse(204);
 
         $result = $this->manager->users(3)
-            ->updatePassword('fake-token', 'abc123');
+            ->updatePassword(10, 'fake-token', 'abc123');
 
         $this->assertTrue($result);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
-            $this->assertEquals('users/3/update-password', $request->getUri()->getPath());
+            $this->assertEquals('users/update-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
+                'id' => 10,
+                'token' => 'fake-token',
+                'password' => 'abc123',
+            ]), $request->getBody());
+        });
+    }
+
+    /** @test */
+    public function it_can_update_the_password_using_email()
+    {
+        $this->mockResponse(204);
+
+        $result = $this->manager->users(3)
+            ->updatePassword('foo@bar.com', 'fake-token', 'abc123');
+
+        $this->assertTrue($result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('users/update-password', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'email' => 'foo@bar.com',
                 'token' => 'fake-token',
                 'password' => 'abc123',
             ]), $request->getBody());

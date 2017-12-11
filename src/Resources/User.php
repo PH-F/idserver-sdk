@@ -170,23 +170,32 @@ class User extends Resource
     }
 
     /**
+     * @param int|string $identifier
      * @return string
      */
-    public function resetPassword(): string
+    public function resetPassword($identifier): string
     {
-        $this->call('POST', "users/{$this->id}/reset-password");
+        $field = $this->userIdentifierField($identifier);
+
+        $this->call('POST', 'users/reset-password', [
+            $field => $identifier,
+        ]);
 
         return $this->contents['token'];
     }
 
     /**
+     * @param int|string $identifier
      * @param string $token
      * @param string $password
      * @return bool
      */
-    public function updatePassword(string $token, string $password): bool
+    public function updatePassword($identifier, string $token, string $password): bool
     {
-        $response = $this->call('PATCH', "users/{$this->id}/update-password", [
+        $field = $this->userIdentifierField($identifier);
+
+        $response = $this->call('PATCH', 'users/update-password', [
+            $field => $identifier,
             'token' => $token,
             'password' => $password,
         ]);
@@ -205,5 +214,15 @@ class User extends Resource
         ]);
 
         return 204 === $response->getStatusCode();
+    }
+
+    /**
+     * @param int|string $identifier
+     * @return string
+     */
+    private function userIdentifierField($identifier): string
+    {
+        return is_int($identifier) ?
+            'id' : 'email';
     }
 }
