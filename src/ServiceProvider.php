@@ -56,12 +56,23 @@ class ServiceProvider extends BaseServiceProvider
         }));
 
         return [
-            'base_uri' => trim($app['config']->get('idserver.url'), '/') . '/',
+            'base_uri' => trim(config('idserver.url'), '/') . '/',
             'handler' => $handler,
-            'headers' => [
-                'X-XINGO-Client-ID' => $app['config']->get('idserver.store.client_id'),
-                'X-XINGO-Secret-Key' => $app['config']->get('idserver.store.secret_key'),
-            ],
+            'headers' => $this->getAuthenticationHeader(),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getAuthenticationHeader(): array
+    {
+        $block = app()->runningInConsole() && !app()->runningUnitTests() ?
+            'cli' : 'store';
+
+        return [
+            'X-XINGO-Client-ID' => config("idserver.$block.client_id"),
+            'X-XINGO-Secret-Key' => config("idserver.$block.secret_key"),
         ];
     }
 }
