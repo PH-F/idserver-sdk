@@ -64,6 +64,22 @@ class ManagerTest extends TestCase
     }
 
     /** @test */
+    public function it_adds_the_store_cli_headers_when_forced_to()
+    {
+        $this->app['env'] = 'foo';
+
+        /** @var Client $httpClient */
+        $httpClient = app()->make('idserver.client');
+
+        $headers = $httpClient->getConfig('headers');
+
+        $this->assertArrayHasKey('X-XINGO-Client-ID', $headers);
+        $this->assertArrayHasKey('X-XINGO-Secret-Key', $headers);
+        $this->assertEquals('foo-cli', $headers['X-XINGO-Client-ID']);
+        $this->assertEquals('bar-cli', $headers['X-XINGO-Secret-Key']);
+    }
+
+    /** @test */
     public function it_can_be_called_using_the_ids_helper()
     {
         $this->assertTrue(function_exists('ids'));
