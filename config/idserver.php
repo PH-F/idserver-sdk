@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'url' => env('IDSERVER_URL', 'http://idserver.xingo.nl/v1/'),
+    'url' => env('IDSERVER_URL', 'https://api.idserver.xingo.nl/v1/'),
 
     /*
     |--------------------------------------------------------------------------
