@@ -59,8 +59,24 @@ class ManagerTest extends TestCase
 
         $this->assertArrayHasKey('X-XINGO-Client-ID', $headers);
         $this->assertArrayHasKey('X-XINGO-Secret-Key', $headers);
-        $this->assertEquals('foo', $headers['X-XINGO-Client-ID']);
-        $this->assertEquals('bar', $headers['X-XINGO-Secret-Key']);
+        $this->assertEquals('foo-web', $headers['X-XINGO-Client-ID']);
+        $this->assertEquals('bar-web', $headers['X-XINGO-Secret-Key']);
+    }
+
+    /** @test */
+    public function it_adds_the_store_cli_headers_when_forced_to()
+    {
+        $this->app['env'] = 'foo';
+
+        /** @var Client $httpClient */
+        $httpClient = app()->make('idserver.client');
+
+        $headers = $httpClient->getConfig('headers');
+
+        $this->assertArrayHasKey('X-XINGO-Client-ID', $headers);
+        $this->assertArrayHasKey('X-XINGO-Secret-Key', $headers);
+        $this->assertEquals('foo-cli', $headers['X-XINGO-Client-ID']);
+        $this->assertEquals('bar-cli', $headers['X-XINGO-Secret-Key']);
     }
 
     /** @test */
@@ -78,7 +94,9 @@ class ManagerTest extends TestCase
     {
         parent::getEnvironmentSetUp($app);
 
-        $app['config']->set('idserver.store.client_id', 'foo');
-        $app['config']->set('idserver.store.secret_key', 'bar');
+        $app['config']->set('idserver.store.web.client_id', 'foo-web');
+        $app['config']->set('idserver.store.web.secret_key', 'bar-web');
+        $app['config']->set('idserver.store.cli.client_id', 'foo-cli');
+        $app['config']->set('idserver.store.cli.secret_key', 'bar-cli');
     }
 }
