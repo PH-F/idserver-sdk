@@ -94,9 +94,9 @@ class ManagerTest extends TestCase
     {
         parent::getEnvironmentSetUp($app);
 
-        $app['config']->set('idserver.store.client_id', 'foo-web');
-        $app['config']->set('idserver.store.secret_key', 'bar-web');
-        $app['config']->set('idserver.cli.client_id', 'foo-cli');
-        $app['config']->set('idserver.cli.secret_key', 'bar-cli');
+        $app['config']->set('idserver.store.web.client_id', 'foo-web');
+        $app['config']->set('idserver.store.web.secret_key', 'bar-web');
+        $app['config']->set('idserver.store.cli.client_id', 'foo-cli');
+        $app['config']->set('idserver.store.cli.secret_key', 'bar-cli');
     }
 }

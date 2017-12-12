@@ -68,11 +68,11 @@ class ServiceProvider extends BaseServiceProvider
     private function getAuthenticationHeader(): array
     {
         $block = app()->runningInConsole() && !app()->runningUnitTests() ?
-            'cli' : 'store';
+            'cli' : 'web';
 
         return [
-            'X-XINGO-Client-ID' => config("idserver.$block.client_id"),
-            'X-XINGO-Secret-Key' => config("idserver.$block.secret_key"),
+            'X-XINGO-Client-ID' => config("idserver.store.$block.client_id"),
+            'X-XINGO-Secret-Key' => config("idserver.store.$block.secret_key"),
         ];
     }
 }
