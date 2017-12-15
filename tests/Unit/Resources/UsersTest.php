@@ -100,35 +100,6 @@ class UsersTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_users()
-    {
-        $this->mockResponse(200, [
-            'data' => [
-                ['id' => 2],
-            ],
-            'meta' => [
-                'current_page' => 2,
-                'per_page' => 1,
-                'total' => 3
-            ]
-        ]);
-
-        $collection = $this->manager->users->all(2, 1);
-
-        $this->assertCount(1, $collection);
-        $this->assertEquals(2, $collection->first()->id);
-        $this->assertInstanceOf('stdClass', $collection->meta);
-        $this->assertEquals(1, $collection->meta->per_page);
-        $this->assertEquals(3, $collection->meta->total);
-
-        $this->assertRequest(function (Request $request) {
-            $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('users', $request->getUri()->getPath());
-            $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
-        });
-    }
-
-    /** @test */
     public function it_can_be_filtered_by_id()
     {
         $this->mockResponse(200, [
@@ -177,6 +148,34 @@ class UsersTest extends TestCase
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('users', $request->getUri()->getPath());
             $this->assertEquals(http_build_query(['ids' => '3,5,7']), $request->getUri()->getQuery());
+        });
+    }
+
+    /** @test */
+    public function it_can_be_filtered_using_multiple_filters()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 3],
+            ],
+        ]);
+
+        $users = $this->manager->users
+            ->all($filters = [
+                'first_name' => 'foo',
+                'username' => 'bar',
+            ]);
+
+        $this->assertCount(1, $users);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+
+            $this->assertEquals(
+                'first_name=foo&username=bar&page=1&per_page=10',
+                $request->getUri()->getQuery()
+            );
         });
     }
 

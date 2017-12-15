@@ -49,7 +49,9 @@ class CompaniesTest extends TestCase
             ]
         ]);
 
-        $collection = $this->manager->companies->all(2, 1);
+        $collection = $this->manager->companies
+            ->paginate(2, 1)
+            ->all();
 
         $this->assertCount(1, $collection);
         $this->assertEquals(2, $collection->first()->id);

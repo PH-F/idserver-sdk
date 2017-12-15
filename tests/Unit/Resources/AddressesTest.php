@@ -48,7 +48,9 @@ class AddressesTest extends TestCase
             ]
         ]);
 
-        $collection = $this->manager->addresses->all(2, 1);
+        $collection = $this->manager->addresses
+            ->paginate(2, 1)
+            ->all();
 
         $this->assertCount(1, $collection);
         $this->assertEquals(2, $collection->first()->id);

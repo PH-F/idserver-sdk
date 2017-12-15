@@ -48,7 +48,9 @@ class StoresTest extends TestCase
             ]
         ]);
 
-        $collection = $this->manager->stores->all(2, 1);
+        $collection = $this->manager->stores
+            ->paginate(2, 1)
+            ->all();
 
         $this->assertCount(1, $collection);
         $this->assertEquals(2, $collection->first()->id);
