@@ -69,7 +69,7 @@ class EntityCreator
             }
 
             throw new \DomainException(
-                'Custom entity classes must extend the original one or implement EloquentEntity interface'
+                'Custom entity classes must extend the original one or implement IdsEntity interface'
             );
         }
 
