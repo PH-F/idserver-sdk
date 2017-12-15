@@ -16,7 +16,7 @@ class Subscription extends Resource
      */
     public function all(): Collection
     {
-        $query = $this->paginationQuery();
+        $query = $this->organizerQuery();
 
         $this->call('GET', 'subscriptions', $query);
 

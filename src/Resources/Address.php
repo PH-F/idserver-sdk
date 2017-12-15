@@ -14,7 +14,7 @@ class Address extends Resource
      */
     public function all(): Collection
     {
-        $query = $this->paginationQuery();
+        $query = $this->organizerQuery();
 
         $this->call('GET', 'addresses', $query);
 

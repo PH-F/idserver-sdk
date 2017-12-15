@@ -2,7 +2,7 @@
 
 namespace Xingo\IDServer\Concerns;
 
-trait ResourcePagination
+trait ResourceOrganizer
 {
     /**
      * @var int
@@ -17,7 +17,7 @@ trait ResourcePagination
     /**
      * @var string
      */
-    protected $orderBy;
+    protected $sortBy;
 
     /**
      * @param int $page
@@ -42,17 +42,18 @@ trait ResourcePagination
             $field = [$field => $order];
         }
 
-        $this->orderBy = $this->parseSortQuery($field);
+        $this->sortBy = $this->parseSortQuery($field);
     }
 
     /**
      * @return array
      */
-    protected function paginationQuery(): array
+    protected function organizerQuery(): array
     {
         return [
             'page' => $this->page,
             'per_page' => $this->perPage,
+            'sort' => $this->sortBy ?: '',
         ];
     }
 

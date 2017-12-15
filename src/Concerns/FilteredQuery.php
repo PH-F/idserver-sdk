@@ -4,7 +4,7 @@ namespace Xingo\IDServer\Concerns;
 
 trait FilteredQuery
 {
-    use ResourcePagination;
+    use ResourceOrganizer;
 
     /**
      * @param array $filters
@@ -12,7 +12,7 @@ trait FilteredQuery
      */
     protected function queryString(array $filters): array
     {
-        $pagination = $this->paginationQuery();
+        $pagination = $this->organizerQuery();
         $filters = array_only($filters, static::$filters ?? []);
 
         return array_merge($filters, $pagination);

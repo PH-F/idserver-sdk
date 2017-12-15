@@ -16,7 +16,7 @@ class Store extends Resource
      */
     public function all(): Collection
     {
-        $query = $this->paginationQuery();
+        $query = $this->organizerQuery();
 
         $this->call('GET', 'stores', $query);
 
