@@ -21,12 +21,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Xingo\\IDServer\\": "src/",
-            "Tests\\": "tests/"
+            "Xingo\\IDServer\\": "src/"
         },
         "files": [
             "src/helpers.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "extra": {
         "laravel": {
