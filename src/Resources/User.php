@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use Intervention\Image\ImageManager;
+use Xingo\IDServer\Concerns\FilteredQuery;
 use Xingo\IDServer\Entities;
 
 /**
@@ -14,6 +15,8 @@ use Xingo\IDServer\Entities;
  */
 class User extends Resource
 {
+    use FilteredQuery;
+
     /**
      * @var array
      */
@@ -60,7 +63,7 @@ class User extends Resource
      */
     public function all(array $filters = []): Collection
     {
-        $query = $this->query($filters);
+        $query = $this->queryString($filters);
         $this->call('GET', 'users', $query);
 
         return $this->makeCollection();
@@ -238,17 +241,5 @@ class User extends Resource
         $validator = validator([$identifier], ['email']);
 
         return $validator->passes() ? 'email' : 'id';
-    }
-
-    /**
-     * @param array $filters
-     * @return array
-     */
-    protected function query(array $filters): array
-    {
-        $pagination = $this->paginationQuery();
-        $filters = array_only($filters, static::$filters);
-
-        return array_merge($filters, $pagination);
     }
 }
