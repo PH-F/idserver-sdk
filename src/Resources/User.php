@@ -41,13 +41,11 @@ class User extends Resource
     }
 
     /**
-     * @param int $page
-     * @param int $per_page
      * @return Collection
      */
-    public function all(int $page = 1, int $per_page = 10): Collection
+    public function all(): Collection
     {
-        $query = compact('page', 'per_page');
+        $query = $this->paginationQuery();
 
         $this->call('GET', 'users', $query);
 

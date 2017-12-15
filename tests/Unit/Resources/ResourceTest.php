@@ -11,8 +11,8 @@ use Tests\TestCase;
 use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Entities\User as UserEntity;
 use Xingo\IDServer\Exceptions;
-use Xingo\IDServer\Resources\Resource;
 use Xingo\IDServer\Resources;
+use Xingo\IDServer\Resources\Resource;
 
 class ResourceTest extends TestCase
 {
@@ -107,13 +107,14 @@ class ResourceTest extends TestCase
 
         $this->assertEquals($resource->id, 1);
     }
+
     /** @test */
     public function it_accepts_an_object_as_invoke_parameter()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
 
-        $user = (object) ['id' => 1];
+        $user = (object)['id' => 1];
         $resource = $manager->users($user);
 
         $this->assertEquals($resource->id, 1);
@@ -153,5 +154,36 @@ class ResourceTest extends TestCase
 
         $class = app(Resources\Address::class);
         $this->assertEquals('addresses', $class->toShortName());
+    }
+
+    /** @test */
+    public function it_paginates_using_a_custom_method()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 2],
+            ],
+            'meta' => [
+                'current_page' => 2,
+                'per_page' => 1,
+                'total' => 3
+            ]
+        ]);
+
+        $collection = $this->manager->users
+            ->paginate(2, 1)
+            ->all();
+
+        $this->assertCount(1, $collection);
+        $this->assertEquals(2, $collection->first()->id);
+        $this->assertInstanceOf('stdClass', $collection->meta);
+        $this->assertEquals(1, $collection->meta->per_page);
+        $this->assertEquals(3, $collection->meta->total);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
+        });
     }
 }
