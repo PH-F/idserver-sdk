@@ -48,7 +48,9 @@ class SubscriptionsTest extends TestCase
             ]
         ]);
 
-        $collection = $this->manager->subscriptions->all(2, 1);
+        $collection = $this->manager->subscriptions
+            ->paginate(2, 1)
+            ->all();
 
         $this->assertCount(1, $collection);
         $this->assertEquals(2, $collection->first()->id);

@@ -64,6 +64,7 @@ class User extends Resource
     public function all(array $filters = []): Collection
     {
         $query = $this->queryString($filters);
+
         $this->call('GET', 'users', $query);
 
         return $this->makeCollection();
