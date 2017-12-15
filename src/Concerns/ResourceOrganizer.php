@@ -35,6 +35,7 @@ trait ResourceOrganizer
     /**
      * @param string|array $field
      * @param string $order
+     * @return $this
      */
     public function sort($field, string $order = 'asc')
     {
@@ -43,6 +44,8 @@ trait ResourceOrganizer
         }
 
         $this->sortBy = $this->parseSortQuery($field);
+
+        return $this;
     }
 
     /**
@@ -50,11 +53,12 @@ trait ResourceOrganizer
      */
     protected function organizerQuery(): array
     {
-        return [
+        return array_merge([
             'page' => $this->page,
             'per_page' => $this->perPage,
-            'sort' => $this->sortBy ?: '',
-        ];
+        ], $this->sortBy ? [
+            'sort' => $this->sortBy,
+        ] : []);
     }
 
     /**

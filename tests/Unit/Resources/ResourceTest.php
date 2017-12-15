@@ -186,4 +186,37 @@ class ResourceTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
+
+    /** @test */
+    public function it_can_be_sorted()
+    {
+        $this->mockResponse(200);
+        $this->mockResponse(200);
+
+        $this->manager->users
+            ->paginate(2, 1)
+            ->sort('foo', 'asc')
+            ->all();
+
+        $this->assertRequest(function (Request $request) {
+            $query = 'page=2&per_page=1&sort=' . urlencode('+foo');
+            $this->assertEquals($query, $request->getUri()->getQuery());
+        });
+
+        $this->manager->users
+            ->paginate(3, 2)
+            ->sort([
+                'foo' => 'asc',
+                'bar' => 'desc',
+            ])
+            ->all();
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals(http_build_query([
+                'page' => 3,
+                'per_page' => 2,
+                'sort' => '+foo,-bar',
+            ]), $request->getUri()->getQuery());
+        });
+    }
 }
