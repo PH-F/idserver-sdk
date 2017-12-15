@@ -15,6 +15,20 @@ use Xingo\IDServer\Entities;
 class User extends Resource
 {
     /**
+     * @var array
+     */
+    protected static $filters = [
+        'ids',
+        'role',
+        'name',
+        'first_name',
+        'last_name',
+        'username',
+        'birth',
+        'status',
+    ];
+
+    /**
      * @param string $email
      * @param string $password
      * @return Entities\Entity
@@ -41,12 +55,12 @@ class User extends Resource
     }
 
     /**
+     * @param array $filters
      * @return Collection
      */
-    public function all(): Collection
+    public function all(array $filters = []): Collection
     {
-        $query = $this->paginationQuery();
-
+        $query = $this->query($filters);
         $this->call('GET', 'users', $query);
 
         return $this->makeCollection();
@@ -224,5 +238,17 @@ class User extends Resource
         $validator = validator([$identifier], ['email']);
 
         return $validator->passes() ? 'email' : 'id';
+    }
+
+    /**
+     * @param array $filters
+     * @return array
+     */
+    protected function query(array $filters): array
+    {
+        $pagination = $this->paginationQuery();
+        $filters = array_only($filters, static::$filters);
+
+        return array_merge($filters, $pagination);
     }
 }

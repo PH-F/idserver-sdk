@@ -152,6 +152,34 @@ class UsersTest extends TestCase
     }
 
     /** @test */
+    public function it_can_be_filtered_using_multiple_filters()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 3],
+            ],
+        ]);
+
+        $users = $this->manager->users
+            ->all($filters = [
+                'first_name' => 'foo',
+                'username' => 'bar',
+            ]);
+
+        $this->assertCount(1, $users);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+
+            $this->assertEquals(
+                'first_name=foo&username=bar&page=1&per_page=10',
+                $request->getUri()->getQuery()
+            );
+        });
+    }
+
+    /** @test */
     public function it_updates_a_user_with_a_200_status()
     {
         $this->mockResponse(200, [
