@@ -12,9 +12,9 @@ trait FilteredQuery
      */
     protected function queryString(array $filters): array
     {
-        $pagination = $this->organizerQuery();
+        $organizer = $this->organizerQuery();
         $filters = array_only($filters, static::$filters ?? []);
 
-        return array_merge($filters, $pagination);
+        return array_merge($filters, $organizer);
     }
 }
