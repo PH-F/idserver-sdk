@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Request;
 use Intervention\Image\ImageManager;
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
@@ -30,6 +31,7 @@ class UsersTest extends TestCase
             ->create($data);
 
         $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceOf(IdsEntity::class, $user);
         $this->assertEquals('john@example.com', $user->email);
         $this->assertGreaterThan(0, $user->id);
 
@@ -68,6 +70,7 @@ class UsersTest extends TestCase
             ->get();
 
         $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceOf(IdsEntity::class, $user);
         $this->assertEquals('john@example.com', $user->email);
         $this->assertEquals(1, $user->id);
 
@@ -92,6 +95,7 @@ class UsersTest extends TestCase
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(User::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
 
         $this->assertRequest(function (Request $request) {
@@ -195,6 +199,7 @@ class UsersTest extends TestCase
         ]);
 
         $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceOf(IdsEntity::class, $user);
         $this->assertEquals('foo', $user->first_name);
         $this->assertEquals(1, $user->id);
 
@@ -238,6 +243,7 @@ class UsersTest extends TestCase
             ->login('john@example.com', 'secret');
 
         $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceOf(IdsEntity::class, $user);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
@@ -347,6 +353,8 @@ class UsersTest extends TestCase
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $user = $this->manager->users(1)->confirm('fake-token');
+
+        $this->assertInstanceOf(IdsEntity::class, $user);
         $this->assertEquals(1, $user->id);
 
         $this->assertRequest(function (Request $request) {
@@ -373,6 +381,7 @@ class UsersTest extends TestCase
         $user = $this->manager->users(1)
             ->changeAvatar('http://placehold.it/30x30');
 
+        $this->assertInstanceOf(IdsEntity::class, $user);
         $this->assertEquals(1, $user->id);
         $this->assertArrayHasKey('url', $user->avatar);
         $this->assertEquals('http://google.com', $user->avatar['url']);
@@ -424,6 +433,7 @@ class UsersTest extends TestCase
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Address::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals('foo', $collection->first()->street);
         $this->assertEquals('bar', $collection->last()->street);
     }

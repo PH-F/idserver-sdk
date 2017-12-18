@@ -112,9 +112,9 @@ abstract class Resource
     /**
      * @param array $attributes
      * @param string|null $class
-     * @return Entity
+     * @return IdsEntity
      */
-    protected function makeEntity(array $attributes = null, ?string $class = null): Entity
+    protected function makeEntity(array $attributes = null, ?string $class = null): IdsEntity
     {
         $attributes = $attributes ?: $this->contents['data'] ?? [];
 

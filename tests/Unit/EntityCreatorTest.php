@@ -13,6 +13,16 @@ use Xingo\IDServer\Resources;
 class EntityCreatorTest extends TestCase
 {
     /** @test */
+    public function it_returns_the_correct_type_even_for_no_custom_classes()
+    {
+        $creator = new EntityCreator(Resources\User::class);
+        $entity = $creator->entity(['name' => 'John']);
+
+        $this->assertInstanceOf(IdsEntity::class, $entity);
+        $this->assertEquals('John', $entity->name);
+    }
+    
+    /** @test */
     public function it_can_replace_an_entity_instance_by_a_custom_one()
     {
         $this->app['config']->set('idserver.classes', [

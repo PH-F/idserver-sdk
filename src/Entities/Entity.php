@@ -3,8 +3,9 @@
 namespace Xingo\IDServer\Entities;
 
 use Carbon\Carbon;
+use Xingo\IDServer\Contracts\IdsEntity;
 
-abstract class Entity
+abstract class Entity implements IdsEntity
 {
     /**
      * @var array
@@ -38,7 +39,26 @@ abstract class Entity
      */
     public function __get(string $name)
     {
-        return $this->attributes[$name] ?? null;
+        return $this->getAttribute($name);
+    }
+
+    /**
+     * @param array $attributes
+     * @param bool $sync
+     * @return mixed|void
+     */
+    public function setRawAttributes(array $attributes, $sync = false)
+    {
+        $this->attributes = $this->convert($attributes);
+    }
+
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    public function getAttribute($key)
+    {
+        return $this->attributes[$key] ?? null;
     }
 
     /**

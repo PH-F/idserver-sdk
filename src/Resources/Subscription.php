@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 
 /**
@@ -24,9 +25,9 @@ class Subscription extends Resource
     }
 
     /**
-     * @return Entities\Entity|Entities\Subscription
+     * @return IdsEntity
      */
-    public function get(): Entities\Subscription
+    public function get(): IdsEntity
     {
         $this->call('GET', "subscriptions/$this->id");
 
@@ -46,9 +47,9 @@ class Subscription extends Resource
 
     /**
      * @param array $attributes
-     * @return Entities\Entity|Entities\Subscription
+     * @return IdsEntity
      */
-    public function create(array $attributes): Entities\Subscription
+    public function create(array $attributes): IdsEntity
     {
         $attributes = array_only($attributes, ['store_id', 'plan_id', 'currency', 'coupon']);
 
@@ -59,9 +60,9 @@ class Subscription extends Resource
 
     /**
      * @param Entities\Plan|int $plan
-     * @return Entities\Entity|Entities\Subscription
+     * @return IdsEntity
      */
-    public function renew($plan): Entities\Subscription
+    public function renew($plan): IdsEntity
     {
         $plan_id = $plan instanceof Entities\Plan ?
             $plan->id : (int)$plan;
@@ -73,9 +74,9 @@ class Subscription extends Resource
 
     /**
      * @param array $attributes
-     * @return Entities\Entity|Entities\Subscription
+     * @return IdsEntity
      */
-    public function update(array $attributes): Entities\Subscription
+    public function update(array $attributes): IdsEntity
     {
         $attributes = array_only($attributes, ['store_id', 'plan_id']);
 
