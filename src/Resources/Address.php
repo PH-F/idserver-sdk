@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\NestedResource;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 
 class Address extends Resource
@@ -22,9 +23,9 @@ class Address extends Resource
     }
 
     /**
-     * @return Entities\Entity|Entities\Address
+     * @return IdsEntity
      */
-    public function get(): Entities\Address
+    public function get(): IdsEntity
     {
         $this->call('GET', "addresses/$this->id");
 
@@ -33,9 +34,9 @@ class Address extends Resource
 
     /**
      * @param array $attributes
-     * @return Entities\Entity|Entities\Address
+     * @return Entities\Address
      */
-    public function update(array $attributes): Entities\Address
+    public function update(array $attributes): IdsEntity
     {
         $this->call('PUT', "addresses/$this->id", $attributes);
 
@@ -54,9 +55,9 @@ class Address extends Resource
 
     /**
      * @param array $attributes
-     * @return Entities\Address|Entities\Entity
+     * @return IdsEntity
      */
-    public function create(array $attributes)
+    public function create(array $attributes): IdsEntity
     {
         $resource = $this->toShortName($this->parent);
         $uri = "$resource/{$this->parent->id}/addresses";
