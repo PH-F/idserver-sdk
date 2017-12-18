@@ -5,6 +5,7 @@ namespace Tests\Unit\Resources;
 use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Resources\Collection;
@@ -28,6 +29,7 @@ class CompaniesTest extends TestCase
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Entities\Company::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
 
         $this->assertRequest(function (Request $request) {
@@ -74,6 +76,7 @@ class CompaniesTest extends TestCase
         $item = $this->manager->companies(1)->get();
 
         $this->assertInstanceOf(Entities\Company::class, $item);
+        $this->assertInstanceOf(IdsEntity::class, $item);
         $this->assertEquals(1, $item->id);
 
         $this->assertRequest(function (Request $request) {
@@ -110,6 +113,7 @@ class CompaniesTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Entities\Company::class, $company);
+        $this->assertInstanceOf(IdsEntity::class, $company);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
@@ -147,6 +151,7 @@ class CompaniesTest extends TestCase
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Address::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals('foo', $collection->first()->street);
         $this->assertEquals('bar', $collection->last()->street);
     }

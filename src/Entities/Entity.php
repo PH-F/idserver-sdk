@@ -7,8 +7,9 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use JsonSerializable;
+use Xingo\IDServer\Contracts\IdsEntity;
 
-abstract class Entity implements Arrayable, Jsonable, JsonSerializable
+abstract class Entity implements Arrayable, IdsEntity, Jsonable, JsonSerializable
 {
     /**
      * @var array
@@ -42,7 +43,26 @@ abstract class Entity implements Arrayable, Jsonable, JsonSerializable
      */
     public function __get(string $name)
     {
-        return $this->attributes[$name] ?? null;
+        return $this->getAttribute($name);
+    }
+
+    /**
+     * @param array $attributes
+     * @param bool $sync
+     * @return mixed|void
+     */
+    public function setRawAttributes(array $attributes, $sync = false)
+    {
+        $this->attributes = $this->convert($attributes);
+    }
+
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    public function getAttribute($key)
+    {
+        return $this->attributes[$key] ?? null;
     }
 
     /**

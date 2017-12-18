@@ -5,6 +5,7 @@ namespace Tests\Unit\Resources;
 use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources\Collection;
 
@@ -27,6 +28,7 @@ class SubscriptionsTest extends TestCase
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Entities\Subscription::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
 
         $this->assertRequest(function (Request $request) {
@@ -73,6 +75,7 @@ class SubscriptionsTest extends TestCase
         $item = $this->manager->subscriptions(1)->get();
 
         $this->assertInstanceOf(Entities\Subscription::class, $item);
+        $this->assertInstanceOf(IdsEntity::class, $item);
         $this->assertEquals(1, $item->id);
 
         $this->assertRequest(function (Request $request) {
@@ -96,6 +99,7 @@ class SubscriptionsTest extends TestCase
         $this->assertInstanceOf(Collection::class, $items);
         $this->assertCount(2, $items);
         $this->assertInstanceOf(Entities\Subscription::class, $items->first());
+        $this->assertInstanceOf(IdsEntity::class, $items->first());
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
@@ -149,6 +153,7 @@ class SubscriptionsTest extends TestCase
         $subscription = $this->manager->subscriptions(1)->renew($plan);
 
         $this->assertInstanceOf(Entities\Subscription::class, $subscription);
+        $this->assertInstanceOf(IdsEntity::class, $subscription);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
@@ -158,6 +163,7 @@ class SubscriptionsTest extends TestCase
 
         $subscription = $this->manager->subscriptions(1)->renew(2);
         $this->assertInstanceOf(Entities\Subscription::class, $subscription);
+        $this->assertInstanceOf(IdsEntity::class, $subscription);
     }
 
     /** @test */
@@ -170,6 +176,7 @@ class SubscriptionsTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Entities\Subscription::class, $subscription);
+        $this->assertInstanceOf(IdsEntity::class, $subscription);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());

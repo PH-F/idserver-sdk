@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 
 /**
@@ -24,9 +25,9 @@ class Store extends Resource
     }
 
     /**
-     * @return Entities\Entity|Entities\Store
+     * @return IdsEntity
      */
-    public function get(): Entities\Store
+    public function get(): IdsEntity
     {
         $this->call('GET', "stores/$this->id");
 
@@ -35,9 +36,9 @@ class Store extends Resource
 
     /**
      * @param array $attributes
-     * @return Entities\Entity|Entities\Store
+     * @return IdsEntity
      */
-    public function create(array $attributes): Entities\Store
+    public function create(array $attributes): IdsEntity
     {
         $this->call('POST', 'stores', $attributes);
 
@@ -46,9 +47,9 @@ class Store extends Resource
 
     /**
      * @param array $attributes
-     * @return Entities\Entity|Entities\Store
+     * @return IdsEntity
      */
-    public function update(array $attributes): Entities\Store
+    public function update(array $attributes): IdsEntity
     {
         $this->call('PUT', "stores/$this->id", $attributes);
 

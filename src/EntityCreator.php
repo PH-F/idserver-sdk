@@ -25,9 +25,9 @@ class EntityCreator
     /**
      * @param array $attributes
      * @param null|string $class
-     * @return mixed
+     * @return IdsEntity
      */
-    public function entity(array $attributes, ?string $class = null)
+    public function entity(array $attributes, ?string $class = null): IdsEntity
     {
         if ($class === null) {
             $entity = (new ReflectionClass($this->caller))->getShortName();
