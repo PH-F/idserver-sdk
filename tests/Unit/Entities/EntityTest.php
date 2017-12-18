@@ -107,4 +107,26 @@ class EntityTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $user->start_date);
         $this->assertInstanceOf(Carbon::class, $user->end_date);
     }
+
+    /** @test */
+    public function it_can_be_converted_to_json()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'name' => 'John Doe',
+                'date_of_birth' => '2017-12-31',
+                'store' => [
+                    'name' => 'Foo Store',
+                ],
+            ],
+        ]);
+
+        $entity = $this->manager->subscriptions(1)->get();
+        $json = $entity->toJson();
+
+        $this->assertInternalType('string', $json);
+        $this->isJson()->evaluate($json);
+        $this->assertStringStartsWith('{', $json);
+        $this->assertInternalType('array', json_decode($json, true));
+    }
 }

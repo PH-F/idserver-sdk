@@ -3,8 +3,12 @@
 namespace Xingo\IDServer\Entities;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Database\Eloquent\JsonEncodingException;
+use JsonSerializable;
 
-abstract class Entity
+abstract class Entity implements Arrayable, Jsonable, JsonSerializable
 {
     /**
      * @var array
@@ -39,6 +43,47 @@ abstract class Entity
     public function __get(string $name)
     {
         return $this->attributes[$name] ?? null;
+    }
+
+    /**
+     * @param int $options
+     * @return string
+     */
+    public function toJson($options = 0): string
+    {
+        $json = json_encode($this->jsonSerialize(), $options);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw JsonEncodingException::forModel($this, json_last_error_msg());
+        }
+
+        return $json;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return array_map(function ($value) {
+            if ($value instanceof JsonSerializable) {
+                return $value->jsonSerialize();
+            } elseif ($value instanceof Jsonable) {
+                return json_decode($value->toJson(), true);
+            } elseif ($value instanceof Arrayable) {
+                return $value->toArray();
+            } else {
+                return $value;
+            }
+        }, $this->attributes);
     }
 
     /**
