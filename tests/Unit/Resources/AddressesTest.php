@@ -5,6 +5,7 @@ namespace Tests\Unit\Resources;
 use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources;
 
@@ -27,6 +28,7 @@ class AddressesTest extends TestCase
         $this->assertInstanceOf(Resources\Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Entities\Address::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
 
         $this->assertRequest(function (Request $request) {
@@ -73,6 +75,7 @@ class AddressesTest extends TestCase
         $item = $this->manager->addresses(1)->get();
 
         $this->assertInstanceOf(Entities\Address::class, $item);
+        $this->assertInstanceOf(IdsEntity::class, $item);
         $this->assertEquals(1, $item->id);
 
         $this->assertRequest(function (Request $request) {
@@ -95,6 +98,7 @@ class AddressesTest extends TestCase
             );
 
         $this->assertInstanceOf(Entities\Address::class, $address);
+        $this->assertInstanceOf(IdsEntity::class, $address);
         $this->assertEquals('foo', $address->street);
 
         $this->assertRequest(function (Request $request) use ($params) {
@@ -118,6 +122,7 @@ class AddressesTest extends TestCase
             );
 
         $this->assertInstanceOf(Entities\Address::class, $address);
+        $this->assertInstanceOf(IdsEntity::class, $address);
         $this->assertEquals('foo', $address->street);
 
         $this->assertRequest(function (Request $request) use ($params) {
@@ -137,6 +142,7 @@ class AddressesTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Entities\Address::class, $company);
+        $this->assertInstanceOf(IdsEntity::class, $company);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());

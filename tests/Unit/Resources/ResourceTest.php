@@ -9,6 +9,7 @@ use ReflectionMethod;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Concerns\NestedResource;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\User as UserEntity;
 use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Resources;
@@ -46,6 +47,7 @@ class ResourceTest extends TestCase
         $entity = $method->invokeArgs($user, [['name' => 'John']]);
 
         $this->assertInstanceOf(UserEntity::class, $entity);
+        $this->assertInstanceOf(IdsEntity::class, $entity);
         $this->assertEquals('John', $entity->name);
     }
 

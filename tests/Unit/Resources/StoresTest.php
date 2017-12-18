@@ -5,6 +5,7 @@ namespace Tests\Unit\Resources;
 use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
+use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources\Collection;
 
@@ -27,6 +28,7 @@ class StoresTest extends TestCase
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Entities\Store::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
 
         $this->assertRequest(function (Request $request) {
@@ -73,6 +75,7 @@ class StoresTest extends TestCase
         $item = $this->manager->stores(1)->get();
 
         $this->assertInstanceOf(Entities\Store::class, $item);
+        $this->assertInstanceOf(IdsEntity::class, $item);
         $this->assertEquals(1, $item->id);
 
         $this->assertRequest(function (Request $request) {
@@ -109,6 +112,7 @@ class StoresTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Entities\Store::class, $company);
+        $this->assertInstanceOf(IdsEntity::class, $company);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
