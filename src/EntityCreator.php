@@ -46,7 +46,7 @@ class EntityCreator
     {
         $items = collect($data)->map(function ($item) {
             return $this->entity($item);
-        })->toArray();
+        })->all();
 
         return new Collection($items, $meta);
     }
