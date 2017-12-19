@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Entities;
 
+use ArrayAccess;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\JsonEncodingException;
 use JsonSerializable;
 use Xingo\IDServer\Contracts\IdsEntity;
 
-abstract class Entity implements Arrayable, IdsEntity, Jsonable, JsonSerializable
+abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, JsonSerializable
 {
     /**
      * @var array
@@ -104,6 +105,44 @@ abstract class Entity implements Arrayable, IdsEntity, Jsonable, JsonSerializabl
                 return $value;
             }
         }, $this->attributes);
+    }
+
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->attributes[$offset]);
+    }
+
+    /**
+     * @param mixed $offset
+     * @return mixed|null
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getAttribute($offset);
+    }
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->attributes = array_merge(
+            $this->attributes,
+            $this->convert([$offset => $value])
+        );
+    }
+
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->attributes[$offset]);
     }
 
     /**
