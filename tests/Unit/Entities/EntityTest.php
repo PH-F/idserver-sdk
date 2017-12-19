@@ -129,4 +129,25 @@ class EntityTest extends TestCase
         $this->assertStringStartsWith('{', $json);
         $this->assertInternalType('array', json_decode($json, true));
     }
+
+    /** @test */
+    public function it_implements_array_access_interface()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'foo' => 'Foo Bar',
+                'created_at' => '2017-12-31',
+                'store' => [
+                    'name' => 'Foo Store',
+                ],
+            ],
+        ]);
+
+        $entity = $this->manager->subscriptions(1)->get();
+
+        $this->assertEquals('Foo Bar', $entity['foo']);
+        $this->assertInstanceOf(Carbon::class, $entity['created_at']);
+        $this->assertInstanceOf(Entities\Store::class, $entity['store']);
+        $this->assertEquals('Foo Store', $entity['store']->name);
+    }
 }
