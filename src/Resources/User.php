@@ -19,20 +19,6 @@ class User extends Resource
     use FilteredQuery;
 
     /**
-     * @var array
-     */
-    protected static $filters = [
-        'ids',
-        'role',
-        'name',
-        'first_name',
-        'last_name',
-        'username',
-        'birth',
-        'status',
-    ];
-
-    /**
      * @param string $email
      * @param string $password
      * @return IdsEntity
