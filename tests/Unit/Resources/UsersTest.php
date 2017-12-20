@@ -256,6 +256,25 @@ class UsersTest extends TestCase
     }
 
     /** @test */
+    public function it_can_send_a_claims_array_to_the_login_endpoint()
+    {
+        $this->mockResponse(200, ['token' => 'bar']);
+
+        $this->manager->users
+            ->login('john@example.com', 'secret', [
+                'foo' => true,
+            ]);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals(http_build_query([
+                'email' => 'john@example.com',
+                'password' => 'secret',
+                'claims' => ['foo' => true],
+            ]), (string)$request->getBody());
+        });
+    }
+
+    /** @test */
     public function it_checks_for_login_with_401_status()
     {
         $this->mockResponse(401, ['data' => []]);

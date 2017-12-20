@@ -21,11 +21,12 @@ class User extends Resource
     /**
      * @param string $email
      * @param string $password
+     * @param array $claims
      * @return IdsEntity
      */
-    public function login(string $email, string $password): IdsEntity
+    public function login(string $email, string $password, array $claims = []): IdsEntity
     {
-        $this->call('POST', 'auth/login', compact('email', 'password'));
+        $this->call('POST', 'auth/login', compact('email', 'password', 'claims'));
 
         app('idserver.manager')->setToken($this->contents['token']);
 
