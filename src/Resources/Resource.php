@@ -97,7 +97,7 @@ abstract class Resource
 
         try {
             $response = $this->client->request($method, $uri, [
-                $option => $this->formatParams($params),
+                $option => $this->convertNullToEmptyString($params),
             ]);
         } catch (ClientException | ServerException $e) {
             $this->throwsException($e->getResponse());
@@ -112,7 +112,7 @@ abstract class Resource
      * @param array $params
      * @return array
      */
-    protected function formatParams(array $params): array
+    protected function convertNullToEmptyString(array $params): array
     {
         return collect($params)->mapWithKeys(function ($value, $field) {
             $value = null === $value ? '' : $value;
