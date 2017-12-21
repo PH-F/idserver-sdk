@@ -137,17 +137,35 @@ class AddressesTest extends TestCase
     {
         $this->mockResponse(200);
 
-        $company = $this->manager->addresses(3)->update([
+        $address = $this->manager->addresses(3)->update([
             'street' => 'Somewhere Street',
         ]);
 
-        $this->assertInstanceOf(Entities\Address::class, $company);
-        $this->assertInstanceOf(IdsEntity::class, $company);
+        $this->assertInstanceOf(Entities\Address::class, $address);
+        $this->assertInstanceOf(IdsEntity::class, $address);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('addresses/3', $request->getUri()->getPath());
             $this->assertEquals('street=Somewhere+Street', $request->getBody());
+        });
+    }
+
+    /** @test */
+    public function it_can_be_updated_with_null_data()
+    {
+        $this->mockResponse(200);
+
+        $this->manager->addresses(3)->update([
+            'foo' => null,
+            'bar' => 0,
+            'baz' => '',
+        ]);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('addresses/3', $request->getUri()->getPath());
+            $this->assertEquals('foo=&bar=0&baz=', (string)$request->getBody());
         });
     }
 

@@ -10,7 +10,6 @@ use Xingo\IDServer\Concerns\CallableResources;
 use Xingo\IDServer\Concerns\CustomExceptions;
 use Xingo\IDServer\Concerns\ResourceOrganizer;
 use Xingo\IDServer\Contracts\IdsEntity;
-use Xingo\IDServer\Entities\Entity;
 use Xingo\IDServer\EntityCreator;
 
 abstract class Resource
@@ -98,7 +97,7 @@ abstract class Resource
 
         try {
             $response = $this->client->request($method, $uri, [
-                $option => $params,
+                $option => $this->formatParams($params),
             ]);
         } catch (ClientException | ServerException $e) {
             $this->throwsException($e->getResponse());
@@ -107,6 +106,19 @@ abstract class Resource
         $this->contents = $response->getBody()->asJson();
 
         return $response;
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     */
+    protected function formatParams(array $params): array
+    {
+        return collect($params)->mapWithKeys(function ($value, $field) {
+            $value = null === $value ? '' : $value;
+
+            return [$field => $value];
+        })->all();
     }
 
     /**
