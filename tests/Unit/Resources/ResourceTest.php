@@ -221,4 +221,5 @@ class ResourceTest extends TestCase
             ]), $request->getUri()->getQuery());
         });
     }
+
 }
