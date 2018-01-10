@@ -68,6 +68,6 @@ trait ResourceBlueprint
      */
     protected function getResourceName()
     {
-        return strtolower(str_plural(class_basename($this)));
+        return strtolower(str_plural(class_basename(static::class)));
     }
 }
