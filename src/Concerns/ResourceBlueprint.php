@@ -7,12 +7,15 @@ use Xingo\IDServer\Resources\Collection;
 
 trait ResourceBlueprint
 {
+    use FilteredQuery;
+
     /**
+     * @param array $filters
      * @return Collection
      */
-    public function all(): Collection
+    public function all(array $filters = []): Collection
     {
-        $query = $this->organizerQuery();
+        $query = $this->queryString($filters);
 
         $this->call('GET', $this->getResourceName(), $query);
 
