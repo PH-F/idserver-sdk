@@ -18,8 +18,8 @@ class AbilitiesTest extends TestCase
     {
         $this->mockResponse(200, [
             'data' => [
-                ['id' => 1],
-                ['id' => 2],
+                ['name' => '*'],
+                ['name' => 'users.index'],
             ],
         ]);
 
@@ -29,7 +29,7 @@ class AbilitiesTest extends TestCase
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Entities\Ability::class, $collection->first());
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
-        $this->assertEquals(2, $collection->last()->id);
+        $this->assertEquals('users.index', $collection->last()->name);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('abilities', $request->getUri()->getPath());
