@@ -11,10 +11,12 @@ use Xingo\IDServer\Resources;
 /**
  * Class Client
  *
- * @property Resources\Company addresses
- * @method Resources\Company addresses(int | Entities\Company $resource)
+ * @property Resources\Address addresses
+ * @method Resources\Address addresses(int | Entities\Address $resource)
  * @property Resources\Company companies
  * @method Resources\Company companies(int | Entities\Company $resource)
+ * @property Resources\Role roles
+ * @method Resources\Role roles(int | Entities\Role $resource)
  * @property Resources\Subscription subscriptions
  * @method Resources\Subscription subscriptions(int | Entities\Subscription $resource)
  * @property Resources\Store stores
