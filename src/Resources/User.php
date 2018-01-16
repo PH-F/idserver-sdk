@@ -12,7 +12,7 @@ use Xingo\IDServer\Entities;
  *
  * @package Xingo\IDServer\Resources
  * @property Tag tags
- * @property \Xingo\IDServer\Resources\Address addresses
+ * @property Address addresses
  */
 class User extends Resource
 {

@@ -136,14 +136,18 @@ abstract class Resource
     /**
      * @param array|null $data
      * @param array|null $meta
+     * @param null|string $class
      * @return Collection
      */
-    protected function makeCollection(array $data = null, array $meta = null): Collection
-    {
+    protected function makeCollection(
+        array $data = null,
+        array $meta = null,
+        ?string $class = null
+    ): Collection {
         $data = $data ?: $this->contents['data'] ?? [];
         $meta = $meta ?: $this->contents['meta'] ?? [];
 
-        return $this->creator->collection($data, $meta);
+        return $this->creator->collection($data, $meta, $class);
     }
 
     /**

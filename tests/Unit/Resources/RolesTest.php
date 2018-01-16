@@ -36,4 +36,48 @@ class RolesTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
+
+    /** @test */
+    public function it_can_update_abilities_when_updating_a_role()
+    {
+        // Call to update /roles/1
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+
+        // Call to update /roles/1/abilities
+        $this->mockResponse(200, [
+            'data' => [
+                [
+                    'name' => 'drink_coffee',
+                    'title' => 'Drink Coffee',
+                ],
+                [
+                    'name' => 'get_some_beer',
+                    'title' => 'Get some beer',
+                ],
+            ],
+        ]);
+
+        $role = $this->manager
+            ->roles(1)
+            ->update([], ['drink_coffee', 'get_some_beer']);
+
+        $this->assertInstanceOf(Entities\Role::class, $role);
+        $this->assertEquals(1, $role->id);
+        $this->assertInstanceOf(Collection::class, $role->abilities);
+        $this->assertInstanceOf(Entities\Ability::class, $role->abilities->first());
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('roles/1', $request->getUri()->getPath());
+        });
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('roles/1/abilities', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'drink_coffee',
+                'get_some_beer',
+            ]), (string)$request->getBody());
+        });
+    }
 }
