@@ -7,5 +7,5 @@ class Role extends Entity
     /**
      * @var array
      */
-    protected $abilities = [];
+    public $abilities = [];
 }

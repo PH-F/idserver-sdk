@@ -23,10 +23,14 @@ class Role extends Resource
     public function update(array $attributes, array $abilities = []): IdsEntity
     {
         $this->call('PUT', "roles/$this->id", $attributes);
+
+        /** @var \Xingo\IDServer\Entities\Role $role */
         $role = $this->makeEntity();
 
-        $this->call('PUT', "roles/$this->id/abilities", $abilities);
-        $role->abilities = (array)$this->contents['data'];
+        if (!empty($abilities)) {
+            $this->call('PUT', "roles/$this->id/abilities", $abilities);
+            $role->abilities = (array)$this->contents['data'];
+        }
 
         return $role;
     }
