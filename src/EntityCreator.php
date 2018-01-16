@@ -40,12 +40,13 @@ class EntityCreator
     /**
      * @param array $data
      * @param array $meta
+     * @param null|string $class
      * @return Collection
      */
-    public function collection(array $data, array $meta): Collection
+    public function collection(array $data, array $meta, ?string $class = null): Collection
     {
-        $items = collect($data)->map(function ($item) {
-            return $this->entity($item);
+        $items = collect($data)->map(function ($item) use ($class) {
+            return $this->entity($item, $class);
         })->all();
 
         return new Collection($items, $meta);
