@@ -45,29 +45,39 @@ class RolesTest extends TestCase
 
         // Call to update /roles/1/abilities
         $this->mockResponse(200, [
-            'data' => $abilities = [
-                'drink_coffee',
-                'get_some_beer',
+            'data' => [
+                [
+                    'name' => 'drink_coffee',
+                    'title' => 'Drink Coffee',
+                ],
+                [
+                    'name' => 'get_some_beer',
+                    'title' => 'Get some beer',
+                ],
             ],
         ]);
 
         $role = $this->manager
             ->roles(1)
-            ->update([], $abilities);
+            ->update([], ['drink_coffee', 'get_some_beer']);
 
         $this->assertInstanceOf(Entities\Role::class, $role);
         $this->assertEquals(1, $role->id);
-        $this->assertEquals($abilities, $role->abilities);
+        $this->assertInstanceOf(Collection::class, $role->abilities);
+        $this->assertInstanceOf(Entities\Ability::class, $role->abilities->first());
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('roles/1', $request->getUri()->getPath());
         });
 
-        $this->assertRequest(function (Request $request) use ($abilities) {
+        $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('roles/1/abilities', $request->getUri()->getPath());
-            $this->assertEquals(http_build_query($abilities), (string)$request->getBody());
+            $this->assertEquals(http_build_query([
+                'drink_coffee',
+                'get_some_beer',
+            ]), (string)$request->getBody());
         });
     }
 }

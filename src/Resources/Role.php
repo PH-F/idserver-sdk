@@ -4,6 +4,7 @@ namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
+use Xingo\IDServer\Entities\Ability;
 
 /**
  * Class Role
@@ -29,7 +30,7 @@ class Role extends Resource
 
         if (!empty($abilities)) {
             $this->call('PUT', "roles/$this->id/abilities", $abilities);
-            $role->abilities = (array)$this->contents['data'];
+            $role->abilities = $this->makeCollection(null, null, Ability::class);
         }
 
         return $role;
