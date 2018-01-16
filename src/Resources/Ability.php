@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 
 /**
@@ -11,5 +12,6 @@ use Xingo\IDServer\Concerns\ResourceBlueprint;
  */
 class Ability extends Resource
 {
+    use NestedResource;
     use ResourceBlueprint;
 }
