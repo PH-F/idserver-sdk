@@ -36,4 +36,29 @@ class RolesTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
+
+    /** @test */
+    public function it_can_update_abilities_when_updating_a_role()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'id' => 1,
+                'abilities' => $abilities = [
+                    'drink_coffee',
+                    'get_some_beer',
+                ]
+            ],
+        ]);
+
+        $role = $this->manager
+            ->roles(1)
+            ->update(
+                ['name' => 'admin'],
+                $abilities
+            );
+
+        $this->assertInstanceOf(Entities\Role::class, $role);
+        $this->assertEquals(1, $role->id);
+        $this->assertEquals($abilities, $role->abilities);
+    }
 }
