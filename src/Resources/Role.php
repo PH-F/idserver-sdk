@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
+use Xingo\IDServer\Contracts\IdsEntity;
 
 /**
  * Class Role
@@ -13,4 +14,20 @@ use Xingo\IDServer\Concerns\ResourceBlueprint;
 class Role extends Resource
 {
     use ResourceBlueprint;
+
+    /**
+     * @param array $attributes
+     * @param array $abilities
+     * @return IdsEntity
+     */
+    public function update(array $attributes, array $abilities = []): IdsEntity
+    {
+        $this->call('PUT', "roles/$this->id", $attributes);
+        $role = $this->makeEntity();
+
+        $this->call('PUT', "roles/$this->id/abilities", $abilities);
+        $role->abilities = (array)$this->contents['data'];
+
+        return $role;
+    }
 }
