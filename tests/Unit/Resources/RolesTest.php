@@ -40,25 +40,34 @@ class RolesTest extends TestCase
     /** @test */
     public function it_can_update_abilities_when_updating_a_role()
     {
+        // Call to update /roles/1
+        $this->mockResponse(200, ['data' => ['id' => 1]]);
+
+        // Call to update /roles/1/abilities
         $this->mockResponse(200, [
-            'data' => [
-                'id' => 1,
-                'abilities' => $abilities = [
-                    'drink_coffee',
-                    'get_some_beer',
-                ]
+            'data' => $abilities = [
+                'drink_coffee',
+                'get_some_beer',
             ],
         ]);
 
         $role = $this->manager
             ->roles(1)
-            ->update(
-                ['name' => 'admin'],
-                $abilities
-            );
+            ->update([], $abilities);
 
         $this->assertInstanceOf(Entities\Role::class, $role);
         $this->assertEquals(1, $role->id);
         $this->assertEquals($abilities, $role->abilities);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('roles/1', $request->getUri()->getPath());
+        });
+
+        $this->assertRequest(function (Request $request) use ($abilities) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('roles/1/abilities', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($abilities), (string)$request->getBody());
+        });
     }
 }
