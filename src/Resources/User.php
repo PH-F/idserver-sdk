@@ -3,7 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use Intervention\Image\ImageManager;
-use Xingo\IDServer\Concerns\FilteredQuery;
+use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 
@@ -16,7 +16,9 @@ use Xingo\IDServer\Entities;
  */
 class User extends Resource
 {
-    use FilteredQuery;
+    use ResourceBlueprint {
+        get as protected getById;
+    }
 
     /**
      * @param string $email
@@ -46,30 +48,6 @@ class User extends Resource
     }
 
     /**
-     * @param array $filters
-     * @return Collection
-     */
-    public function all(array $filters = []): Collection
-    {
-        $query = $this->queryString($filters);
-
-        $this->call('GET', 'users', $query);
-
-        return $this->makeCollection();
-    }
-
-    /**
-     * @param array $attributes
-     * @return IdsEntity
-     */
-    public function create(array $attributes): IdsEntity
-    {
-        $this->call('POST', 'users', $attributes);
-
-        return $this->makeEntity();
-    }
-
-    /**
      * @return IdsEntity|Collection
      */
     public function get()
@@ -82,30 +60,7 @@ class User extends Resource
             return $this->makeCollection();
         }
 
-        $this->call('GET', sprintf('users/%d', $this->id));
-
-        return $this->makeEntity();
-    }
-
-    /**
-     * @param array $attributes
-     * @return IdsEntity
-     */
-    public function update(array $attributes = []): IdsEntity
-    {
-        $this->call('PUT', "users/{$this->id}", $attributes);
-
-        return $this->makeEntity();
-    }
-
-    /**
-     * @return bool
-     */
-    public function delete(): bool
-    {
-        $response = $this->call('DELETE', "users/{$this->id}");
-
-        return 204 === $response->getStatusCode();
+        return $this->getById();
     }
 
     /**
