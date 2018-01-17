@@ -85,6 +85,7 @@ class EntityCreatorTest extends TestCase
     {
         $this->app['config']->set('idserver.classes', [
             Entities\Role::class => \Tests\Stub\Entities\FakeRole::class,
+            Entities\Ability::class => \Tests\Stub\Entities\FakeAbility::class,
         ]);
 
         $creator = new EntityCreator(Resources\Role::class);
