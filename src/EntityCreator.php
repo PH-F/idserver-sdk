@@ -66,9 +66,7 @@ class EntityCreator
     protected function createInstance(string $class, array $attributes)
     {
         $relation = array_get($this->classes, $class);
-
         $instance = new $class();
-        $instance->setRawAttributes($attributes);
 
         if ($relation) {
             if (!in_array(IdsEntity::class, class_implements($relation))) {
@@ -78,9 +76,10 @@ class EntityCreator
             }
 
             $instance = new $relation();
-            $instance->setRawAttributes($attributes);
-            $this->fillRelations($instance, $class, $attributes);
         }
+
+        $instance->setRawAttributes($attributes);
+        $this->fillRelations($instance, $class, $attributes);
 
         return $instance;
     }
@@ -107,7 +106,6 @@ class EntityCreator
      * @param string $name
      * @param $data
      * @return mixed
-     * @todo Extract to a class. Same code from Entity::createRelation()
      */
     private function createRelation(string $name, $data, array $relations)
     {

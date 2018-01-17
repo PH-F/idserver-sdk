@@ -49,7 +49,7 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
 
     /**
      * @param string $name
-     * @param $value
+     * @param mixed $value
      */
     public function __set(string $name, $value)
     {
