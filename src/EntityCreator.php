@@ -61,21 +61,19 @@ class EntityCreator
     {
         $relation = array_get(config('idserver.classes'), $class);
 
-        if ($relation && get_parent_class($relation) !== $class) {
-            if (in_array(IdsEntity::class, class_implements($relation))) {
-                $instance = new $relation();
-                $instance->setRawAttributes($attributes);
-
-                return $instance;
+        if ($relation) {
+            if (!in_array(IdsEntity::class, class_implements($relation))) {
+                throw new \DomainException(
+                    'Custom entity classes must extend the original one or implement IdsEntity interface'
+                );
             }
 
-            throw new \DomainException(
-                'Custom entity classes must extend the original one or implement IdsEntity interface'
-            );
+            $class = $relation;
         }
 
-        return $relation ?
-            new $relation($attributes) :
-            new $class($attributes);
+        $instance = new $class();
+        $instance->setRawAttributes($attributes);
+
+        return $instance;
     }
 }
