@@ -209,7 +209,7 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
         return new Carbon($value['date'], $value['timezone']);
     }
 
-    /**]
+    /**
      * @param string $name
      * @param $data
      * @return mixed

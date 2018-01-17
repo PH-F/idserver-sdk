@@ -106,6 +106,24 @@ class EntityCreatorTest extends TestCase
     /** @test */
     public function it_adds_collection_relation_for_eloquent_model()
     {
+        $this->app['config']->set('idserver.classes', [
+            Entities\Role::class => \Tests\Stub\Eloquent\FakeRole::class,
+            Entities\Ability::class => \Tests\Stub\Eloquent\FakeAbility::class,
+        ]);
 
+        $creator = new EntityCreator(Resources\Role::class);
+        $role = $creator->entity([
+            'name' => 'admin',
+            'title' => 'Administrator',
+            'abilities' => [
+                ['name' => 'delete_everything'],
+                ['name' => 'add_everything'],
+            ],
+        ]);
+
+        $this->assertInstanceOf(\Tests\Stub\Eloquent\FakeRole::class, $role);
+        $this->assertEquals('admin', $role->name);
+        $this->assertInstanceOf(Resources\Collection::class, $role->abilities);
+        $this->assertInstanceOf(\Tests\Stub\Eloquent\FakeAbility::class, $role->abilities->first());
     }
 }

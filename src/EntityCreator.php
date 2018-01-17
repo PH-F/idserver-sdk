@@ -15,11 +15,17 @@ class EntityCreator
     protected $caller;
 
     /**
+     * @var array
+     */
+    protected $classes = [];
+
+    /**
      * @param string $caller
      */
     public function __construct($caller)
     {
         $this->caller = $caller;
+        $this->classes = config('idserver.classes');
     }
 
     /**
@@ -59,7 +65,10 @@ class EntityCreator
      */
     protected function createInstance(string $class, array $attributes)
     {
-        $relation = array_get(config('idserver.classes'), $class);
+        $relation = array_get($this->classes, $class);
+
+        $instance = new $class();
+        $instance->setRawAttributes($attributes);
 
         if ($relation) {
             if (!in_array(IdsEntity::class, class_implements($relation))) {
@@ -68,12 +77,51 @@ class EntityCreator
                 );
             }
 
-            $class = $relation;
+            $instance = new $relation();
+            $instance->setRawAttributes($attributes);
+            $this->fillRelations($instance, $class, $attributes);
         }
 
-        $instance = new $class();
-        $instance->setRawAttributes($attributes);
-
         return $instance;
+    }
+
+    /**
+     * @param $instance
+     * @param string $class
+     * @param array $attributes
+     */
+    protected function fillRelations($instance, string $class, array $attributes)
+    {
+        $reflection = new \ReflectionProperty($class, 'relations');
+        $reflection->setAccessible(true);
+        $relations = $reflection->getValue();
+
+        collect($attributes)->each(function ($data, $name) use ($instance, $relations) {
+            if (is_array($data) && array_key_exists($name, $relations)) {
+                $instance->{$name} = $this->createRelation($name, $data, $relations);
+            }
+        });
+    }
+
+    /**
+     * @param string $name
+     * @param $data
+     * @return mixed
+     * @todo Extract to a class. Same code from Entity::createRelation()
+     */
+    private function createRelation(string $name, $data, array $relations)
+    {
+        $class = array_get($relations, $name);
+        $class = array_get($this->classes, $class, $class);
+
+        if ($name === str_plural($name)) {
+            $collection = new Collection($data);
+
+            return $collection->map(function ($item) use ($class) {
+                return new $class($item);
+            });
+        }
+
+        return new $class($data);
     }
 }
