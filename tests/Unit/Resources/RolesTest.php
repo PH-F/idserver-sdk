@@ -80,4 +80,24 @@ class RolesTest extends TestCase
             ]), (string)$request->getBody());
         });
     }
+
+    /** @test */
+    public function it_always_have_a_abilities_collection_as_property()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'abilities' => [
+                    [
+                        'name' => 'foo',
+                        'title' => 'Foo',
+                    ],
+                ],
+            ],
+        ]);
+
+        $role = $this->manager->roles(1)->get();
+
+        $this->assertInstanceOf(Collection::class, $role->abilities);
+        $this->assertInstanceOf(Entities\Ability::class, $role->abilities->first());
+    }
 }
