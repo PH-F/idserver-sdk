@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Stub;
+namespace Tests\Stub\Entities;
 
 class FakeRole extends \Xingo\IDServer\Entities\Role
 {
