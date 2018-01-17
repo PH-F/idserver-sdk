@@ -9,7 +9,6 @@ use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use JsonSerializable;
 use Xingo\IDServer\Contracts\IdsEntity;
-use Xingo\IDServer\Resources\Collection;
 
 abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, JsonSerializable
 {
@@ -46,6 +45,15 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
     public function __get(string $name)
     {
         return $this->getAttribute($name);
+    }
+
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function __set(string $name, $value)
+    {
+        $this->attributes[$name] = $value;
     }
 
     /**
@@ -152,9 +160,7 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
      */
     protected function convert(array $attributes): array
     {
-        return $this->convertDates(
-            $this->convertRelations($attributes)
-        );
+        return $this->convertDates($attributes);
     }
 
     /**
@@ -180,23 +186,6 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
     }
 
     /**
-     * @param array $attributes
-     * @return array
-     */
-    protected function convertRelations(array $attributes): array
-    {
-        if (empty(static::$relations)) {
-            return $attributes;
-        }
-
-        return collect($attributes)->map(function ($data, $name) {
-            return is_array($data) && array_key_exists($name, static::$relations) ?
-                $this->createRelation($name, $data) :
-                $data;
-        })->all();
-    }
-
-    /**
      * @param string|array $value
      * @return Carbon
      */
@@ -207,25 +196,5 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
         }
 
         return new Carbon($value['date'], $value['timezone']);
-    }
-
-    /**
-     * @param string $name
-     * @param $data
-     * @return mixed
-     */
-    private function createRelation(string $name, $data)
-    {
-        $class = static::$relations[$name];
-
-        if ($name === str_plural($name)) {
-            $collection = new Collection($data);
-
-            return $collection->map(function ($item) use ($class) {
-                return new $class($item);
-            });
-        }
-
-        return new $class($data);
     }
 }
