@@ -91,9 +91,9 @@ class EntityCreator
      */
     protected function fillRelations($instance, string $class, array $attributes)
     {
-        $reflection = new \ReflectionProperty($class, 'relations');
+        $reflection = new \ReflectionProperty($class, 'relationships');
         $reflection->setAccessible(true);
-        $relations = $reflection->getValue();
+        $relations = $reflection->getValue($instance);
 
         collect($attributes)->each(function ($data, $name) use ($instance, $relations) {
             if (is_array($data) && array_key_exists($name, $relations)) {
@@ -105,6 +105,7 @@ class EntityCreator
     /**
      * @param string $name
      * @param $data
+     * @param array $relations
      * @return mixed
      */
     private function createRelation(string $name, $data, array $relations)
