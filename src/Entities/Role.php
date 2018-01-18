@@ -7,7 +7,7 @@ class Role extends Entity
     /**
      * @var array
      */
-    protected static $relations = [
+    protected $relationships = [
         'abilities' => Ability::class,
     ];
 }
