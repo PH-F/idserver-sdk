@@ -9,7 +9,7 @@ class Subscription extends Entity
     /**
      * @var array
      */
-    protected static $relations = [
+    protected $relationships = [
         'store' => Entities\Store::class,
         'user' => Entities\User::class,
         'plan' => Entities\Plan::class,
@@ -20,7 +20,7 @@ class Subscription extends Entity
     /**
      * @var array
      */
-    protected static $dates = [
+    protected $dates = [
         'start_date',
         'end_date',
     ];

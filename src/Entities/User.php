@@ -7,7 +7,7 @@ class User extends Entity
     /**
      * @var array
      */
-    protected static $dates = ['date_of_birth'];
+    protected $dates = ['date_of_birth'];
 
     /**
      * @return string
