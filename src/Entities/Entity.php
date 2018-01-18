@@ -33,7 +33,6 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
         $this->attributes = $attributes;
     }
 
-
     /**
      * @return string
      */
