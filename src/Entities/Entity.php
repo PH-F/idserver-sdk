@@ -33,7 +33,7 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
     /**
      * @param array $attributes
      */
-    public function __construct(array $attributes)
+    public function __construct(array $attributes = [])
     {
         $this->attributes = $this->convert($attributes);
     }
@@ -45,6 +45,15 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
     public function __get(string $name)
     {
         return $this->getAttribute($name);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set(string $name, $value)
+    {
+        $this->attributes[$name] = $value;
     }
 
     /**
@@ -151,9 +160,7 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
      */
     protected function convert(array $attributes): array
     {
-        return $this->convertDates(
-            $this->convertRelations($attributes)
-        );
+        return $this->convertDates($attributes);
     }
 
     /**
@@ -176,23 +183,6 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
         }
 
         return $attributes;
-    }
-
-    /**
-     * @param array $attributes
-     * @return array
-     */
-    protected function convertRelations(array $attributes): array
-    {
-        if (empty(static::$relations)) {
-            return $attributes;
-        }
-
-        return collect($attributes)->map(function ($data, $name) {
-            return is_array($data) && array_key_exists($name, static::$relations) ?
-                new static::$relations[$name]($data) :
-                $data;
-        })->all();
     }
 
     /**

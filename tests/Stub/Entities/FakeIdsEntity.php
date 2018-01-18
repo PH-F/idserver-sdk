@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Stub;
+namespace Tests\Stub\Entities;
 
 use Xingo\IDServer\Contracts\IdsEntity;
 
