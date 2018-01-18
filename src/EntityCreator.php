@@ -93,7 +93,7 @@ class EntityCreator
     {
         $reflection = new \ReflectionProperty($class, 'relationships');
         $reflection->setAccessible(true);
-        $relations = $reflection->getValue($instance);
+        $relations = $reflection->getValue(new $class());
 
         collect($attributes)->each(function ($data, $name) use ($instance, $relations) {
             if (is_array($data) && array_key_exists($name, $relations)) {
