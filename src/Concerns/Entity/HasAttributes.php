@@ -17,21 +17,12 @@ trait HasAttributes
     public $incrementing = false;
 
     /**
-     * @param string $name
-     * @return mixed|null
+     * @param string $key
+     * @return null
      */
-    public function __get(string $name)
+    public function getRelationValue($key)
     {
-        return $this->getAttribute($name);
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     */
-    public function __set(string $name, $value)
-    {
-        $this->setAttribute($name, $value);
+        return null;
     }
 
     /**
@@ -54,5 +45,23 @@ trait HasAttributes
         }
 
         return $this->baseAsDateTime($value);
+    }
+
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
+    public function __get(string $name)
+    {
+        return $this->getAttribute($name);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set(string $name, $value)
+    {
+        $this->setAttribute($name, $value);
     }
 }
