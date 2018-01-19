@@ -150,4 +150,22 @@ class EntityTest extends TestCase
         $this->assertInstanceOf(Entities\Store::class, $entity['store']);
         $this->assertEquals('Foo Store', $entity['store']->name);
     }
+    
+    /** @test */
+    public function it_can_detect_attributes_with_isset()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'foo' => 'Bar',
+                'bar' => 'Foo',
+            ],
+        ]);
+
+        $entity = $this->manager->users(1)->get();
+
+        $this->assertTrue(isset($entity->foo));
+        $this->assertTrue(isset($entity['foo']));
+        $this->assertEquals('Bar', array_get($entity, 'foo'));
+        $this->assertEquals('Bar', data_get($entity, 'foo'));
+    }
 }
