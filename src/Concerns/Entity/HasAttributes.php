@@ -4,6 +4,7 @@ namespace Xingo\IDServer\Concerns\Entity;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes as BaseHasAttributes;
+use Illuminate\Database\Eloquent\Concerns\HasRelationships;
 
 trait HasAttributes
 {
@@ -11,19 +12,12 @@ trait HasAttributes
         asDateTime as protected baseAsDateTime;
     }
 
+    use HasRelationships;
+
     /**
      * @var bool
      */
     public $incrementing = false;
-
-    /**
-     * @param string $key
-     * @return null
-     */
-    public function getRelationValue($key)
-    {
-        return null;
-    }
 
     /**
      * @return bool
@@ -63,5 +57,22 @@ trait HasAttributes
     public function __set(string $name, $value)
     {
         $this->setAttribute($name, $value);
+    }
+
+    /**
+     * Get a relationship value from a method.
+     *
+     * @param  string $method
+     * @return mixed
+     *
+     * @throws \LogicException
+     */
+    protected function getRelationshipFromMethod($method)
+    {
+        $relation = $this->$method();
+
+        return tap($relation, function ($results) use ($method) {
+            $this->setRelation($method, $results);
+        });
     }
 }
