@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entities;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Entities;
@@ -149,5 +150,57 @@ class EntityTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $entity['created_at']);
         $this->assertInstanceOf(Entities\Store::class, $entity['store']);
         $this->assertEquals('Foo Store', $entity['store']->name);
+    }
+    
+    /** @test */
+    public function it_can_detect_attributes_with_isset()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                'foo' => 'Bar',
+                'bar' => 'Foo',
+            ],
+        ]);
+
+        $entity = $this->manager->users(1)->get();
+
+        $this->assertTrue(isset($entity->foo));
+        $this->assertTrue(isset($entity['foo']));
+        $this->assertEquals('Bar', array_get($entity, 'foo'));
+        $this->assertEquals('Bar', data_get($entity, 'foo'));
+    }
+
+    /** @test */
+    public function it_can_load_methods_as_relations()
+    {
+        $this->app['config']->set('idserver.classes', [
+            Entities\User::class => \Tests\Stub\Entities\FakeUser::class,
+        ]);
+
+        $this->mockResponse(200, [
+            'data' => [
+                'foo' => 'Bar',
+            ],
+        ]);
+
+        $user = $this->manager->users(1)->get();
+        $this->assertInstanceOf(Collection::class, $user->abilities);
+    }
+
+    /** @test */
+    public function it_will_store_the_result_of_a_relationship_call()
+    {
+        $this->app['config']->set('idserver.classes', [
+            Entities\User::class => \Tests\Stub\Entities\FakeUser::class,
+        ]);
+
+        $this->mockResponse(200, [
+            'data' => [
+                'foo' => 'Bar',
+            ],
+        ]);
+
+        $user = $this->manager->users(1)->get();
+        $this->assertEquals($user->abilities->first()->unique, $user->abilities->first()->unique);
     }
 }
