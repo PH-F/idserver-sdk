@@ -130,7 +130,11 @@ abstract class Resource
     {
         return collect($params)->mapWithKeys(function ($value, $field) {
             $value = null === $value ? '' : $value;
-
+            
+            if (is_array($value)) {
+                $value = $this->convertNullToEmptyString($value);
+            }
+            
             return [$field => $value];
         })->all();
     }
