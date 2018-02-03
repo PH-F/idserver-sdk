@@ -3,7 +3,7 @@
 namespace Xingo\IDServer;
 
 use GuzzleHttp\Client;
-use Xingo\IDServer\Concerns\CallableResources;
+use Xingo\IDServer\Concerns\CallableResource;
 use Xingo\IDServer\Concerns\TokenSupport;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources;
@@ -26,7 +26,7 @@ use Xingo\IDServer\Resources;
  */
 class Manager
 {
-    use CallableResources, TokenSupport;
+    use CallableResource, TokenSupport;
 
     /**
      * @var Client

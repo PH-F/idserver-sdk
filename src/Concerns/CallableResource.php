@@ -5,7 +5,7 @@ namespace Xingo\IDServer\Concerns;
 use Illuminate\Support\Str;
 use Xingo\IDServer\Resources\Resource;
 
-trait CallableResources
+trait CallableResource
 {
     /**
      * @param string $name

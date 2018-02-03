@@ -9,7 +9,7 @@ use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources\Collection;
 
-class RolesTest extends TestCase
+class RoleTest extends TestCase
 {
     use Concerns\MockResponse;
 

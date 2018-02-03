@@ -14,7 +14,7 @@ use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Manager;
 use Xingo\IDServer\Resources\Collection;
 
-class UsersTest extends TestCase
+class UserTest extends TestCase
 {
     use Concerns\MockResponse;
 

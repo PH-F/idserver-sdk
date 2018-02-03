@@ -6,16 +6,16 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
-use Xingo\IDServer\Concerns\CallableResources;
-use Xingo\IDServer\Concerns\CustomExceptions;
+use Xingo\IDServer\Concerns\CallableResource;
+use Xingo\IDServer\Concerns\CustomException;
 use Xingo\IDServer\Concerns\ResourceOrganizer;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\EntityCreator;
 
 abstract class Resource
 {
-    use CallableResources;
-    use CustomExceptions;
+    use CallableResource;
+    use CustomException;
     use ResourceOrganizer;
 
     /**
