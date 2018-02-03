@@ -92,20 +92,34 @@ abstract class Resource
      */
     protected function call(string $method, string $uri, array $params = []): Response
     {
-        $option = strtoupper($method) === 'GET' ?
-            'query' : 'form_params';
-
-        try {
-            $response = $this->client->request($method, $uri, [
-                $option => $this->convertNullToEmptyString($params),
-            ]);
-        } catch (ClientException | ServerException $e) {
-            $this->throwsException($e->getResponse());
-        }
+        $response = $this->request($method, $uri, $params);
 
         $this->contents = $response->getBody()->asJson();
 
         return $response;
+    }
+
+    /**
+     * Make a call and stream the response.
+     *
+     * @param string $method
+     * @param string $uri
+     * @param array $params
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws \Xingo\IDServer\Exceptions\AuthorizationException
+     * @throws \Xingo\IDServer\Exceptions\ForbiddenException
+     * @throws \Xingo\IDServer\Exceptions\NotFoundException
+     * @throws \Xingo\IDServer\Exceptions\ServerException
+     * @throws \Xingo\IDServer\Exceptions\ThrottleException
+     * @throws \Xingo\IDServer\Exceptions\ValidationException
+     */
+    protected function stream(string $method, string $uri, array $params = [])
+    {
+        $response = $this->request($method, $uri, $params, [
+            'stream' => true,
+        ]);
+
+        return $response->getBody();
     }
 
     /**
@@ -143,7 +157,8 @@ abstract class Resource
         array $data = null,
         array $meta = null,
         ?string $class = null
-    ): Collection {
+    ): Collection
+    {
         $data = $data ?: $this->contents['data'] ?? [];
         $meta = $meta ?: $this->contents['meta'] ?? [];
 
@@ -157,5 +172,37 @@ abstract class Resource
     {
         return $this->contents['status'] === 200 ||
             $this->contents['status'] === 201;
+    }
+
+    /**
+     * Make the Guzzle request.
+     *
+     * @param string $method
+     * @param string $uri
+     * @param array $params
+     * @param array $options
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \Xingo\IDServer\Exceptions\AuthorizationException
+     * @throws \Xingo\IDServer\Exceptions\ForbiddenException
+     * @throws \Xingo\IDServer\Exceptions\NotFoundException
+     * @throws \Xingo\IDServer\Exceptions\ServerException
+     * @throws \Xingo\IDServer\Exceptions\ThrottleException
+     * @throws \Xingo\IDServer\Exceptions\ValidationException
+     */
+    private function request(string $method, string $uri, array $params, array $options = [])
+    {
+        $parameter = strtoupper($method) === 'GET' ? 'query' : 'form_params';
+
+        $options = array_merge([
+            $parameter => $this->convertNullToEmptyString($params),
+        ], $options);
+
+        try {
+            $response = $this->client->request($method, $uri, $options);
+        } catch (ClientException | ServerException $e) {
+            $this->throwsException($e->getResponse());
+        }
+
+        return $response ?? null;
     }
 }
