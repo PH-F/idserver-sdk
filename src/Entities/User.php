@@ -2,6 +2,13 @@
 
 namespace Xingo\IDServer\Entities;
 
+use Xingo\IDServer\Resources\Collection;
+
+/**
+ * Class User
+ * @property Collection $abilities
+ * @package Xingo\IDServer\Entities
+ */
 class User extends Entity
 {
     /**
@@ -31,5 +38,28 @@ class User extends Entity
         ]);
 
         return implode(' ', array_filter($names));
+    }
+
+    /**
+     * Get all abilities of a user.
+     *
+     * @return Collection
+     */
+    public function abilities()
+    {
+        return ids()->users($this->id)->abilities();
+    }
+
+    /**
+     * Check if the user can perform the given ability.
+     *
+     * @param string $ability
+     * @return bool
+     */
+    public function hasAbility(string $ability)
+    {
+        $allowed = $this->abilities->pluck('name');
+
+        return $allowed->contains($ability) || $allowed->contains('*');
     }
 }
