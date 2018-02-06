@@ -116,6 +116,16 @@ class User extends Resource
     /**
      * @return Collection
      */
+    public function abilities(): Collection
+    {
+        $this->call('GET', "users/$this->id/abilities");
+
+        return $this->makeCollection(null, null, Entities\Ability::class);
+    }
+
+    /**
+     * @return Collection
+     */
     public function addresses(): Collection
     {
         $this->call('GET', "users/$this->id/addresses");
