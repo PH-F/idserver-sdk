@@ -120,12 +120,7 @@ class User extends Resource
     {
         $this->call('GET', "users/$this->id/abilities");
 
-        return (new Collection($this->contents['data']))
-            ->map(function ($data) {
-                return $this->makeEntity(
-                    $data, Entities\Ability::class
-                );
-            });
+        return $this->makeCollection(null, null, Entities\Ability::class);
     }
 
     /**
