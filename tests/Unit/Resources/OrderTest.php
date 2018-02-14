@@ -85,7 +85,7 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_an_order()
+    public function it_sends_correct_parameters_when_creating_a_new_order()
     {
         $this->mockResponse(201);
 
