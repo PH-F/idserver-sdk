@@ -9,6 +9,7 @@ use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\Ability;
 use Xingo\IDServer\Entities\Address;
+use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Manager;
@@ -456,6 +457,26 @@ class UserTest extends TestCase
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals('foo', $collection->first()->street);
         $this->assertEquals('bar', $collection->last()->street);
+    }
+
+    /** @test */
+    public function it_can_have_subscriptions()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['status' => 'foo'],
+                ['type' => 'bar'],
+            ],
+        ]);
+
+        $collection = $this->manager->users(1)->subscriptions();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Subscription::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals('foo', $collection->first()->status);
+        $this->assertEquals('bar', $collection->last()->type);
     }
 
     /** @test */
