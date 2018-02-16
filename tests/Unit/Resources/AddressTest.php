@@ -9,7 +9,7 @@ use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources;
 
-class AddressesTest extends TestCase
+class AddressTest extends TestCase
 {
     use Concerns\MockResponse;
 

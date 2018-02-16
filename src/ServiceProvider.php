@@ -50,6 +50,10 @@ class ServiceProvider extends BaseServiceProvider
         $handler->push(new TokenExpired(), 'jwt-token-expired');
 
         $handler->push(Middleware::mapResponse(function (Response $response) {
+            if (!$response->getBody()->isSeekable()) {
+                return $response;
+            }
+
             $stream = new JsonStream($response->getBody());
 
             return $response->withBody($stream);

@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Request;
 use Tests\Concerns;
 use Tests\TestCase;
 
-class TagsTest extends TestCase
+class TagTest extends TestCase
 {
     use Concerns\MockResponse;
 

@@ -5,7 +5,7 @@ namespace Xingo\IDServer\Concerns;
 use Psr\Http\Message\ResponseInterface;
 use Xingo\IDServer\Exceptions;
 
-trait CustomExceptions
+trait CustomException
 {
     /**
      * @param ResponseInterface $response
