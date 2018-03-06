@@ -102,7 +102,7 @@ class User extends Resource
      */
     public function subscriptions()
     {
-        $this->call('GET', 'subscriptions?user_id=' . $this->id);
+        $this->call('GET', 'subscriptions', ['user_id' => $this->id]);
 
         return $this->makeCollection(null, null, Entities\Subscription::class);
     }

@@ -471,6 +471,12 @@ class UserTest extends TestCase
 
         $collection = $this->manager->users(1)->subscriptions();
 
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('subscriptions', $request->getUri()->getPath());
+            $this->assertEquals('user_id=1', $request->getUri()->getQuery());
+        });
+
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Subscription::class, $collection->first());
