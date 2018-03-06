@@ -51,7 +51,7 @@ abstract class Resource
      * @param array $param
      * @return Resource|$this
      */
-    public function __invoke(array $param): Resource
+    public function __invoke(array $param) : Resource
     {
         $ids = collect($param)->map(function ($param) {
             return is_object($param) ? $param->id : $param;
@@ -68,9 +68,9 @@ abstract class Resource
      * @param Resource $class
      * @return string
      */
-    public function toShortName(Resource $class = null): string
+    public function toShortName(Resource $class = null) : string
     {
-        $class = $class ?: static::class;
+        $class = $class ? : static::class;
 
         $shortName = (new \ReflectionClass($class))
             ->getShortName();
@@ -90,9 +90,13 @@ abstract class Resource
      * @throws \Xingo\IDServer\Exceptions\ThrottleException
      * @throws \Xingo\IDServer\Exceptions\ValidationException
      */
-    protected function call(string $method, string $uri, array $params = []): Response
+    protected function call(string $method, string $uri, array $params = []) : Response
     {
-        $response = $this->request($method, $uri, $params);
+        $response = $this->request($method, $uri, $params, [
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+        ]);
 
         $this->contents = $response->getBody()->asJson();
 
@@ -126,15 +130,15 @@ abstract class Resource
      * @param array $params
      * @return array
      */
-    protected function convertNullToEmptyString(array $params): array
+    protected function convertNullToEmptyString(array $params) : array
     {
         return collect($params)->mapWithKeys(function ($value, $field) {
             $value = null === $value ? '' : $value;
-            
+
             if (is_array($value)) {
                 $value = $this->convertNullToEmptyString($value);
             }
-            
+
             return [$field => $value];
         })->all();
     }
@@ -144,9 +148,9 @@ abstract class Resource
      * @param string|null $class
      * @return IdsEntity
      */
-    protected function makeEntity(array $attributes = null, ?string $class = null): IdsEntity
+    protected function makeEntity(array $attributes = null, ? string $class = null) : IdsEntity
     {
-        $attributes = $attributes ?: $this->contents['data'] ?? [];
+        $attributes = $attributes ? : $this->contents['data'] ?? [];
 
         return $this->creator->entity($attributes, $class);
     }
@@ -160,10 +164,10 @@ abstract class Resource
     protected function makeCollection(
         array $data = null,
         array $meta = null,
-        ?string $class = null
-    ): Collection {
-        $data = $data ?: $this->contents['data'] ?? [];
-        $meta = $meta ?: $this->contents['meta'] ?? [];
+        ? string $class = null
+    ) : Collection {
+        $data = $data ? : $this->contents['data'] ?? [];
+        $meta = $meta ? : $this->contents['meta'] ?? [];
 
         return $this->creator->collection($data, $meta, $class);
     }
