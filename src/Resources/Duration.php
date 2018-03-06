@@ -12,4 +12,14 @@ use Xingo\IDServer\Concerns\ResourceBlueprint;
 class Duration extends Resource
 {
     use ResourceBlueprint;
+
+    /**
+     * Get the custom resource name of this entity.
+     *
+     * @return string
+     */
+    protected function getResourceName()
+    {
+        return 'plans-durations';
+    }
 }
