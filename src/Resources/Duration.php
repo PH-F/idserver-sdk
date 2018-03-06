@@ -5,11 +5,11 @@ namespace Xingo\IDServer\Resources;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 
 /**
- * Class Plan
+ * Class Duration
  *
  * @package Xingo\IDServer\Resources
  */
-class Plan extends Resource
+class Duration extends Resource
 {
     use ResourceBlueprint;
 }
