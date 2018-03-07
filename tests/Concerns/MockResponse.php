@@ -43,7 +43,9 @@ trait MockResponse
     public function mockResponse(int $status = 200, array $body = [], array $headers = [])
     {
         $response = new Response(
-            $status, $headers, json_encode($body)
+            $status,
+            $headers,
+            json_encode($body)
         );
 
         $this->setUpClient($response);
