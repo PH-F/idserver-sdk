@@ -95,9 +95,16 @@ class User extends Resource
         ));
     }
 
+    /**
+     * Get subscriptions for the user.
+     *
+     * @return Collection
+     */
     public function subscriptions()
     {
-        // TODO
+        $this->call('GET', 'subscriptions', ['user_id' => $this->id]);
+
+        return $this->makeCollection(null, null, Entities\Subscription::class);
     }
 
     /**
