@@ -133,7 +133,8 @@ class User extends Resource
         return (new Collection($this->contents['data']))
             ->map(function ($data) {
                 return $this->makeEntity(
-                    $data, Entities\Address::class
+                    $data,
+                    Entities\Address::class
                 );
             });
     }
