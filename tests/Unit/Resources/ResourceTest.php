@@ -37,6 +37,19 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_will_send_a_json_accept_header()
+    {
+        $this->mockResponse();
+
+        $user = $this->manager->users->all();
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertTrue($request->hasHeader('Accept'));
+            $this->assertContains('application/json', $request->getHeader('Accept'));
+        });
+    }
+
+    /** @test */
     public function it_can_make_an_entity_instance()
     {
         $user = app()->make(Resources\User::class);
