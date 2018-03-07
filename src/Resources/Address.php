@@ -24,7 +24,8 @@ class Address extends Resource
         $this->call('POST', $uri, $attributes);
 
         return $this->makeEntity(
-            $this->contents['data'], Entities\Address::class
+            $this->contents['data'],
+            Entities\Address::class
         );
     }
 }
