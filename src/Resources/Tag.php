@@ -11,13 +11,26 @@ class Tag extends Resource
     use FilteredQuery;
 
     /**
-     * @param array|string $tag
+     * @param array|string $tags
      * @return Collection
      */
-    public function create($tag)
+    public function create($tags)
     {
         $this->call('POST', "users/{$this->parent->id}/tags", [
-            'tag' => $tag,
+            'tags' => $tags,
+        ]);
+
+        return $this->makeCollection();
+    }
+
+    /**
+     * @param array|string $tags
+     * @return Collection
+     */
+    public function update($tags)
+    {
+        $this->call('PUT', "users/{$this->parent->id}/tags", [
+            'tags' => $tags,
         ]);
 
         return $this->makeCollection();

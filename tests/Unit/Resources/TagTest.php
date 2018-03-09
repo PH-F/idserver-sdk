@@ -30,6 +30,26 @@ class TagTest extends TestCase
             $this->assertEquals('users/1/tags', $request->getUri()->getPath());
         });
     }
+    /** @test */
+    public function it_can_be_updated_using_nested_resource()
+    {
+        $this->mockResponse(201, [
+            'data' => [
+                ['name' => 'foo'],
+                ['name' => 'bar'],
+            ],
+        ]);
+
+        $tags = $this->manager->users(1)
+            ->tags->update(['foo', 'bar']);
+
+        $this->assertEquals(['foo', 'bar'], $tags->pluck('name')->all());
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('users/1/tags', $request->getUri()->getPath());
+        });
+    }
 
     /** @test */
     public function it_can_list_all_tags_as_a_nested_resource()
