@@ -108,19 +108,6 @@ class User extends Resource
     }
 
     /**
-     * @return IdsEntity
-     */
-    public function tags(): IdsEntity
-    {
-        $this->call('GET', "users/{$this->id}/tags");
-
-        return $this->makeEntity(array_merge(
-            $this->contents['user'],
-            ['tags' => $this->contents['tags']]
-        ));
-    }
-
-    /**
      * @return Collection
      */
     public function abilities(): Collection

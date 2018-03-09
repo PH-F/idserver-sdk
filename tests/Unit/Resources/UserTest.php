@@ -12,7 +12,6 @@ use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
-use Xingo\IDServer\Manager;
 use Xingo\IDServer\Resources\Collection;
 
 class UserTest extends TestCase
@@ -417,25 +416,6 @@ class UserTest extends TestCase
                         ->stream()
                 ),
             ]), $request->getBody());
-        });
-    }
-
-    /** @test */
-    public function it_can_have_tags()
-    {
-        $this->mockResponse(200, [
-            'tags' => ['foo', 'bar'],
-            'user' => ['id' => 1],
-        ]);
-
-        $user = $this->manager->users(1)->tags();
-
-        $this->assertEquals(1, $user->id);
-        $this->assertEquals(['foo', 'bar'], $user->tags);
-
-        $this->assertRequest(function (Request $request) {
-            $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('users/1/tags', $request->getUri()->getPath());
         });
     }
 
