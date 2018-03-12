@@ -77,6 +77,5 @@ class Manager
     public function getLocale()
     {
         return $this->locale;
-
     }
 }
