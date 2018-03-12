@@ -5,9 +5,12 @@ namespace Xingo\IDServer\Entities\Order;
 use Xingo\IDServer\Entities\Entity;
 use Xingo\IDServer\Entities\Plan\Duration;
 use Xingo\IDServer\Entities\Subscription;
+use Xingo\IDServer\Entities\Traits\Priceable;
 
 class Item extends Entity
 {
+    use Priceable;
+
     /**
      * @var array
      */
@@ -22,7 +25,7 @@ class Item extends Entity
      *
      * @return int
      */
-    public function total()
+    public function getTotalAttribute()
     {
         return $this->price - $this->discount - $this->shipping_cost;
     }

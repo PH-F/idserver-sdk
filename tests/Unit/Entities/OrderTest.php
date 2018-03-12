@@ -24,4 +24,16 @@ class OrderTest extends TestCase
 
         $this->assertEquals('Subscription X', $order->items->first()->name);
     }
+
+    /** @test */
+    public function it_is_priceable()
+    {
+        ids()->setLocale('nl_NL');
+
+        $item = new Order([
+            'total_amount' => 7000,
+        ]);
+
+        $this->assertEquals('€ 70,00', $item->asPriceForHumans('total_amount', 'EUR'));
+    }
 }
