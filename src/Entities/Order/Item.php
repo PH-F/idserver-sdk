@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Entities\Order;
 
 use Xingo\IDServer\Entities\Entity;
+use Xingo\IDServer\Entities\Plan\Duration;
 use Xingo\IDServer\Entities\Subscription;
 
 class Item extends Entity
@@ -13,6 +14,7 @@ class Item extends Entity
     protected $relationships = [
         'subscription' => Subscription::class,
         'parentSubscription' => Subscription::class,
+        'plan_duration' => Duration::class,
     ];
 
     /**
