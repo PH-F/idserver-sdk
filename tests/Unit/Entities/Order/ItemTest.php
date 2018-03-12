@@ -5,7 +5,6 @@ namespace Tests\Unit\Entities\Order;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\Order\Item;
-use Xingo\IDServer\Entities\User;
 
 class ItemTest extends TestCase
 {
@@ -20,6 +19,18 @@ class ItemTest extends TestCase
             'shipping_cost' => 1000,
         ]);
 
-        $this->assertEquals(5000, $item->total());
+        $this->assertEquals(5000, $item->total);
+    }
+
+    /** @test */
+    public function it_is_priceable()
+    {
+        ids()->setLocale('nl_NL');
+
+        $item = new Item([
+            'price' => 7000,
+        ]);
+
+        $this->assertEquals('€ 70,00', $item->asPriceForHumans('price', 'EUR'));
     }
 }
