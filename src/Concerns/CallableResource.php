@@ -20,7 +20,8 @@ trait CallableResource
             $instance = new $class($this->client);
 
             $nestedResource = in_array(
-                NestedResource::class, class_uses($instance)
+                NestedResource::class,
+                class_uses($instance)
             );
 
             return $nestedResource && $this instanceof Resource ?

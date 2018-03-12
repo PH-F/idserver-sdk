@@ -27,7 +27,8 @@ class AuthTest extends TestCase
 
         $middleware = new Auth();
         $response = $middleware->handle(
-            new Request(), $this->closure()
+            new Request(),
+            $this->closure()
         );
 
         $this->assertNull($response);

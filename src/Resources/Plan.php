@@ -3,13 +3,11 @@
 namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
-use Xingo\IDServer\Entities\Ability;
 
 /**
- * Class Role
+ * Class Plan
  *
  * @package Xingo\IDServer\Resources
- * @property Ability abilities
  */
 class Plan extends Resource
 {

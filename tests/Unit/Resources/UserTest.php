@@ -12,7 +12,6 @@ use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
-use Xingo\IDServer\Manager;
 use Xingo\IDServer\Resources\Collection;
 
 class UserTest extends TestCase
@@ -421,25 +420,6 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function it_can_have_tags()
-    {
-        $this->mockResponse(200, [
-            'tags' => ['foo', 'bar'],
-            'user' => ['id' => 1],
-        ]);
-
-        $user = $this->manager->users(1)->tags();
-
-        $this->assertEquals(1, $user->id);
-        $this->assertEquals(['foo', 'bar'], $user->tags);
-
-        $this->assertRequest(function (Request $request) {
-            $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('users/1/tags', $request->getUri()->getPath());
-        });
-    }
-
-    /** @test */
     public function it_can_have_addresses()
     {
         $this->mockResponse(200, [
@@ -464,19 +444,25 @@ class UserTest extends TestCase
     {
         $this->mockResponse(200, [
             'data' => [
-                ['status' => 'foo'],
-                ['type' => 'bar'],
+                ['id' => 1],
+                ['id' => 2],
             ],
         ]);
 
         $collection = $this->manager->users(1)->subscriptions();
 
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('subscriptions', $request->getUri()->getPath());
+            $this->assertEquals('user_id=1', $request->getUri()->getQuery());
+        });
+
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
         $this->assertInstanceOf(Subscription::class, $collection->first());
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
-        $this->assertEquals('foo', $collection->first()->status);
-        $this->assertEquals('bar', $collection->last()->type);
+        $this->assertEquals(1, $collection->first()->id);
+        $this->assertEquals(2, $collection->last()->id);
     }
 
     /** @test */

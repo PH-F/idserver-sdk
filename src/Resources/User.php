@@ -96,28 +96,15 @@ class User extends Resource
     }
 
     /**
-     * Get all subscriptions for the given user.
+     * Get subscriptions for the user.
      *
      * @return Collection
      */
     public function subscriptions()
     {
-        $this->call('GET', 'subscriptions?user_id=' . $this->id);
+        $this->call('GET', 'subscriptions', ['user_id' => $this->id]);
 
         return $this->makeCollection(null, null, Entities\Subscription::class);
-    }
-
-    /**
-     * @return IdsEntity
-     */
-    public function tags(): IdsEntity
-    {
-        $this->call('GET', "users/{$this->id}/tags");
-
-        return $this->makeEntity(array_merge(
-            $this->contents['user'],
-            ['tags' => $this->contents['tags']]
-        ));
     }
 
     /**
@@ -140,7 +127,8 @@ class User extends Resource
         return (new Collection($this->contents['data']))
             ->map(function ($data) {
                 return $this->makeEntity(
-                    $data, Entities\Address::class
+                    $data,
+                    Entities\Address::class
                 );
             });
     }
