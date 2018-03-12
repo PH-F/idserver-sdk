@@ -31,9 +31,12 @@ class OrderTest extends TestCase
         ids()->setLocale('nl_NL');
 
         $item = new Order([
+            'currency' => [
+                'abbreviation' => 'EUR',
+            ],
             'total_amount' => 7000,
         ]);
 
-        $this->assertEquals('€ 70,00', $item->asPriceForHumans('total_amount', 'EUR'));
+        $this->assertEquals('€ 70,00', $item->asPriceForHumans('total_amount'));
     }
 }

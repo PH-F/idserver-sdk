@@ -13,7 +13,7 @@ trait Priceable
      * @param string $currency
      * @return string
      */
-    public function asPriceForHumans($field, $currency)
+    public function asPriceForHumans($field, $currency = null)
     {
         if (!is_int($field)) {
             $field = $this->$field;
@@ -23,12 +23,27 @@ trait Priceable
             $field = array_get($field, $currency);
         }
 
-        if (is_null($field)) {
+        if (is_null($currency)) {
+            $currency = $this->getCurrencyValue();
+        }
+
+        if (is_null($field) || is_null($currency)) {
             return null;
         }
+
 
         $formatter = new NumberFormatter(app('idserver.manager')->getLocale(), NumberFormatter::CURRENCY);
 
         return $formatter->formatCurrency($field / 100, $currency);
+    }
+
+    /**
+     * Get the currency value of the entity.
+     *
+     * @return string
+     */
+    public function getCurrencyValue()
+    {
+        return array_get((array)$this->currency, 'abbreviation');
     }
 }
