@@ -34,6 +34,11 @@ class Manager
     protected $client;
 
     /**
+     * @var string
+     */
+    private $locale;
+
+    /**
      * Manager constructor.
      *
      * @param Client $client
@@ -49,5 +54,28 @@ class Manager
     public function client()
     {
         return $this->client;
+    }
+
+    /**
+     * Set the locale.
+     *
+     * @param string $locale
+     * @return $this
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    /**
+     * Get the locale.
+     *
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->locale;
     }
 }

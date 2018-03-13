@@ -117,10 +117,10 @@ class EntityCreator
             $collection = new Collection($data);
 
             return $collection->map(function ($item) use ($class) {
-                return new $class($item);
+                return $this->entity($item, $class);
             });
         }
 
-        return new $class($data);
+        return $this->entity($data, $class);
     }
 }

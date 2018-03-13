@@ -127,4 +127,28 @@ class EntityCreatorTest extends TestCase
         $this->assertInstanceOf(Resources\Collection::class, $role->abilities);
         $this->assertInstanceOf(\Tests\Stub\Eloquent\FakeAbility::class, $role->abilities->first());
     }
+
+    /** @test */
+    public function it_can_create_nested_relations()
+    {
+        $creator = new EntityCreator(Resources\Order::class);
+        $order = $creator->entity([
+            'items' => [
+                [
+                    'name' => 'delete_everything',
+                    'plan_duration' => [
+                        'name' => 'Duration x'
+                    ],
+                ], [
+                    'name' => 'add_everything',
+                    'plan_duration' => [
+                        'name' => 'Duration y',
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertInstanceOf(Entities\Plan\Duration::class, $order->items->first()->plan_duration);
+        $this->assertEquals('Duration x', $order->items->first()->plan_duration->name);
+    }
 }
