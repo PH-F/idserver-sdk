@@ -252,6 +252,33 @@ class UserTest extends TestCase
             $this->assertEquals(http_build_query([
                 'email' => 'john@example.com',
                 'password' => 'secret',
+                'remember' => false,
+            ]), $request->getBody());
+        });
+    }
+
+    /** @test */
+    public function it_can_login_with_remember_me()
+    {
+        $this->mockResponse(200, [
+            'token' => 'foo',
+            'data' => ['email' => 'john@example.com'],
+        ]);
+
+        /** @var User $user */
+        $user = $this->manager->users
+            ->login('john@example.com', 'secret', true);
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceOf(IdsEntity::class, $user);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('auth/login', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query([
+                'email' => 'john@example.com',
+                'password' => 'secret',
+                'remember' => true,
             ]), $request->getBody());
         });
     }
@@ -262,7 +289,7 @@ class UserTest extends TestCase
         $this->mockResponse(200, ['token' => 'bar']);
 
         $this->manager->users
-            ->login('john@example.com', 'secret', [
+            ->login('john@example.com', 'secret', false, [
                 'foo' => true,
             ]);
 
@@ -270,6 +297,7 @@ class UserTest extends TestCase
             $this->assertEquals(http_build_query([
                 'email' => 'john@example.com',
                 'password' => 'secret',
+                'remember' => false,
                 'claims' => ['foo' => true],
             ]), (string)$request->getBody());
         });
