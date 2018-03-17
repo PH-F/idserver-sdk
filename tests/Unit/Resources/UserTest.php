@@ -502,8 +502,8 @@ class UserTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('subscriptions', $request->getUri()->getPath());
-            $this->assertEquals('user_id=1', $request->getUri()->getQuery());
+            $this->assertEquals('users/1/subscriptions', $request->getUri()->getPath());
+            $this->assertEquals('', $request->getUri()->getQuery());
         });
 
         $this->assertInstanceOf(Collection::class, $collection);
