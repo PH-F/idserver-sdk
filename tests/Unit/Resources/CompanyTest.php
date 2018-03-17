@@ -8,6 +8,7 @@ use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Entities\Address;
+use Xingo\IDServer\Entities\Communication;
 use Xingo\IDServer\Resources\Collection;
 
 class CompanyTest extends TestCase
@@ -154,5 +155,26 @@ class CompanyTest extends TestCase
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals('foo', $collection->first()->street);
         $this->assertEquals('bar', $collection->last()->street);
+    }
+
+
+    /** @test */
+    public function it_can_have_communications()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['value' => 'foo'],
+                ['value' => 'bar'],
+            ],
+        ]);
+
+        $collection = $this->manager->companies(1)->communications();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Communication::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals('foo', $collection->first()->value);
+        $this->assertEquals('bar', $collection->last()->value);
     }
 }

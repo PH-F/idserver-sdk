@@ -103,7 +103,7 @@ class User extends Resource
      */
     public function communications()
     {
-        $this->call('GET', "users/$this->id/communications", ['user_id' => $this->id]);
+        $this->call('GET', "users/$this->id/communications");
 
         return $this->makeCollection(null, null, Entities\Communication::class);
     }
