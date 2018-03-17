@@ -101,6 +101,18 @@ class User extends Resource
      *
      * @return Collection
      */
+    public function communications()
+    {
+        $this->call('GET', "users/$this->id/communications", ['user_id' => $this->id]);
+
+        return $this->makeCollection(null, null, Entities\Communication::class);
+    }
+
+    /**
+     * Get subscriptions for the user.
+     *
+     * @return Collection
+     */
     public function subscriptions()
     {
         $this->call('GET', 'subscriptions', ['user_id' => $this->id]);
