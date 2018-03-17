@@ -90,7 +90,7 @@ class CommunicationTest extends TestCase
         $this->assertInstanceOf(Entities\Communication::class, $communication);
         $this->assertInstanceOf(IdsEntity::class, $communication);
 
-        $this->assertRequest(function (Request $request) use($data) {
+        $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('communications/3', $request->getUri()->getPath());
             $this->assertEquals(http_build_query($data), $request->getBody());
