@@ -1,3 +1,5 @@
+<?php
+
 namespace Xingo\IDServer\Entities;
 
 class Variant extends Entity
