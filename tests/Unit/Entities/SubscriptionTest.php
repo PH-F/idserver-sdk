@@ -37,15 +37,15 @@ class SubscriptionTest extends TestCase
         $this->assertFalse($subscription->isActive());
     }
 
-        /** @test */
-        public function it_can_check_active_on_the_dates()
-        {
-            $subscription = new Subscription([
+    /** @test */
+    public function it_can_check_active_on_the_dates()
+    {
+        $subscription = new Subscription([
                 'status' => 'active',
                 'start_date' => Carbon::now()->addDay(),
                 'end_date' => Carbon::now()->addMonth(),
             ]);
     
-            $this->assertFalse($subscription->isActive());
-        }
+        $this->assertFalse($subscription->isActive());
+    }
 }
