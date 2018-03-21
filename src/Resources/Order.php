@@ -12,4 +12,17 @@ use Xingo\IDServer\Concerns\ResourceBlueprint;
 class Order extends Resource
 {
     use ResourceBlueprint;
+
+    /**
+     * Update payment information of the order.
+     *
+     * @param array $attributes
+     * @return \Xingo\IDServer\Contracts\IdsEntity
+     */
+    public function payment(array $attributes)
+    {
+        $this->call('PATCH', "orders/$this->id/payment", $attributes);
+
+        return $this->makeEntity();
+    }
 }

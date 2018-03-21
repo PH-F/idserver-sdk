@@ -120,6 +120,26 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function it_can_update_payment_information()
+    {
+        $this->mockResponse(200);
+
+        $company = $this->manager->orders(3)->payment([
+            'status' => 'cancelled',
+            'payment_number' => 123456,
+        ]);
+
+        $this->assertInstanceOf(Entities\Order::class, $company);
+        $this->assertInstanceOf(IdsEntity::class, $company);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('orders/3/payment', $request->getUri()->getPath());
+            $this->assertEquals('status=cancelled&payment_number=123456', $request->getBody());
+        });
+    }
+
+    /** @test */
     public function it_can_be_deleted()
     {
         $this->mockResponse(204);
