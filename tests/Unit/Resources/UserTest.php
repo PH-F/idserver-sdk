@@ -3,6 +3,7 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Event;
 use Intervention\Image\ImageManager;
 use Tests\Concerns;
 use Tests\TestCase;
@@ -12,6 +13,7 @@ use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\Communication;
 use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
+use Xingo\IDServer\Events\TokenRefreshed;
 use Xingo\IDServer\Exceptions;
 use Xingo\IDServer\Resources\Collection;
 
@@ -335,6 +337,8 @@ class UserTest extends TestCase
     /** @test */
     public function it_can_refresh_the_jwt()
     {
+        Event::fake();
+
         $this->mockResponse(200, [], ['Authorization' => 'Bearer new-token']);
 
         $this->manager->users->refreshToken();
@@ -345,6 +349,8 @@ class UserTest extends TestCase
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('auth/refresh', $request->getUri()->getPath());
         });
+
+        Event::assertDispatched(TokenRefreshed::class);
     }
 
     /** @test */
