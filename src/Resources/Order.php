@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
+use Xingo\IDServer\Entities\Order\Price;
 
 /**
  * Class Plan
@@ -24,5 +25,18 @@ class Order extends Resource
         $this->call('PATCH', "orders/$this->id/payment", $attributes);
 
         return $this->makeEntity();
+    }
+
+    /**
+     * Get price information for a subscription.
+     *
+     * @param array $attributes
+     * @return Price
+     */
+    public function price(array $attributes)
+    {
+        $this->call('GET', "orders-price", $attributes);
+
+        return $this->makeEntity(null, Price::class);
     }
 }

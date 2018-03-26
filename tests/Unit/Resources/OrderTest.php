@@ -7,6 +7,7 @@ use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
+use Xingo\IDServer\Entities\Order\Price;
 use Xingo\IDServer\Resources\Collection;
 
 class OrderTest extends TestCase
@@ -105,12 +106,12 @@ class OrderTest extends TestCase
     {
         $this->mockResponse(200);
 
-        $company = $this->manager->orders(3)->update([
+        $order = $this->manager->orders(3)->update([
             'name' => 'Acme Order',
         ]);
 
-        $this->assertInstanceOf(Entities\Order::class, $company);
-        $this->assertInstanceOf(IdsEntity::class, $company);
+        $this->assertInstanceOf(Entities\Order::class, $order);
+        $this->assertInstanceOf(IdsEntity::class, $order);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
@@ -124,18 +125,38 @@ class OrderTest extends TestCase
     {
         $this->mockResponse(200);
 
-        $company = $this->manager->orders(3)->payment([
+        $order = $this->manager->orders(3)->payment([
             'status' => 'cancelled',
             'payment_number' => 123456,
         ]);
 
-        $this->assertInstanceOf(Entities\Order::class, $company);
-        $this->assertInstanceOf(IdsEntity::class, $company);
+        $this->assertInstanceOf(Entities\Order::class, $order);
+        $this->assertInstanceOf(IdsEntity::class, $order);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('orders/3/payment', $request->getUri()->getPath());
             $this->assertEquals('status=cancelled&payment_number=123456', $request->getBody());
+        });
+    }
+
+    /** @test */
+    public function it_can_get_price_information()
+    {
+        $this->mockResponse(200);
+
+        $price = $this->manager->orders->price([
+            'currency' => 'EUR',
+            'plan_duration_id' => 1,
+        ]);
+
+        $this->assertInstanceOf(Price::class, $price);
+        $this->assertInstanceOf(IdsEntity::class, $price);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('orders-price', $request->getUri()->getPath());
+            $this->assertEquals('currency=EUR&plan_duration_id=1', $request->getUri()->getQuery());
         });
     }
 
