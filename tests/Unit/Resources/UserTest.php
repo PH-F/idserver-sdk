@@ -9,6 +9,7 @@ use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\Ability;
 use Xingo\IDServer\Entities\Address;
+use Xingo\IDServer\Entities\Communication;
 use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Exceptions;
@@ -468,6 +469,26 @@ class UserTest extends TestCase
     }
 
     /** @test */
+    public function it_can_have_communications()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['value' => 'foo'],
+                ['value' => 'bar'],
+            ],
+        ]);
+
+        $collection = $this->manager->users(1)->communications();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Communication::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals('foo', $collection->first()->value);
+        $this->assertEquals('bar', $collection->last()->value);
+    }
+
+    /** @test */
     public function it_can_have_subscriptions()
     {
         $this->mockResponse(200, [
@@ -481,8 +502,8 @@ class UserTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('subscriptions', $request->getUri()->getPath());
-            $this->assertEquals('user_id=1', $request->getUri()->getQuery());
+            $this->assertEquals('users/1/subscriptions', $request->getUri()->getPath());
+            $this->assertEquals('', $request->getUri()->getQuery());
         });
 
         $this->assertInstanceOf(Collection::class, $collection);

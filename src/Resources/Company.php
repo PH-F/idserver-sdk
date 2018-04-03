@@ -30,4 +30,16 @@ class Company extends Resource
                 );
             });
     }
+
+    /**
+     * Get subscriptions for the user.
+     *
+     * @return Collection
+     */
+    public function communications()
+    {
+        $this->call('GET', "companies/$this->id/communications");
+
+        return $this->makeCollection(null, null, Entities\Communication::class);
+    }
 }
