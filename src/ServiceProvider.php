@@ -6,11 +6,14 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Middleware\TokenExpired;
 use Xingo\IDServer\Client\Support\JsonStream;
+use Xingo\IDServer\Events\TokenRefreshed;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -36,6 +39,20 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__ . '/../config/idserver.php' => config_path('idserver.php'),
         ]);
+
+        SessionGuard::macro('refreshRecaller', function () {
+            if ($this->guest() || is_null($this->recaller())) {
+                return;
+            }
+
+            $this->queueRecallerCookie($this->user());
+        });
+
+        Event::listen(TokenRefreshed::class, function () {
+            if (auth()->guard() instanceof SessionGuard) {
+                auth()->guard()->refreshRecaller();
+            }
+        });
     }
 
     /**

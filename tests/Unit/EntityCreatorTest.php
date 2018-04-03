@@ -148,7 +148,7 @@ class EntityCreatorTest extends TestCase
             ],
         ]);
 
-        $this->assertInstanceOf(Entities\Plan\Duration::class, $order->items->first()->plan_duration);
+        $this->assertInstanceOf(Entities\Duration::class, $order->items->first()->plan_duration);
         $this->assertEquals('Duration x', $order->items->first()->plan_duration->name);
     }
 }

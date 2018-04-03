@@ -6,6 +6,7 @@ use Intervention\Image\ImageManager;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
+use Xingo\IDServer\Events\TokenRefreshed;
 
 /**
  * Class User
@@ -45,7 +46,10 @@ class User extends Resource
 
         $header = $response->getHeaderLine('Authorization');
         $token = str_replace('Bearer ', '', $header);
+
         app('idserver.manager')->setToken($token);
+
+        event(new TokenRefreshed());
     }
 
     /**

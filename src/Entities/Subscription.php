@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Entities;
 
+use Carbon\Carbon;
 use Xingo\IDServer\Entities;
 
 class Subscription extends Entity
@@ -24,4 +25,18 @@ class Subscription extends Entity
         'start_date',
         'end_date',
     ];
+
+    /**
+     * Show the address types as badges.
+     *
+     * @return string
+     */
+    public function isActive()
+    {
+        if (!in_array($this->status, ['active', 'expiring'])) {
+            return false;
+        }
+
+        return Carbon::now()->between($this->start_date, $this->end_date);
+    }
 }
