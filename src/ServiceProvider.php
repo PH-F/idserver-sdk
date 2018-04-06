@@ -8,7 +8,11 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Application;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Jobs\SyncJob;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Xingo\IDServer\Client\Middleware\JwtToken;
 use Xingo\IDServer\Client\Middleware\TokenExpired;
@@ -22,8 +26,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('idserver.client', function (Application $app) {
-            return new Client($this->options($app));
+        $this->app->singleton('idserver.client', function () {
+            return new Client($this->options());
         });
 
         $this->app->singleton('idserver.manager', function (Application $app) {
@@ -40,26 +44,16 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__ . '/../config/idserver.php' => config_path('idserver.php'),
         ]);
 
-        SessionGuard::macro('refreshRecaller', function () {
-            if ($this->guest() || is_null($this->recaller())) {
-                return;
-            }
+        $this->setupSessionHandling();
 
-            $this->queueRecallerCookie($this->user());
-        });
-
-        Event::listen(TokenRefreshed::class, function () {
-            if (auth()->guard() instanceof SessionGuard) {
-                auth()->guard()->refreshRecaller();
-            }
-        });
+        $this->setupQueueHandling();
     }
 
     /**
-     * @param Application $app
+     * @param string $block
      * @return array
      */
-    protected function options(Application $app): array
+    protected function options($block = null): array
     {
         $handler = HandlerStack::create();
 
@@ -79,21 +73,61 @@ class ServiceProvider extends BaseServiceProvider
         return [
             'base_uri' => trim(config('idserver.url'), '/') . '/',
             'handler' => $handler,
-            'headers' => $this->getAuthenticationHeader(),
+            'headers' => $this->getAuthenticationHeader($block),
         ];
     }
 
     /**
+     * @param string $block
      * @return array
      */
-    private function getAuthenticationHeader(): array
+    private function getAuthenticationHeader($block = null): array
     {
-        $block = app()->runningInConsole() && !app()->runningUnitTests() ?
+        $block = $block ?: app()->runningInConsole() && !app()->runningUnitTests() ?
             'cli' : 'web';
 
         return [
             'X-XINGO-Client-ID' => config("idserver.store.$block.client_id"),
             'X-XINGO-Secret-Key' => config("idserver.store.$block.secret_key"),
         ];
+    }
+
+    /**
+     * Setup the queue handling by using the CLI mode when running a job from the sync queue.
+     */
+    protected function setupQueueHandling()
+    {
+        Queue::before(function (JobProcessing $event) {
+            if (!$event->job instanceof SyncJob) {
+                return;
+            }
+
+            app('idserver.manager')->setClient(new Client($this->options('cli')));
+        });
+
+        Queue::after(function (JobProcessed $event) {
+            if (!$event->job instanceof SyncJob) {
+                return;
+            }
+
+            app('idserver.manager')->setClient(app('idserver.client'));
+        });
+    }
+
+    protected function setupSessionHandling(): void
+    {
+        SessionGuard::macro('refreshRecaller', function () {
+            if ($this->guest() || is_null($this->recaller())) {
+                return;
+            }
+
+            $this->queueRecallerCookie($this->user());
+        });
+
+        Event::listen(TokenRefreshed::class, function () {
+            if (auth()->guard() instanceof SessionGuard) {
+                auth()->guard()->refreshRecaller();
+            }
+        });
     }
 }
