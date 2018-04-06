@@ -45,7 +45,7 @@ class Manager
      */
     public function __construct(Client $client)
     {
-        $this->client = $client;
+        $this->setClient($client);
     }
 
     /**
@@ -54,6 +54,16 @@ class Manager
     public function client()
     {
         return $this->client;
+    }
+
+    /**
+     * Set the client to use.
+     *
+     * @param Client $client
+     */
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
     }
 
     /**
