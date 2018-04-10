@@ -10,6 +10,8 @@ class PriceTest extends TestCase
     /** @test */
     public function it_can_get_the_duration_discount()
     {
+        app()->setLocale('nl_NL');
+
         $price = new Price([
             'currency' => 'EUR',
             'plan_variant_price' => 7000,
@@ -17,6 +19,6 @@ class PriceTest extends TestCase
         ]);
 
         $this->assertEquals(1000, $price->duration_discount);
-        $this->assertEquals('€ 10.00', $price->asPriceForHumans('duration_discount'));
+        $this->assertEquals('€ 10,00', $price->asPriceForHumans('duration_discount'));
     }
 }

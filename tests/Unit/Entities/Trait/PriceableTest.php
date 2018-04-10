@@ -13,11 +13,11 @@ class PriceableTest extends TestCase
     {
         $item = new Item();
 
-        ids()->setLocale('nl_NL');
+        app()->setLocale('nl_NL');
         $this->assertEquals('€ 75,00', $item->asPriceForHumans(7500, 'EUR'));
         $this->assertEquals('US$ 75,00', $item->asPriceForHumans(7500, 'USD'));
 
-        ids()->setLocale('en_US');
+        app()->setLocale('en_US');
         $this->assertEquals('€75.00', $item->asPriceForHumans(7500, 'EUR'));
         $this->assertEquals('$75.00', $item->asPriceForHumans(7500, 'USD'));
     }
@@ -31,11 +31,11 @@ class PriceableTest extends TestCase
             'shipping_cost' => 1000,
         ]);
 
-        ids()->setLocale('nl_NL');
+        app()->setLocale('nl_NL');
         $this->assertEquals('€ 75,00', $item->asPriceForHumans('price', 'EUR'));
         $this->assertEquals('US$ 75,00', $item->asPriceForHumans('price', 'USD'));
 
-        ids()->setLocale('en_US');
+        app()->setLocale('en_US');
         $this->assertEquals('€75.00', $item->asPriceForHumans('price', 'EUR'));
         $this->assertEquals('$75.00', $item->asPriceForHumans('price', 'USD'));
     }
@@ -50,7 +50,7 @@ class PriceableTest extends TestCase
             ],
         ]);
 
-        ids()->setLocale('nl_NL');
+        app()->setLocale('nl_NL');
         $this->assertEquals('€ 70,00', $item->asPriceForHumans('price', 'EUR'));
         $this->assertEquals('US$ 95,00', $item->asPriceForHumans('price', 'USD'));
     }
@@ -62,7 +62,7 @@ class PriceableTest extends TestCase
             'price' => 7500,
         ]);
 
-        ids()->setLocale('nl_NL');
+        app()->setLocale('nl_NL');
         $this->assertNull($item->asPriceForHumans('invalid', 'EUR'));
         $this->assertNull($item->asPriceForHumans(null, 'EUR'));
     }

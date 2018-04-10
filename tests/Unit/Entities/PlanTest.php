@@ -10,7 +10,7 @@ class PlanTest extends TestCase
     /** @test */
     public function it_is_priceable()
     {
-        ids()->setLocale('nl_NL');
+        app()->setLocale('nl_NL');
 
         $item = new Plan([
             'price' => [
