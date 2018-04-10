@@ -28,7 +28,7 @@ class OrderTest extends TestCase
     /** @test */
     public function it_is_priceable()
     {
-        ids()->setLocale('nl_NL');
+        app()->setLocale('nl_NL');
 
         $item = new Order([
             'currency' => [

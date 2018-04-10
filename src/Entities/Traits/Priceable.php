@@ -32,7 +32,7 @@ trait Priceable
         }
 
 
-        $formatter = new NumberFormatter(app('idserver.manager')->getLocale(), NumberFormatter::CURRENCY);
+        $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
 
         return $formatter->formatCurrency($field / 100, $currency);
     }

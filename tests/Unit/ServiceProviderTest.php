@@ -19,6 +19,16 @@ class ServiceProviderTest extends TestCase
         $this->assertEquals('web', ids()->client()->getConfig('headers')['X-XINGO-Secret-Key']);
     }
 
+    /** @test */
+    public function it_sets_the_locale_header_based_on_the_app_locale()
+    {
+        app()->setLocale('ab_CD');
+
+        $locale = ids()->client()->getConfig('headers')['Accept-Language'];
+
+        $this->assertEquals('ab_CD', $locale);
+    }
+
     /**
      * @param Application $app
      */

@@ -73,8 +73,19 @@ class ServiceProvider extends BaseServiceProvider
         return [
             'base_uri' => trim(config('idserver.url'), '/') . '/',
             'handler' => $handler,
-            'headers' => $this->getAuthenticationHeader($block),
+            'headers' => $this->getHeaders($block),
         ];
+    }
+
+    /**
+     * @param null $block
+     * @return array
+     */
+    private function getHeaders($block = null): array
+    {
+        return array_merge($this->getAuthenticationHeader($block), [
+            'Accept-Language' => app()->getLocale(),
+        ]);
     }
 
     /**
