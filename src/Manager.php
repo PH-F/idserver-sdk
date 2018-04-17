@@ -34,11 +34,6 @@ class Manager
     protected $client;
 
     /**
-     * @var string
-     */
-    private $locale;
-
-    /**
      * Manager constructor.
      *
      * @param Client $client

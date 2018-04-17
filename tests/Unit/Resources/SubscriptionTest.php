@@ -144,26 +144,23 @@ class SubscriptionTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_renewed_using_a_plan_entity_instance_or_id()
+    public function it_can_be_renewed_and_an_order_is_created()
     {
         $this->mockResponse(201);
         $this->mockResponse(201);
 
-        $plan = new Entities\Plan(['id' => 2]);
-        $subscription = $this->manager->subscriptions(1)->renew($plan);
+        $order = $this->manager->subscriptions(1)->renew([
+            'currency' => 'EUR'
+        ]);
 
-        $this->assertInstanceOf(Entities\Subscription::class, $subscription);
-        $this->assertInstanceOf(IdsEntity::class, $subscription);
+        $this->assertInstanceOf(Entities\Order::class, $order);
+        $this->assertInstanceOf(IdsEntity::class, $order);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('subscriptions/1/renew', $request->getUri()->getPath());
-            $this->assertEquals('plan_id=2', $request->getBody());
+            $this->assertEquals('currency=EUR', $request->getBody());
         });
-
-        $subscription = $this->manager->subscriptions(1)->renew(2);
-        $this->assertInstanceOf(Entities\Subscription::class, $subscription);
-        $this->assertInstanceOf(IdsEntity::class, $subscription);
     }
 
     /** @test */

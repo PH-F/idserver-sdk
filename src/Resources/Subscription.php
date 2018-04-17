@@ -27,16 +27,13 @@ class Subscription extends Resource
     }
 
     /**
-     * @param Entities\Plan|int $plan
+     * @param array $attributes
      * @return IdsEntity
      */
-    public function renew($plan): IdsEntity
+    public function renew(array $attributes): IdsEntity
     {
-        $plan_id = $plan instanceof Entities\Plan ?
-            $plan->id : (int)$plan;
+        $this->call('POST', "subscriptions/$this->id/renew", $attributes);
 
-        $this->call('POST', "subscriptions/$this->id/renew", compact('plan_id'));
-
-        return $this->makeEntity();
+        return $this->makeEntity(null, Entities\Order::class);
     }
 }
