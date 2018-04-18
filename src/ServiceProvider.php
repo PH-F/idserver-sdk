@@ -125,7 +125,7 @@ class ServiceProvider extends BaseServiceProvider
         });
     }
 
-    protected function setupSessionHandling(): void
+    protected function setupSessionHandling()
     {
         SessionGuard::macro('refreshRecaller', function () {
             if ($this->guest() || is_null($this->recaller())) {
