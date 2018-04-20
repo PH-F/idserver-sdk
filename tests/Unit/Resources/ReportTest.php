@@ -24,11 +24,14 @@ class ReportTest extends TestCase
             ],
         ]);
 
-        $result = $this->manager->reports('funnel-subscriptions')->get([
+        $collection = $this->manager->reports('funnel-subscriptions')->get([
             'date' => '2018-01-01',
         ]);
 
-        $this->assertInstanceOf(Report::class, $result);
+        $this->assertInstanceOf(Resources\Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Entities\Report::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('reports/funnel-subscriptions', $request->getUri()->getPath());

@@ -2,7 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Contracts\IdsEntity;
+use Illuminate\Support\Collection;
 
 /**
  * Class Plan
@@ -13,12 +13,12 @@ class Report extends Resource
 {
     /**
      * @param array $filters
-     * @return IdsEntity
+     * @return Collection
      */
-    public function get(array $filters = []): IdsEntity
+    public function get(array $filters = []): Collection
     {
         $this->call('GET', "reports/$this->id", $filters);
 
-        return $this->makeEntity();
+        return $this->makeCollection();
     }
 }
