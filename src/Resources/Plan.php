@@ -12,4 +12,22 @@ use Xingo\IDServer\Concerns\ResourceBlueprint;
 class Plan extends Resource
 {
     use ResourceBlueprint;
+
+    /**
+     * Export the send list of the plan. This can be with or without filters.
+     * It will return a callback printing the output of the stream.
+     *
+     * @param array $filters
+     * @return \Closure
+     */
+    public function sendList(array $filters = [])
+    {
+        $body = $this->stream('GET', "plans/$this->id/send-list", $filters);
+
+        return function () use ($body) {
+            while (!$body->eof()) {
+                echo $body->read(1024);
+            }
+        };
+    }
 }

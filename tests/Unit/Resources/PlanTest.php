@@ -132,4 +132,19 @@ class PlanTest extends TestCase
             $this->assertEquals('plans/2', $request->getUri()->getPath());
         });
     }
+
+    /** @test */
+    public function it_can_export_the_send_list_of_a_plan()
+    {
+        $this->mockResponse();
+
+        $result = $this->manager->plans(1)->sendList();
+
+        $this->assertInstanceOf(\Closure::class, $result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('plans/1/send-list', $request->getUri()->getPath());
+        });
+    }
 }
