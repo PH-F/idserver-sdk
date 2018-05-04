@@ -18,7 +18,7 @@ class Note extends Resource
     public function create(array $attributes): IdsEntity
     {
         $resource = $this->toShortName($this->parent);
-        
+
         $uri = "$resource/{$this->parent->id}/notes";
 
         $this->call('POST', $uri, $attributes);
