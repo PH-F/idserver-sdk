@@ -101,7 +101,7 @@ class User extends Resource
     }
 
     /**
-     * Get subscriptions for the user.
+     * Get communications for the user.
      *
      * @return Collection
      */
@@ -110,6 +110,18 @@ class User extends Resource
         $this->call('GET', "users/$this->id/communications");
 
         return $this->makeCollection(null, null, Entities\Communication::class);
+    }
+
+    /**
+     * Get notes for the user.
+     *
+     * @return Collection
+     */
+    public function notes()
+    {
+        $this->call('GET', "users/$this->id/notes");
+
+        return $this->makeCollection(null, null, Entities\Note::class);
     }
 
     /**

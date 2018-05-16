@@ -31,7 +31,9 @@ trait CustomException
             case 429:
                 throw new Exceptions\ThrottleException();
             default:
-                throw new Exceptions\ServerException();
+                $content = $response->getBody()->asJson();
+
+                throw new Exceptions\ServerException($content['message'] ?? null);
         }
     }
 }

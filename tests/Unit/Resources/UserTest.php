@@ -11,6 +11,7 @@ use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\Ability;
 use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\Communication;
+use Xingo\IDServer\Entities\Note;
 use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Events\TokenRefreshed;
@@ -639,5 +640,25 @@ class UserTest extends TestCase
                 'password' => 'secret',
             ]), $request->getBody());
         });
+    }
+
+    /** @test */
+    public function it_can_have_notes()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['text' => 'foo'],
+                ['text' => 'bar'],
+            ],
+        ]);
+
+        $collection = $this->manager->users(1)->notes();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Note::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals('foo', $collection->first()->text);
+        $this->assertEquals('bar', $collection->last()->text);
     }
 }
