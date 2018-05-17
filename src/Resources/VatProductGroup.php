@@ -2,15 +2,14 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Xingo\IDServer\Concerns\ResourceBlueprint;
+
 class VatProductGroup extends Resource
 {
-    /**
-     * @return Collection
-     */
-    public function all(): Collection
-    {
-        $this->call('GET', 'vat/product-groups');
-
-        return $this->makeCollection();
+    use ResourceBlueprint {
+        get as protected;
+        create as protected;
+        update as protected;
+        delete as protected;
     }
 }
