@@ -20,12 +20,18 @@ trait ResourceOrganizer
     protected $sortBy;
 
     /**
-     * @param int $page
+     * @param int|boolean $page
      * @param int $perPage
      * @return $this
      */
-    public function paginate(int $page = 1, int $perPage = 10)
+    public function paginate($page = 1, int $perPage = 10)
     {
+        // Disable pagination
+        if (false === $page) {
+            $page = 1;
+            $perPage = -1;
+        }
+
         $this->page = $page;
         $this->perPage = $perPage;
 

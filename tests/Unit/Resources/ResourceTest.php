@@ -203,6 +203,29 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_allows_to_disable_pagination_when_necessary()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 1],
+                ['id' => 2],
+            ],
+        ]);
+
+        $collection = $this->manager->users
+            ->paginate(false)
+            ->all();
+
+        $this->assertCount(2, $collection);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users', $request->getUri()->getPath());
+            $this->assertEquals('page=1&per_page=-1', $request->getUri()->getQuery());
+        });
+    }
+
+    /** @test */
     public function it_can_be_sorted()
     {
         $this->mockResponse(200);
