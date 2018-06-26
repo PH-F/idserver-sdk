@@ -11,4 +11,11 @@ class Promotion extends Entity
         'start_date',
         'end_date',
     ];
+
+    /**
+     * @var array
+     */
+    protected $relationships = [
+        'plan_durations' => Duration::class,
+    ];
 }
