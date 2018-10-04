@@ -35,4 +35,14 @@ class Role extends Resource
 
         return $role;
     }
+
+    public function sync(array $roles)
+    {
+        $resource = $this->toShortName($this->parent);
+        $uri = "$resource/{$this->parent->id}/roles";
+
+        $this->call('PUT', $uri, ['roles' => $roles]);
+
+        return $this->makeCollection();
+    }
 }
