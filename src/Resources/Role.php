@@ -5,6 +5,7 @@ namespace Xingo\IDServer\Resources;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\Ability;
+use Xingo\IDServer\Concerns\NestedResource;
 
 /**
  * Class Role
@@ -14,7 +15,7 @@ use Xingo\IDServer\Entities\Ability;
  */
 class Role extends Resource
 {
-    use ResourceBlueprint;
+    use ResourceBlueprint, NestedResource;
 
     /**
      * @param array $attributes
@@ -36,7 +37,11 @@ class Role extends Resource
         return $role;
     }
 
-    public function sync(array $roles)
+    /**
+     * @param array|null $roles
+     * @return Collection
+     */
+    public function sync(?array $roles)
     {
         $resource = $this->toShortName($this->parent);
         $uri = "$resource/{$this->parent->id}/roles";
