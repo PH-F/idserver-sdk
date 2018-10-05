@@ -2,10 +2,10 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Xingo\IDServer\Concerns\NestedResource;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\Ability;
-use Xingo\IDServer\Concerns\NestedResource;
 
 /**
  * Class Role
@@ -15,7 +15,8 @@ use Xingo\IDServer\Concerns\NestedResource;
  */
 class Role extends Resource
 {
-    use ResourceBlueprint, NestedResource;
+    use ResourceBlueprint;
+    use NestedResource;
 
     /**
      * @param array $attributes
