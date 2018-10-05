@@ -100,4 +100,35 @@ class RoleTest extends TestCase
         $this->assertInstanceOf(Collection::class, $role->abilities);
         $this->assertInstanceOf(Entities\Ability::class, $role->abilities->first());
     }
+
+    /** @test */
+    public function it_can_sync_roles_of_parent()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                [
+                    'id' => 1,
+                    'name' => 'guest',
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'admin',
+                ],
+            ],
+        ]);
+
+        $roles = $this->manager
+            ->users(1)
+            ->roles
+            ->sync(['guest', 'admin']);
+
+        $this->assertInstanceOf(Collection::class, $roles);
+        $this->assertInstanceOf(Entities\Role::class, $roles->first());
+        $this->assertEquals(1, $roles->first()->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('users/1/roles', $request->getUri()->getPath());
+        });
+    }
 }
