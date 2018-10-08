@@ -55,11 +55,12 @@ trait ResourceBlueprint
     }
 
     /**
+     * @param array|null $attributes
      * @return bool
      */
-    public function delete(): bool
+    public function delete(array $attributes = null): bool
     {
-        $response = $this->call('DELETE', $this->getResourceName() . "/$this->id");
+        $response = $this->call('DELETE', $this->getResourceName() . "/$this->id", $attributes);
 
         return 204 === $response->getStatusCode();
     }
