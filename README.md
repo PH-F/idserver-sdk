@@ -95,6 +95,10 @@ $users = ids()->users->all();
 
 > One important point here is that once the JWT is stored in the session you don't have to login the user every time to perform some action. The SDK automatically will check if there's a valid JWT token in the session. If so it will add it to the header, allowing you to do the API call. Otherwise it will throw a `MissingJwtException`.
 
+##### The `Auth` Middleware
+
+This SDK comes with a handful `Auth` middleware, that must be used in all actions you want to protect by the JWT authentication. You can name it in you Laravel `Http/Kernel.php` file, for example, like `jwt-auth` or just replacing the current `auth` one.
+
 ##### Token Refresh
 
 Every JWT has a expiration time. The SDK knows that and has two Client Middlewares for Guzzle that are pushed when the Guzzle instance is created. They're always checking for JWT in the session and also JWT changes.
@@ -107,7 +111,53 @@ Internally the IDServer API returns a `token_expired` JSON response when the JWT
 
 Sometimes is necessary to have some CLI apps doing something using the IDServer API. In this case, we don't have a logged user, so we need a CLI client/key for that. If the call comes from a valid CLI Store we allow it without JWT authentication. All the necessary headers are create automatically according the environment the PHP is running. If the app is running in console mode, we get the CLI Client ID and Secret Key from the config file. 
 
-#### JWT Authenti
+#### Authorization
 
+All IDServer authorization is made using the concept of "roles" and "abilities". You have basic roles with some default abilities, but this IDServer also allows you to add custom abilities to a given user. All abilities are returned as a Laravel collection. To give the current abilities a user has:
 
+```php
+ids()
+    ->users(1)
+    ->abilities() // Collection of abilities
+    ->each(function ($ability) {
+        var_dump($ability->name); // foo.bar
+    });
+```
 
+To retrieve all available abilities:
+
+```php
+$first = ids()->abilities->all()->fist();
+echo $first->name; // foo.bar
+```
+
+> If you have access to the IDServer repository, take a look on the `database/seeds/data/abiliites.php` file. You'll see all the abilities available in the IDServer API.
+
+### Entities and Collections
+
+#### Entities Classes
+
+All IDServer response is in JSON response. To make things a bit easier we always return simples classes called "Entities". So if you are retrieving a user data you'll get a User Entity as response. Each `Entity` class has a set of custom methods, like the `User::name()` for example. This is the default behavior, making the SDK returning you simple entity classes.
+
+If you want to customize the returned class you can map one by one in the config file. Let's say your Laravel app already have a `User` model, and every time you call `ids()->users(5)->get()` you don't want a user entity instance, but a `User` model. You can inform the SDK which class it should instantiate for you, mapping all the properties automatically.
+
+In the config file:
+
+```php
+'classes' => [
+    \Xingo\IDServer\Entities\User::class => App\Models\User::class,
+],
+```
+
+Here you're saying that instead of getting a `Entities\User` instance you want a `App\Models\User` instance. Then you can use your own class with custom methods and logic.
+
+#### Collections
+
+The IDServer API uses the "JSON Resources" concept in Laravel. So when returning collections it also add a `meta` field with some useful information about pagination, next/previous URL, pages, total of pages, etc. To make sure this information is present in the returned object we created a custom collection class, that also have a `$meta` property, a simple object with all those data from the API.
+
+```php
+$users = ids()->users->all();
+var_dump($users->meta);
+```
+
+> The custom Collection is exactly like the base Laravel's collection, but with the `$meta` property mapped with the JSON response.
