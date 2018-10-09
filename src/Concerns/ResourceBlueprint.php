@@ -58,7 +58,7 @@ trait ResourceBlueprint
      * @param array|null $attributes
      * @return bool
      */
-    public function delete(array $attributes = null): bool
+    public function delete(array $attributes = []): bool
     {
         $response = $this->call('DELETE', $this->getResourceName() . "/$this->id", $attributes);
 
