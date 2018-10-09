@@ -72,13 +72,42 @@ Otherwise if the call does not need a specific resource, just call the method yo
 $result = ids()->users->login('foo@example.com', 'secret');
 ``` 
 
-### Authentication and Authorization
+### Stores, Authentication and Authorization
 
 The IDServer API can be called by N numbers of clients, like many stores or websites. That's why we have the concept of "Stores" in the IDServer. Each call must come from a trusted store, so we need a "Client ID" and a "Secret Key". Each one can have two different roles: "web" and "cli".
 
-Web stores are used when the user logs in with their credentials and wants to manage their data. This is made by a JWT authentication. JWT is a token that contains information about the user and expiration time, for example. For more information how the JWT is created ready about it on [https://jwt.io].
+> Everything is made automatically according the the Laravel app that's running this SDK. You don't have to worry about request headers or JWT when using the SDK.
 
+#### Web Stores
 
+Web stores are used when the user logs in with their credentials and wants to manage their data. So the SDK must send both the "Client ID", the "Secret Key", and also the user token, called JWT. JWT is a token that contains information about the user and expiration time, for example. For more information about what the JWT is please access [https://jwt.io]. In the SDK context every time a user does a "login" action, the API returns a valid JWT token and it is stored in the current session.
+
+```php
+ids()->users->login('foo@example.com', 'secret');
+```
+
+All following call to the API will include automatically the necessary JWT for authentication:
+
+```php
+$user = ids()->users->login('foo@example.com', 'secret'); // $user->jwtToken()
+$users = ids()->users->all();
+```
+
+> One important point here is that once the JWT is stored in the session you don't have to login the user every time to perform some action. The SDK automatically will check if there's a valid JWT token in the session. If so it will add it to the header, allowing you to do the API call. Otherwise it will throw a `MissingJwtException`.
+
+##### Token Refresh
+
+Every JWT has a expiration time. The SDK knows that and has two Client Middlewares for Guzzle that are pushed when the Guzzle instance is created. They're always checking for JWT in the session and also JWT changes.
+
+Internally the IDServer API returns a `token_expired` JSON response when the JWT is expired. Once the SDK automatically is looking for these type of changes, if that JSON response is present it - in the background -  calls the "refresh" action in the IDServer, gets a new JWT and replace it in the current session, then call the action again, returning the correct response.
+
+> All the JWT refresh process in made in background, you never have to worry about that when using this SDK. 
+
+#### CLI Stores
+
+Sometimes is necessary to have some CLI apps doing something using the IDServer API. In this case, we don't have a logged user, so we need a CLI client/key for that. If the call comes from a valid CLI Store we allow it without JWT authentication. All the necessary headers are create automatically according the environment the PHP is running. If the app is running in console mode, we get the CLI Client ID and Secret Key from the config file. 
+
+#### JWT Authenti
 
 
 
