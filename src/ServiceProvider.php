@@ -50,10 +50,10 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * @param string $block
+     * @param string $type
      * @return array
      */
-    protected function options($block = null): array
+    protected function options($type = null): array
     {
         $handler = HandlerStack::create();
 
@@ -73,33 +73,32 @@ class ServiceProvider extends BaseServiceProvider
         return [
             'base_uri' => trim(config('idserver.url'), '/') . '/',
             'handler' => $handler,
-            'headers' => $this->getHeaders($block),
+            'headers' => $this->getHeaders($type),
         ];
     }
 
     /**
-     * @param null $block
+     * @param null $type
      * @return array
      */
-    private function getHeaders($block = null): array
+    private function getHeaders($type = null): array
     {
-        return array_merge($this->getAuthenticationHeader($block), [
+        return array_merge($this->getAuthenticationHeader($type), [
             'Accept-Language' => app()->getLocale(),
         ]);
     }
 
     /**
-     * @param string $block
+     * @param string $type
      * @return array
      */
-    private function getAuthenticationHeader($block = null): array
+    private function getAuthenticationHeader($type = null): array
     {
-        $block = $block ?: app()->runningInConsole() && !app()->runningUnitTests() ?
-            'cli' : 'web';
+        $type = $this->getAuthenticationType($type);
 
         return [
-            'X-XINGO-Client-ID' => config("idserver.store.$block.client_id"),
-            'X-XINGO-Secret-Key' => config("idserver.store.$block.secret_key"),
+            'X-XINGO-Client-ID' => config("idserver.store.$type.client_id"),
+            'X-XINGO-Secret-Key' => config("idserver.store.$type.secret_key"),
         ];
     }
 
@@ -140,5 +139,15 @@ class ServiceProvider extends BaseServiceProvider
                 auth()->guard()->refreshRecaller();
             }
         });
+    }
+
+    /**
+     * @param string|null $type
+     * @return string
+     */
+    private function getAuthenticationType($type = null): string
+    {
+        return $type ?: app()->runningInConsole() && !app()->runningUnitTests() ?
+            'cli' : 'web';
     }
 }
