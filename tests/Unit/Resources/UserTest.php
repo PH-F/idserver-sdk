@@ -555,7 +555,7 @@ class UserTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('users/reset-password', $request->getUri()->getPath());
+            $this->assertEquals('users/forgot-password', $request->getUri()->getPath());
             $this->assertEquals('id=2', $request->getBody());
         });
     }
@@ -574,7 +574,7 @@ class UserTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('users/reset-password', $request->getUri()->getPath());
+            $this->assertEquals('users/forgot-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
                 'email' => 'foo@bar.com',
             ]), (string)$request->getBody());

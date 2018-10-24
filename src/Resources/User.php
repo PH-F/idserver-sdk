@@ -170,7 +170,7 @@ class User extends Resource
     {
         $field = $this->userIdentifierField($identifier);
 
-        $this->call('POST', 'users/reset-password', [
+        $this->call('POST', 'users/forgot-password', [
             $field => $identifier,
         ]);
 
