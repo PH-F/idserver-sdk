@@ -166,7 +166,7 @@ class User extends Resource
      * @param int|string $identifier
      * @return string
      */
-    public function resetPassword($identifier): string
+    public function forgotPassword($identifier): string
     {
         $field = $this->userIdentifierField($identifier);
 
@@ -205,6 +205,20 @@ class User extends Resource
         $response = $this->call('PATCH', "users/{$this->id}/change-password", [
             'password' => $password,
         ]);
+
+        return 204 === $response->getStatusCode();
+    }
+
+    /**
+     * Reset the password of a user. This will reset the password and will
+     * force the user to change his password after his first login. We
+     * will send an email with the new password to the user.
+     *
+     * @return bool
+     */
+    public function resetPassword(): bool
+    {
+        $response = $this->call('PATCH', "users/{$this->id}/reset-password");
 
         return 204 === $response->getStatusCode();
     }
