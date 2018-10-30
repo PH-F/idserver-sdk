@@ -166,8 +166,7 @@ abstract class Resource
         array $data = null,
         array $meta = null,
         ?string $class = null
-    ): Collection
-    {
+    ): Collection {
         $class = $class ?: $this->retrieveEntityClass($class);
         $data = $data ?: $this->contents['data'] ?? [];
         $meta = $meta ?: $this->contents['meta'] ?? [];
