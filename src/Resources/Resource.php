@@ -150,6 +150,7 @@ abstract class Resource
      */
     protected function makeEntity(array $attributes = null, ?string $class = null): IdsEntity
     {
+        $class = $class ?: $this->retrieveEntityClass($class);
         $attributes = $attributes ?: $this->contents['data'] ?? [];
 
         return $this->creator->entity($attributes, $class);
@@ -165,7 +166,9 @@ abstract class Resource
         array $data = null,
         array $meta = null,
         ?string $class = null
-    ): Collection {
+    ): Collection
+    {
+        $class = $class ?: $this->retrieveEntityClass($class);
         $data = $data ?: $this->contents['data'] ?? [];
         $meta = $meta ?: $this->contents['meta'] ?? [];
 
@@ -211,5 +214,20 @@ abstract class Resource
         }
 
         return $response ?? null;
+    }
+
+    /**
+     * Retrieve the custom entity class.
+     *
+     * @param null|string $class
+     * @return null|string
+     */
+    protected function retrieveEntityClass(?string $class)
+    {
+        if (method_exists($this, 'getEntityClass')) {
+            return $this->getEntityClass();
+        }
+
+        return $class;
     }
 }
