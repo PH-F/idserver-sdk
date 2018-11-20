@@ -287,7 +287,6 @@ class ResourceTest extends TestCase
             $this->assertContains('Doe', $contents);
             $this->assertContains('Laravel', $contents);
         });
-
     }
 }
 
