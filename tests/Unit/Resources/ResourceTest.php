@@ -273,9 +273,9 @@ class ResourceTest extends TestCase
             $this->assertEquals('POST', $request->getMethod());
 
             $this->assertInstanceOf(MultipartStream::class, $request->getBody());
-
             $contents = $request->getBody()->getContents();
-            $this->assertContains('Content-Disposition: form-data; name="file"; filename="image.png', $contents);
+
+            $this->assertContains('Content-Disposition: form-data; name="file"; filename="foo.png', $contents);
             $this->assertContains('Content-Disposition: form-data; name="key', $contents);
             $this->assertContains('Content-Disposition: form-data; name="user[first_name]', $contents);
             $this->assertContains('Content-Disposition: form-data; name="user[last_name]', $contents);
@@ -297,7 +297,7 @@ class MultipartResource extends Resource
     {
         return $this->asMultipart()
             ->call('PATCH', "foo/{$this->id}/bar", [
-                'file' => new UploadedFile(TEST_PATH . 'Stub/image.png', 'image.png'),
+                'file' => new UploadedFile(TEST_PATH . 'Stub/image.png', 'foo.png'),
                 'key' => 'my-value',
                 'user' => [
                     'first_name' => 'John',

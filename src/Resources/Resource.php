@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
-use SplFileInfo;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Xingo\IDServer\Concerns\CallableResource;
 use Xingo\IDServer\Concerns\CustomException;
 use Xingo\IDServer\Concerns\ResourceOrganizer;
@@ -300,13 +300,16 @@ abstract class Resource
      */
     private function formatAttributeToMultipartContent($key, $value)
     {
-        if ($value instanceof SplFileInfo) {
+        if ($value instanceof UploadedFile) {
+            $filename = $value->getClientOriginalName();
+
             $value = fopen($value->getRealPath(), 'r+');
         }
 
         return [
             'name' => $key,
             'contents' => null === $value ? '' : $value,
+            'filename' => $filename ?? null,
         ];
     }
 }
