@@ -186,8 +186,7 @@ abstract class Resource
         array $data = null,
         array $meta = null,
         ?string $class = null
-    ): Collection
-    {
+    ): Collection {
         $data = $data ?: $this->contents['data'] ?? [];
         $meta = $meta ?: $this->contents['meta'] ?? [];
 
