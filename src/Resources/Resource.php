@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Xingo\IDServer\Concerns\CallableResource;
 use Xingo\IDServer\Concerns\CustomException;
 use Xingo\IDServer\Concerns\ResourceOrganizer;
@@ -37,6 +38,13 @@ abstract class Resource
      * @var array
      */
     protected $contents;
+
+    /**
+     * Determine if the request should be a multipart request.
+     *
+     * @var bool
+     */
+    protected $multipart = false;
 
     /**
      * @param Client $client
@@ -76,6 +84,19 @@ abstract class Resource
             ->getShortName();
 
         return str_plural(strtolower($shortName));
+    }
+
+    /**
+     * Perform the request as a multipart request.
+     * Should typically be used for file uploads.
+     *
+     * @return Resource
+     */
+    protected function asMultipart(): self
+    {
+        $this->multipart = true;
+
+        return $this;
     }
 
     /**
@@ -200,11 +221,12 @@ abstract class Resource
      */
     private function request(string $method, string $uri, array $params, array $options = [])
     {
-        $parameter = strtoupper($method) === 'GET' ? 'query' : 'form_params';
+        if ($this->multipart === true && $method !== 'POST') {
+            $params['_method'] = $method;
+            $method = 'POST';
+        }
 
-        $options = array_merge([
-            $parameter => $this->convertNullToEmptyString($params),
-        ], $options);
+        $options = $this->getRequestOptions($method, $params, $options);
 
         try {
             $response = $this->client->request($method, $uri, $options);
@@ -213,6 +235,83 @@ abstract class Resource
         }
 
         return $response ?? null;
+    }
+
+    /**
+     * Get the request options. This will be configured base on the type of request.
+     * That can be multipart or form-data request. When form-data request we will
+     * send the parameters as query string in case of GET request.
+     *
+     * @param string $method
+     * @param array $params
+     * @param array $options
+     * @return array
+     */
+    private function getRequestOptions($method, array $params, array $options): array
+    {
+        if ($this->multipart === true) {
+            return array_merge([
+                'multipart' => $this->formatPayloadToMultipartContent($params),
+            ], $options);
+        }
+
+        $parameter = strtoupper($method) === 'GET' ? 'query' : 'form_params';
+
+        return array_merge([
+            $parameter => $this->convertNullToEmptyString($params),
+        ], $options);
+    }
+
+    /**
+     * Format the array payload to a multipart content array. This will require some special
+     * formatting of the attribute names and values.
+     *
+     * @param array $params
+     * @param string|null $parent
+     * @return array
+     */
+    private function formatPayloadToMultipartContent(array $params, string $parent = null)
+    {
+        $data = [];
+        foreach ($params as $key => $value) {
+            if ($parent !== null) {
+                $key = $parent . "[$key]";
+            }
+
+            if (is_array($value)) {
+                $data = array_merge($data, $this->formatPayloadToMultipartContent($value, $key));
+
+                continue;
+            }
+
+            $data[] = $this->formatAttributeToMultipartContent($key, $value);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Format the given attribute to a multipart content attribute. This will
+     * set the key as name and value as contents. In case a file is
+     * passed we automatically open a stream to that file.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return array
+     */
+    private function formatAttributeToMultipartContent($key, $value)
+    {
+        if ($value instanceof UploadedFile) {
+            $filename = $value->getClientOriginalName();
+
+            $value = fopen($value->getRealPath(), 'r+');
+        }
+
+        return [
+            'name' => $key,
+            'contents' => null === $value ? '' : $value,
+            'filename' => $filename ?? null,
+        ];
     }
 
     /**
