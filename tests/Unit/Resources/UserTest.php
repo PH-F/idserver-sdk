@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\Resources;
 
+use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Intervention\Image\ImageManager;
 use Tests\Concerns;
@@ -430,28 +432,22 @@ class UserTest extends TestCase
     public function it_can_change_avatar()
     {
         $this->mockResponse(200, [
-            'user' => ['id' => 1],
-            'avatar' => ['url' => 'http://google.com'],
+            'data' => ['id' => 1, 'picture' => 'https://image.com/foo.png'],
         ]);
 
         $user = $this->manager->users(1)
-            ->changeAvatar('http://placehold.it/30x30');
+            ->changeAvatar(new UploadedFile(TEST_PATH . 'Stub/image.png', 'foo.png'));
 
         $this->assertInstanceOf(IdsEntity::class, $user);
         $this->assertEquals(1, $user->id);
-        $this->assertArrayHasKey('url', $user->avatar);
-        $this->assertEquals('http://google.com', $user->avatar['url']);
+        $this->assertEquals('https://image.com/foo.png', $user->picture);
 
         $this->assertRequest(function (Request $request) {
-            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users/1/avatar', $request->getUri()->getPath());
-            $this->assertEquals(http_build_query([
-                'avatar' => base64_encode(
-                    (new ImageManager())
-                        ->make('http://placehold.it/30x30')
-                        ->stream()
-                ),
-            ]), $request->getBody());
+            $this->assertInstanceOf(MultipartStream::class, $request->getBody());
+            $this->assertContains('Content-Disposition: form-data; name="avatar"; filename="foo.png', $contents = $request->getBody()->getContents());
+            $this->assertContains('Content-Disposition: form-data; name="_method', $contents);
         });
     }
 

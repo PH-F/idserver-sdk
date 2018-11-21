@@ -82,22 +82,16 @@ class User extends Resource
     }
 
     /**
-     * @param string $avatar
+     * @param mixed $avatar
      * @return IdsEntity
      */
-    public function changeAvatar(string $avatar): IdsEntity
+    public function changeAvatar($avatar): IdsEntity
     {
-        $this->call('PATCH', "users/{$this->id}/avatar", [
-            'avatar' => base64_encode(
-                (new ImageManager())->make($avatar)
-                    ->stream()
-            ),
+        $this->asMultipart()->call('PATCH', "users/{$this->id}/avatar", [
+            'avatar' => $avatar,
         ]);
 
-        return $this->makeEntity(array_merge(
-            $this->contents['user'],
-            ['avatar' => $this->contents['avatar']]
-        ));
+        return $this->makeEntity();
     }
 
     /**
