@@ -23,6 +23,10 @@ use Xingo\IDServer\Resources;
  * @method Resources\Store stores(int | Entities\Store $resource)
  * @property Resources\User users
  * @method Resources\User users(int | array | Entities\User ...$resource)
+ * @property Resources\MailTemplate mailTemplates
+ * @method Resources\MailTemplate mailTemplates(int | array | Entities\User ...$resource)
+ * @property Resources\MailLayout mailLayouts
+ * @method Resources\MailLayout mailLayouts(int | array | Entities\User ...$resource)
  */
 class Manager
 {
