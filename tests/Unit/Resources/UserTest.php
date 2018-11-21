@@ -542,39 +542,39 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function it_can_reset_the_password_using_id()
+    public function it_can_get_reset_token_using_id()
     {
         $this->mockResponse(201, [
             'user_id' => 2,
             'token' => 'temporary-token',
         ]);
 
-        $token = $this->manager->users->resetPassword(2);
+        $token = $this->manager->users->forgotPassword(2);
 
         $this->assertEquals('temporary-token', $token);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('users/reset-password', $request->getUri()->getPath());
+            $this->assertEquals('users/forgot-password', $request->getUri()->getPath());
             $this->assertEquals('id=2', $request->getBody());
         });
     }
 
     /** @test */
-    public function it_can_reset_the_password_using_email()
+    public function it_can_get_reset_token_using_email()
     {
         $this->mockResponse(201, [
             'user_id' => 2,
             'token' => 'temporary-token',
         ]);
 
-        $token = $this->manager->users->resetPassword('foo@bar.com');
+        $token = $this->manager->users->forgotPassword('foo@bar.com');
 
         $this->assertEquals('temporary-token', $token);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('users/reset-password', $request->getUri()->getPath());
+            $this->assertEquals('users/forgot-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
                 'email' => 'foo@bar.com',
             ]), (string)$request->getBody());
@@ -639,6 +639,22 @@ class UserTest extends TestCase
             $this->assertEquals(http_build_query([
                 'password' => 'secret',
             ]), $request->getBody());
+        });
+    }
+
+    /** @test */
+    public function it_can_reset_the_password()
+    {
+        $this->mockResponse(204);
+
+        $result = $this->manager->users(4)->resetPassword();
+
+        $this->assertTrue($result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PATCH', $request->getMethod());
+            $this->assertEquals('users/4/reset-password', $request->getUri()->getPath());
+            $this->assertEmpty((string)$request->getBody());
         });
     }
 
