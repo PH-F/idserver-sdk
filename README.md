@@ -235,3 +235,77 @@ $collection = ids()->subscriptions
 
 In this case we are requesting all subscriptions from the user ID 1, ordered descending by the `start_date` field, and asking for the first page, paginated with 10 subscriptions on each page.
 
+## Available Resources
+
+### Ability (`abilities`)
+
+Retrieves abilities from the IDServer. Usually, this resource needs to be called with `->all()` for listing all available abilities in the IDServer:
+
+```php
+$collection_of_abilities = ids()->abilities->all();
+// With pagination
+$collection = ids()->abilities->paginate(1, 10)->all(); // page 1, 10 per page
+```
+
+The `Ability` resource uses the `ResourceBlueprint`, so you also have access to `get()`, `create()`, `update()` and `delete()` methods.
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+name | string | Yes | The ability name in snake_case format, like `create_user`.
+title | string | No | Just a title for that ability, like 'Creates a new user'.
+
+### Address (`addresses`)
+
+This resource is responsible for dealing with addresses in the IDServer. This class has its own `create()` method, basically because when creating a new address we need a nested resource, for example, "user" or "company". The final endpoint is something like `POST /users/1/addresses`.
+
+```php
+$new_address = ids()->users(1)
+    ->addresses
+    ->create($params);
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+type | string | No | The address type. Default to `extra`. Possible values: `contact`, `extra`, `shipping` and `invoice`.
+first_name | string | No | The user's first name.
+middle_name | string | No | The user's middle name.
+last_name | string | No | The user's last name.
+company | string | No | The company's name.
+department | string | No | The company's department name, if any.
+street | string | Yes | The street name.
+street_addition | string | No | Some other information for the street.
+house_number | string | No | The house number.
+house_letter | string | No | The house letter, if any.
+city | string | Yes | The city name.
+province | string | No | The province.
+postcode | string | Yes | The postcode.
+country_id | integer | Yes | The country number in IDServer.
+latitude | decimal | No | The latitude.
+longitude | decimal | No | The longitude.
+
+### Communication (`communications`)
+
+This resources is responsible for dealing with the communications table in IDServer. Like the `Address` one it requires a nested resource to work ("user" or "company"):
+
+```php
+$communication = ids()->communications
+    ->companies(2)
+    ->communications
+    ->create([
+        'type' => 'email',
+        'value' => 'foo@example.com',
+        'is_primary' => false,
+    ]);
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+type | string | Yes | The communication type. Possible values are `phone`, `email`, `mobile`.
+value | string | Yes | The value itself, the phone number or the email, for example.
+is_primary | boolean | No | If that's the primary communication or not.
