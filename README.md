@@ -56,6 +56,22 @@ Basically, the `Manager` class does not have much logic in it, but it uses two t
 - `TokenSupport`: a set of methods responsible for managing the JWT token in the app's session. Every time a user is logged in the IDServer it returns a JWT (token) that we store in the current app's session, allowing us to reuse the same token for next calls.
 - `CallableResource`: basically two magic methods `__get()` and `__call()`. Let's say we call `ids()->users`. We're reaching the `__get()` magic method, to a `src/Resources/User.php` instance is returned. Then you can call any other resource method after that.  
 
+### The config file
+
+This SDK comes with a custom config file for Laravel apps. To install it you must run the following command in the terminal:
+
+```
+php artisan vendor:publish --tag=config
+```
+
+This will create a `config/idserver.php` file in your Laravel app. This file has some important settings:
+
+- `url`: it is the URL where the IDServer is installed;
+
+- `store`: the keys related to the store you are using with this SDK. Here you have two configurations: `web` and `cli`. `web` keys allow the store to call the IDServer using a web interface, like a web app, and `cli` keys allow the store to call the IDServer using the command line. For both settings ask Elektor/Xingo for those keys. They must be generated using the `generate:store-token {store} {--role=web}` command in the IDServer installation (not the SDK one).
+
+- `classes`: this configuration is a simple array to map entities and responses. By default each API call returns a `Entity` instance, but here you can ask for a custom class, like a Laravel model for example. This way you can call `ids()->users(1)->get()` and will get a `App\User` model instance, for example. For more information, take a look on [Entities Classes](#user-content-entities-classes) section.
+
 ### The Resources Classes
 
 Resources are classes that maps the principal endpoints the IDServer has, for each resource. For example, for the `/users/1` call in the API we have the `User` resource with a `get()` method. 
@@ -135,7 +151,7 @@ echo $first->name; // foo.bar
 
 ### Entities and Collections
 
-#### Entities Classes
+#### Entities Classes <a name="entities-classes"></a>
 
 All IDServer response is in JSON response. To make things a bit easier we always return simples classes called "Entities". So if you are retrieving a user data you'll get a User Entity as response. Each `Entity` class has a set of custom methods, like the `User::name()` for example. This is the default behavior, making the SDK returning you simple entity classes.
 
