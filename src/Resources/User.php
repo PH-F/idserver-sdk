@@ -82,22 +82,16 @@ class User extends Resource
     }
 
     /**
-     * @param string $avatar
+     * @param mixed $avatar
      * @return IdsEntity
      */
-    public function changeAvatar(string $avatar): IdsEntity
+    public function changeAvatar($avatar): IdsEntity
     {
-        $this->call('PATCH', "users/{$this->id}/avatar", [
-            'avatar' => base64_encode(
-                (new ImageManager())->make($avatar)
-                    ->stream()
-            ),
+        $this->asMultipart()->call('PATCH', "users/{$this->id}/avatar", [
+            'avatar' => $avatar,
         ]);
 
-        return $this->makeEntity(array_merge(
-            $this->contents['user'],
-            ['avatar' => $this->contents['avatar']]
-        ));
+        return $this->makeEntity();
     }
 
     /**
@@ -166,11 +160,11 @@ class User extends Resource
      * @param int|string $identifier
      * @return string
      */
-    public function resetPassword($identifier): string
+    public function forgotPassword($identifier): string
     {
         $field = $this->userIdentifierField($identifier);
 
-        $this->call('POST', 'users/reset-password', [
+        $this->call('POST', 'users/forgot-password', [
             $field => $identifier,
         ]);
 
@@ -205,6 +199,20 @@ class User extends Resource
         $response = $this->call('PATCH', "users/{$this->id}/change-password", [
             'password' => $password,
         ]);
+
+        return 204 === $response->getStatusCode();
+    }
+
+    /**
+     * Reset the password of a user. This will reset the password and will
+     * force the user to change his password after his first login. We
+     * will send an email with the new password to the user.
+     *
+     * @return bool
+     */
+    public function resetPassword(): bool
+    {
+        $response = $this->call('PATCH', "users/{$this->id}/reset-password");
 
         return 204 === $response->getStatusCode();
     }

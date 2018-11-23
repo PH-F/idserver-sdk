@@ -43,4 +43,14 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
     {
         return $this->dateFormat ?: static::DATE_FORMAT;
     }
+
+    /**
+     * Check if we're dealing with a deleted entity.
+     *
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return isset($this['deleted_at']) && $this->deleted_at !== null;
+    }
 }

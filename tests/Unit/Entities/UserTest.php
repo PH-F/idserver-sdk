@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Entities;
 
+use Carbon\Carbon;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
 use Xingo\IDServer\Entities\User;
@@ -68,5 +69,19 @@ class UserTest extends TestCase
 
         $this->assertTrue($user->hasAbility('users.list'));
         $this->assertTrue($user->hasAbility('users.create'));
+    }
+
+    /** @test */
+    public function it_can_check_if_the_user_is_deleted()
+    {
+        $user = new User();
+
+        $this->assertFalse($user->isDeleted());
+
+        $user->deleted_at = null;
+        $this->assertFalse($user->isDeleted());
+
+        $user->deleted_at = Carbon::now();
+        $this->assertTrue($user->isDeleted());
     }
 }

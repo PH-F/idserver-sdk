@@ -3,8 +3,10 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Http\UploadedFile;
 use ReflectionMethod;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
@@ -256,5 +258,53 @@ class ResourceTest extends TestCase
                 'sort' => '+foo,-bar',
             ]), $request->getUri()->getQuery());
         });
+    }
+
+    /** @test */
+    public function it_can_create_multipart_requests()
+    {
+        $this->mockResponse(200);
+
+        $resource = new MultipartResource(app('idserver.client'));
+
+        $resource->multipart();
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+
+            $this->assertInstanceOf(MultipartStream::class, $request->getBody());
+            $contents = $request->getBody()->getContents();
+
+            $this->assertContains('Content-Disposition: form-data; name="file"; filename="foo.png', $contents);
+            $this->assertContains('Content-Disposition: form-data; name="key', $contents);
+            $this->assertContains('Content-Disposition: form-data; name="user[first_name]', $contents);
+            $this->assertContains('Content-Disposition: form-data; name="user[last_name]', $contents);
+            $this->assertContains('Content-Disposition: form-data; name="user[company][name]', $contents);
+            $this->assertContains('Content-Disposition: form-data; name="_method', $contents);
+
+            $this->assertContains('my-value', $contents);
+            $this->assertContains('John', $contents);
+            $this->assertContains('Doe', $contents);
+            $this->assertContains('Laravel', $contents);
+        });
+    }
+}
+
+class MultipartResource extends Resource
+{
+    public function multipart()
+    {
+        return $this->asMultipart()
+            ->call('PATCH', "foo/{$this->id}/bar", [
+                'file' => new UploadedFile(TEST_PATH . 'Stub/image.png', 'foo.png'),
+                'key' => 'my-value',
+                'user' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'company' => [
+                        'name' => 'Laravel',
+                    ]
+                ]
+            ]);
     }
 }
