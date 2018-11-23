@@ -161,3 +161,61 @@ var_dump($users->meta);
 ```
 
 > The custom Collection is exactly like the base Laravel's collection, but with the `$meta` property mapped with the JSON response.
+
+### Resources Concepts
+
+#### The base Resource abstract class
+
+To make possible to call IDServers endpoints, sending always the correct information, and also expecting some formatted result, we created the abstract `Resource` class. All following resource classes must extends `Resource` to make integration with the backend easier.
+
+This class has some important helper methods and each one has his own explanation. Here you can find some information about the most important ones:
+
+- `__invoke()`: this method makes possible to inform an individual resource in a "callable" way. It's the one responsible for making calls like `->users(1)` possible. It temporarily stores the desired ID, and then when calling the action, it's added. It's just to make the calling process easier and prettier.
+
+- `call()`: this method is used internally only, but here is where we make the request and process the response (both using GuzzleHttp). The response is returned but the `$this->content` property is filled with the JSON response, the content itself, making easier for further manipulation.
+
+- `makeEntity()`: this method is the one responsible for returning the correct `Entity` instance to the user. It basically gets the content from response and call the `EntityCreator` class sending the data received. If you are calling an endpoint using a `UserResource` this is the method that is going to return you a `User` entity instance.
+
+- `makeCollection()`: this method acts like the `makeEntity()` one, but for collections, appending also the `meta` values if present in the response data. 
+
+#### Helper Traits
+
+##### `ResourceBlueprint`
+
+Usually some endpoints has common actions, like creating a new resource, listing multiple resources, deleting, etc. Those common actions have almost the same request/response workflow, so that is why the `ResourceBlueprint` exits. It is responsible for adding common behavior to resource classes, using the following methods:
+
+- `all(array $filters = []): Collection`: responsible for listing multiple resources. It can be literally all, or just some, using pagination (will be explained later on) for example. As you can see this method also return a `Collection` of entities (respecting the same resource type).
+
+- `get(): IdsEntity`: responsible for returning a single resource. If you call `->users(1)->get()` it is expected to get the `User` entity with ID 1.
+
+- `create(array $attributes): IdsEntity`: responsible for creating a new resource with some attributes. It is also expected to get the created entity as return.
+
+- `update(array $attributes): IdsEntity`: responsible for updating a given resource and get it returned. Must be used for a single resource, for example `->users(1)->update([])`.
+
+- `delete(): bool`: responsible for deleting a resource. The result is just `true` or `false`. Example: `->users(1)->delete()`.
+
+Basically, all resource classes use the `ResourceBlueprint` trait. When it's necessary a custom parameter or changing some request/response, the necessary methods are just overridden.
+
+##### `FilteredQuery` and `ResourceOrganizer`
+
+`FilteredQuery` is a trait used by the `ResourceBlueprint` one that is responsible for manipulating the query string that will be sent in the request. It also uses the `ResourceOrganizer` trait, that's basically responsible for adding pagination (by the `paginate($page, $per_page)` method), sorting (by the `sort($field, string $order = 'asc')` method) and filtering features to any resource class.
+
+If you want to paginate results for subscriptions, for example:
+
+```php
+$collection = ids()->subscriptions
+    ->paginate(10)
+    ->all();
+```
+
+And for adding sorting and filtering features:
+
+```php
+$collection = ids()->subscriptions
+    ->paginate(1, 10)
+    ->sort('start_date', 'desc')
+    ->all(['user_id' => 1]);
+```
+
+In this case we are requesting all subscriptions from the user ID 1, ordered descending by the `start_date` field, and asking for the first page, paginated with 10 subscriptions on each page.
+
