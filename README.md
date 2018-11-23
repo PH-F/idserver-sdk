@@ -113,13 +113,22 @@ $users = ids()->users->all();
 
 ##### The `Auth` Middleware
 
-This SDK comes with a useful `Auth` middleware that should be used in all actions you want to protect by the JWT authentication. You can add it in your Laravel `Http/Kernel.php` file, for example, like `jwt-auth` or just replacing the current `auth` one.
+This SDK comes with a useful `Auth` middleware that should be used in all actions you want to protect by the JWT authentication. You can add it in your Laravel `Http/Kernel.php` file, for example, like `ids-auth` or just replacing the current `auth` one.
+
+```php
+protected $routeMiddleware = [
+    // ...
+    'ids-auth' => \Xingo\IDServer\Middleware\Auth::class,
+    // ...
+];
+```
 
 ##### Token Refresh
 
 Every JWT has an expiration time. The SDK knows that and has two Client Middlewares for Guzzle which are always checking for JWT in the session and also JWT changes.
 
-Internally the IDServer API returns a `token_expired` JSON response when the JWT is expired. Once the SDK automatically is looking for these type of changes, if that JSON response is present it - in the background -  calls the "refresh" action in the IDServer, gets a new JWT and replace it in the current session, then call the action again, returning the correct response.
+Internally the IDServer API returns a `token_expired` JSON response when the JWT is expired. Once the SDK automatically is looking for these type of changes, if necessary, it automatically calls the "refresh" action in the IDServer, getting a fresh token, updating it in the current session. Then it calls the first action again with the new token, returning the correct response this time.
+Internally the IDServer API returns a `token_expired` JSON response when the JWT is expired. Once the SDK automatically is looking for these type of changes, if necessary, it automatically calls the "refresh" action in the IDServer, getting a fresh token, updating it in the current session. Then it calls the first action again with the new token, returning the correct response this time.
 
 > All the JWT refresh process in made in background, you never have to worry about that when using this SDK. 
 
@@ -153,7 +162,7 @@ echo $first->name; // foo.bar
 
 #### Entities Classes <a name="entities-classes"></a>
 
-All IDServer response is in the JSON format. To make things a bit easier we always return simples classes called "Entities". So if you are retrieving user data you'll get a User Entity as response. Each `Entity` class has a set of custom methods, like the `User::name()` for example. This is the default behavior, making the SDK returning you simple entity classes.
+All IDServer response is in the JSON format. To make things a bit easier we always return simples classes called "Entities". So if you are retrieving user data you'll get a User Entity as response. Each `Entity` class has a set of custom methods, like the `$user_entity->getName()` for example. This is the default behavior, making the SDK returning you simple entity classes.
 
 If you want to customize the returned class you can map them one by one in the config file. Let's say your Laravel app already has a `User` model, and every time you call `ids()->users(5)->get()` you don't want a user entity instance, but a `User` model. You can inform the SDK which class it should instantiate for you, mapping all the properties automatically.
 
