@@ -318,3 +318,260 @@ Parameter | Type | Required | Description
 type | string | Yes | The communication type. Possible values are `phone`, `email`, `mobile`.
 value | string | Yes | The value itself, the phone number or the email, for example.
 is_primary | boolean | No | If that's the primary communication or not.
+
+### Company (`companies`)
+
+This resource is responsible for dealing with "companies" information. A user belongs to a company, so he/she is part of one. Besides all the actions provided by the `ResourceBlueprint` trait, this resource also has `addresses()` and `communications()` methods, so you can get these information from a given company.
+
+```php
+$company = ids()->companies(10)->get();
+$addresses = ids()->companies(10)->addresses();
+$communications = ids()->companies(10)->communications();
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+name | string | Yes | The company's name
+vat | string | No | The company's VAT number
+
+### Country (`countries`)
+
+This resource deals with the `countries` endpoint on IDServer API. Unlike some other resource, it does not use the `ResourceBlueprint` trait, and has only a single method: `all()`. It also uses the `FilteredQuery` trait, so you also have access to pagination and filtering. About filtering, you can filter countries by name.
+
+```php
+$allCountries = ids()->countries->all();
+$firstTenCountries = ids()->countries->paginate(1, 10)->all();
+$filteredCountries = ids()->countries->all(['name' => 'china']);
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+code | string | Yes | The country's 2-digit code like `nl`, `us` or `br`
+name | string | Yes | The country's name
+
+### Coupon (`coupons`)
+
+This resource is responsible for the `coupons` endpoint on the IDServer API. You can get information about coupons in a very easy way. It uses all the actions provided by the `ResourceBlueprint` trait.
+
+```php
+$coupon = ids()->coupons(8)->get();
+$paginated = ids()->coupons->paginate(2, 5)->all();
+ids()->coupons(2)->delete(); // true or false
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+promotion_id | integer | Yes | The promotion ID that the coupon is attached to
+code | string | Yes | The code for the coupon, something like `black-friday-18`, for example.
+usage_limit | integer | Yes | The amount of times this coupon can be used. Default to `0`.
+times_used | integer | No | This parameters is not used publicity, but it is incremented each time a coupon is used, internally.
+
+### Duration (`durations`)
+
+A Plan Duration is the lowest level of a plan representation. A Plan has many Plan Variations, and a Plan Variation has many Plan Durations. Basically the duration it responsible for determining the length of the subscription will have. The `Duration` resource class has all the methods provided by the `ResourceBlueprint` trait.
+
+```php
+$duration = ids()->durations(1)->get();
+$updatedDuration = ids()->durations(1)->update(['name' => 'Foo bar']);
+``` 
+
+![plans](https://i.imgur.com/g1RZRYF.png)
+> The image above shows show plans are structured and organized. Source: https://www.elektormagazine.com/account/subscription/add/15#subscription-configurator
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+is_active | boolean | No | If the plan duration is active. Default to `true`.
+is_default | boolean | No | If it is the default one to be shown to the user. Default to `false`.
+is_hidden | boolean | No | if it should be hidden from the user. Default to `false`.
+plan_variant_id | integer | Yes | The plan variant ID it belongs to.
+name | string | Yes | The plan duration name, like "One year" or "Two years".
+description | string | No | An optional description to this plan duration, to make it easier to remember, for example.
+duration | integer | Yes | The amount of months that duration has, for example `24` or `12` (months, always).
+position | integer | No | The give order to display options to the user. 1 for the first one, for example.
+discount | array | Yes | This discount in fiat currency. The key must be the currency code and the value the amount of discount. Example: `['USD' => 1000]` for USD10 discount.
+
+### FeaturedPlan (`featuredPlans`)
+
+This resource is responsible for managing the featured plans, for a home page, for example. The only reference to the plan is through the `plan_duration_id`. It has all the methods provided by the `ResourceBlueprint` trait, including pagination.
+
+```php
+$all = ids()->featuredPlans->all();
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+is_active | boolean | No | If the featured plan is active. Default to `false`.
+store | array | Yes | An array of stores IDs that featured plan belongs to.
+plan_duration_id | integer | Yes | The plan variant ID it belongs to.
+title | string | Yes | The title that will be shown to the end user.
+position | integer | No | The position to be ordered to the end user.
+image | string | Yes | The image URL to represent that plan.
+text | string | Yes | The text to be shown to the end user.
+details | array | Yes | An array of details (in the "What you get:" section)
+
+![featured plans](https://i.imgur.com/podQQEG.png)
+
+### Grid (`grids`)
+
+> Grids are complex and they have their own resources and filters. So if you need more information about them check their dedicated section "Working with Grids".
+
+When displaying a huge amount of data is important to have some extra performance and extra options. This resource has two responsibilities: retrieve data from IDServer and export that data in CSV files. This resource has two methods: 
+
+- `data(array $filters = []): Collection`: get a collection of data from a available grid on IDServer API;
+- `export(array $filters = []): Closure`: get the exported CSV file data. It is returned in form of a `Closure` so you can call it whenever you want to and it will echo all the data related to the CSV file.
+
+```php
+$data = ids()->grids(1)->data($filters);
+$closure = ids()->grids(1)->export($filters);
+// and whenever you want to echo the CSV file
+$closure();
+```
+
+> TIP: When dealing with exporting grids you can use [PHP's output buffer](https://secure.php.net/manual/en/book.outcontrol.php) to store the data in a variable and then saving locally the CSV file content, instead of calling the closure directly.
+
+### Note (`notes`)
+
+Notes are internal extra information that can be added to a user, for example. Notes are ready to be used by any model with just some few changes in the code, but for now it's only available for users. So this mean a logged user (internal one) can add some notes to a specific user, for example.
+
+```php
+$notes = ids()->users(1)->notes->all();
+ids()->users(2)->notes->create(['text' => 'User missing contract']);
+```
+
+**Parameters**
+
+Fields filled internally:
+
+Parameter | Type | Description
+--------- | ---- | -----------
+user_id | integer | The user that added that note. Usually the current logged user when adding the note.
+noteable_type | string | The model that note is for (User or something else). It's a Morph relation in Laravel.
+noteable_id | integer | The id of the related model.
+
+Public fields:
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+text | string | Yes | The text for the note.
+
+### Order (`orders`)
+
+This resource is responsible for the `orders` endpoint on IDServer API. It has all the methods provided by the `ResourceBlueprint` trait plus:
+
+- `payment(array $attributes)`: allows you to update the order row with payment information;
+- `price(array $attribuets)`: retrieves all price-related data, with discounts applied, promotion, etc.
+
+#### Basic Usage
+
+```php
+$order = ids()->orders(345)->get();
+```
+
+Parameters for the order resource:
+
+Name | Type | Required | Description
+--------- | ---- | -------- | -----------
+currency | string | Yes | The currency abbreviation, like EUR or USD.
+user_id | integer | Yes | The user id to create an order for.
+coupon | string | No | The coupon code to be applied, if any.
+plan_duration_id | integer | Yes | The plan duration ID related to this order.
+store_id | integer | Yes | The store ID this order belongs to.
+payment_code | string | Yes | The payment method code (there is not specific values here).
+
+#### Using the `payment()` method
+
+```php
+$updated_order = ids()->orders(123)->payment([
+    'payment_number' => 871652389123,
+    'status' => 'cancelled',
+]);
+```
+
+> NOTE: Both `payment_number` and `status` fields are not validated on IDServer. Make sure this will be updated to improve security.
+
+#### Dealing with `price()` data
+
+The `price()` method return some data related to an order. First, take a look on how to use it with this SDK, the request attributes and the response data.
+
+```php
+$price_data = ids()->orders(123)->price($attributes);
+```
+
+The request attributes are (for `$attributes` variable):
+
+Name | Type | Required | Description
+--------- | ---- | -------- | -----------
+currency | string | Yes | The currency abbreviation, like EUR or USD.
+plan_duration_id | integer | Yes | The ID of the related plan duration.
+country | string | No | The country code, like "br" or "nl".
+coupon | string | No | The coupon code if you want to apply some discount, for example.
+subscription_id | integer | No | The ID of the related subscription.
+
+After calling the `price($attributes)` method you will get these data:
+
+> All prices are in integer format with 2 digits of precision, for example: 1050 is $10.50. This was made to avoid float issues.
+
+Name | Type | Description
+--------- | ---- | -----------
+currency | string | The currency abbreviation, like EUR or USD. 
+plan_price | integer | The price at the plan level. 
+plan_variant_price | integer | The price at the plan variant level. 
+plan_duration_price | integer | The price at the plan duration level. 
+shipping_cost | integer | The shipping cost. 
+promotion | integer | The price of the promotion with discounts. 
+discount | integer | The price of the discount. 
+total_price | integer | The total net price. 
+plan_duration | array | The plan duration object in array format. 
+shipping_cost_name | string | The name field of the shipping cost object. 
+promotion_amount | integer/null | The absolute promotion amount if any, or null.
+discount_amount | integer/null | The absolute discount amount if any, or null. 
+
+### PaymentMethod (`paymentMethods`)
+
+There are many types of available payment methods. This resource is responsible for managing them. The only method available is `all()` without any parameter.
+
+```php
+$payment_methods = ids()->paymentMethods->all();
+```
+
+### Plan (`plans`)
+
+This resource is responsible for managing plans at the highest level. Remember we have three levels of plans: first plans, then plans variants and then plans durations. A plan duration belongs to a plan variant, that belongs to a plan.
+
+The `Plan` resource has all available methods provided by the `ResourceBlueprint` trait plus a `sendList(array $filters = [])` method, that's responsible for returning a CSV file with all users that you send emails to, based on active subscriptions.
+
+> Currently, there is no support for `$filters`, so just leave it empty.
+
+```php
+$closure = ids()->plans(123)->sendList();
+```
+
+> The `sendList()` method returns a closure, so you can call it whenever you want, and the CSV file data will be echoed.
+
+The returned CSV file will contain all the following columns related to subscriptions:
+
+Name | Type | Description
+--------- | ---- | -----------
+Id | integer | The subscription ID.
+User | integer | The user ID.
+Start date | string | The subscriptions' start date.
+End date | string | The subscriptions' end date.
+Name | string | The user name to send mail to.
+Company | string | The company name.
+Address | string | The street name (address).
+House number | string | The house number plus house letter, if any.
+Address2 | string | Any other street addition.
+Postcode | string | The address' postcode.
+City | string | The address' city name.
+Province | string | The address' province name.
+Country | string | The address' country code.
