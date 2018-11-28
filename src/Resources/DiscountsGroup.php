@@ -12,5 +12,4 @@ use Xingo\IDServer\Concerns\ResourceBlueprint;
 class DiscountsGroup extends Resource
 {
     use ResourceBlueprint;
-
 }

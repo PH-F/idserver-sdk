@@ -25,5 +25,6 @@ class Variant extends Resource
 
         $this->call('GET', 'plans-variants', $query);
 
-        return $this->makeCollection();    }
+        return $this->makeCollection();
+    }
 }
