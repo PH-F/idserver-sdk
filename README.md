@@ -575,3 +575,27 @@ Postcode | string | The address' postcode.
 City | string | The address' city name.
 Province | string | The address' province name.
 Country | string | The address' country code.
+
+### Promotion (`promotions`)
+
+Promotions are related to coupon code. A coupon code belongs to a promotion. This resource is responsible to manage those promotions. It has all methods provided by the `ResourceBlueprint` trait, plus pagination, for example:
+
+```php
+$promotion = ids()->promotions(123)->get();
+$paginated_promotions = ids()->promotions->paginate(2, 10)->all();
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+is_active | boolean | No | If the promotion should be active or not. Default to `false`.
+exclude_shipping | boolean | No | If this promotion should exclude shipping for calculation. Default to `false`.
+plan_durations | array | No | An array of all plan durations that promotion should be part of.
+name | string | Yes | A name for that promotion, like "Black Friday Promotion".
+start_date | string | Yes | The start date of the promotion. Format: YYYY-MM-DD.
+end_date | string | Yes | The end date of the promotion. Format: YYYY-MM-DD.
+days_renewal_gap | integer | No | Amount of days the user still can renew after the end of the promotion.
+subscription_type | string | No | The type of the subscription. Options: `new` or `renewal`. This mean this promotion can be applied only for either new or renewal subscriptions.
+discount_type | string | Yes | The type of the discount. Options are `percentage` or `amount`.
+discount | array | Yes | The discount to be applied in array format, with keys the currency code and value the discount (percent or amount). Example: `['USD' => '1000']`. In this case if `discount_type` is `amount` then it means $10 of discount for USD currency. Otherwise if `discount_type` is `percent` then this means "10% of discount for USD".
