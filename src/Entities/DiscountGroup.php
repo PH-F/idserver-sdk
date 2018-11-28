@@ -2,6 +2,6 @@
 
 namespace Xingo\IDServer\Entities;
 
-class DiscountsGroup extends Entity
+class DiscountGroup extends Entity
 {
 }

@@ -27,8 +27,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\MailTemplate mailTemplates(int | array | Entities\User ...$resource)
  * @property Resources\MailLayout mailLayouts
  * @method Resources\MailLayout mailLayouts(int | array | Entities\User ...$resource)
- * @property Resources\DiscountsGroup discountsGroups
- * @method Resources\DiscountsGroup discountsGroups(int | array | Entities\User ...$resource)
+ * @property Resources\DiscountGroup discountGroups
+ * @method Resources\DiscountGroup discountGroups(int | array | Entities\User ...$resource)
  * @property Resources\Discount discounts
  * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants
