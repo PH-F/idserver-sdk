@@ -810,3 +810,11 @@ $isChanged = ids()->users(1)->changePassword('new-password');
 ```php
 $isReset = ids()->users(1)->resetPassword();
 ``` 
+
+### VatProductGroup (`vatProductGroups`)
+
+This resource is responsible for listing all product groups from the IDServer. It has only a `all()` method, from the `ResourceBlueprint` trait. It has no valid filter.
+
+```php
+$productGroups = ids()->vatProductGroups->all();
+```
