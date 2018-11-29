@@ -701,3 +701,112 @@ $tagsCollection = ids()->users(1)->tags->all(['name' => 'ba']); // match "baz" a
 **Parameters**
 
 There's is no specific parameter, only the tag name in string, that is required.
+
+### User (`users`)
+
+The `User` resource is the heart of the IDServer. Everything is related to a user, and that is one of the reasons the `User` resources has a huge amount of custom methods and different helpers, making it easier to work with. The resource has 14 new methods besides the ones given by the `ResourceBlueprint` trait. Below you can find an explanation of each one, plus the required parameters and usage:
+
+- `getById()`: This is the same `get()` method from the `ResourceBlueprint` renamed to `getById()`. The `User` resource has an extra way of dealing with the `get()` method.
+
+```php
+$user = ids()->users(1)->getById();
+```
+
+- `get()`: The "users" endpoint on IDServer API also accepts multiples IDs when getting users, so that is why this method is different from others. The `get()` method on `User` resource still does not have any parameters, but it accept formatting and sending multiples IDs through the request:
+
+```php
+// Getting a collection of users which ID is 1, 4 and 6
+$usersCollection = ids()->users([1, 4, 6])->get();
+```
+
+You can also use a single ID, like always:
+
+```php
+$user = ids()->users(1)->get();
+```
+
+**Custom Methods**
+
+- `login()`: This method is responsible for log a user in the IDServer using JWT. This method has some parameters: `string $email`, `string $password`, `bool $remember = false` and `array $claims = []`. The email and password are straightforward, as always. The `$remember` parameter is used if you want to make the user logged in for 365 days (a year), and the `$claims` array is used to send extra claims to the JWT in the IDServer. For now, the IDServer only accepts the `admin_role` claim, that double check if the email is from an admin user. 
+
+```php
+// Normal user login with remember = true
+$user = ids()->users->login('foo@example.com', 'secret', true);
+// Admin user login
+$user = ids()->users->login('admin@example.com', 'secret', true, ['admin_role' => true]);
+``` 
+
+> After the user is logged in, the JWT is stored in the session automatically, so you don't have to worry with that, or event sending it through the request. That's done automagically.
+
+- `refreshToken(): void`: This method is used to refresh the current JWT in IDServer. If the JWT is close to expire, calling this method it will be refreshed. Usually, you don't have to deal with it, because our SDK is smart enough to identify when the JWT is expiring and then calling the `refreshToken()` method automatically to refresh the token.
+
+```php
+ids()->users->refreshToken();
+```
+
+- `confirm()`: When you create a new user it's still pending on IDServer. The response from the `create()` call gives you a temporary `$token`, that you will use to confirm the user. Only after confirmed a user is marked as valid on IDServer.
+
+```php
+$user = ids()->users(1)->confirm($token);
+```
+
+- `changeAvatar($avatar)`: This method changes the user's avatar on the IDServer. The `$avatar` parameter must be an instance of `Symfony\Component\HttpFoundation\File\UploadedFile`. Technically, the request is sent as multipart data, like you do using the browser, very magical.
+
+```php
+$avatar = new UploadedFile('/path/to/image.png', 'original_name.png');
+$user = ids()->users(1)->changeAvatar($avatar);
+```  
+
+- `communications()`: Get a list of all communications a given user has. For more information about what a "communication" is take a look on the "Communication" resource section.
+
+```php
+$communications = ids()->users(1)->communications();
+```
+
+- `notes()`: Get a list of all notes the given user has. For more information about "Notes" take a look on its own section.
+
+```php
+$notes = ids()->users(1)->notes();
+```
+
+- `subscriptions()`: Get a list of all subscriptions the user has.
+
+```php
+$subscriptions = ids()->users(1)->subscriptions();
+```
+
+- `abilities()`: Get all the abilities a user has.
+
+```php
+$abilities = ids()->users(1)->abilities();
+```
+
+- `addresses()`: Get a list of all addresses the user has.
+
+```php
+$addresses = ids()->users(1)->addresses();
+```
+
+- `forgotPassword($identifier): string`: This method asks for a password change for a given user. As `$identifier` you can send the user email address or ID, both work. This method returns the temporary token as string. This token you might want to send to the user email for confirmation, with a link to your app to confirm.
+
+```php
+$token = ids()->users(1)->forgotPassword('john@example.com');
+```
+
+- `updatePassword($identifier, $token, $password): bool`: This method updates a user's password. In this case the user **is not logged in**, that's why you need a valid token. You will need the `$token` we returned in the `forgotPassword()` method call. This method returns `true` or `false` if the password was changed successfully.
+
+```php
+$isChanged = ids()->users->updatePassword('john@example.com', $token, 'new-password-123'); 
+```
+
+- `changePassword($password)`: This methods changes the user's password, but the user **must be logged in**. In this case you will need only the new password the user want's to change to. It also return a `boolean` for the result.
+
+```php
+$isChanged = ids()->users(1)->changePassword('new-password');
+```
+
+- `resetPassword()`: This methods resets the user's password and will force the user to change his password after his first login. We will send an email with the new password to the user. It also returns a boolean if everything went well.
+
+```php
+$isReset = ids()->users(1)->resetPassword();
+``` 
