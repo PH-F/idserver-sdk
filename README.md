@@ -296,6 +296,19 @@ country_id | integer | Yes | The country number in IDServer.
 latitude | decimal | No | The latitude.
 longitude | decimal | No | The longitude.
 
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | -----------
+type | string | Filter by address' type.
+address | string | Filter by part of the address. This will search on all the following fields: `street`, `street_addition`, `house_number` and `house_letter`. 
+city | string | Filter by the city name.
+province | string | Filter by the province name.
+postcode | string | Filter by the postcode.
+country | string | Filter by the country name.
+latitude | string/float | Filter by the latitude value.
+longitude | string/float | Filter by the longitude value.
+
 ### Communication (`communications`)
 
 This resources is responsible for dealing with the communications table in IDServer. Like the `Address` one it requires a nested resource to work ("user" or "company"):
@@ -403,8 +416,15 @@ discount | array | Yes | This discount in fiat currency. The key must be the cur
 This resource is responsible for managing the featured plans, for a home page, for example. The only reference to the plan is through the `plan_duration_id`. It has all the methods provided by the `ResourceBlueprint` trait, including pagination.
 
 ```php
-$all = ids()->featuredPlans->all();
+$all = ids()->featuredPlans->all($filters);
 ```
+
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | -----------
+store | integer/string | A single or a list of stores IDs separated by comma. Example: 1 or "1,2,3,4,5".
+is_active | boolean | True only for active featured plans or false to non actives.
 
 **Parameters**
 
