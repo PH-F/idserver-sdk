@@ -599,3 +599,105 @@ days_renewal_gap | integer | No | Amount of days the user still can renew after 
 subscription_type | string | No | The type of the subscription. Options: `new` or `renewal`. This mean this promotion can be applied only for either new or renewal subscriptions.
 discount_type | string | Yes | The type of the discount. Options are `percentage` or `amount`.
 discount | array | Yes | The discount to be applied in array format, with keys the currency code and value the discount (percent or amount). Example: `['USD' => '1000']`. In this case if `discount_type` is `amount` then it means $10 of discount for USD currency. Otherwise if `discount_type` is `percent` then this means "10% of discount for USD".
+
+### Report (`reports`)
+
+Reports are just useful data compiled in a single response. The `Report` resource file has only one action: `get(array $filters = [])`. This action is responsible for getting the desired report by its ID, but in this case the ID is not an integer, it's a string, with the report name.
+
+Currently, the IDServer supports four different reports: `subscription-funnel`, `subscription-new`, `subscription-renewal` and `free-fall`. Each one has its own logic behind IDServer.
+
+```php
+$subscriptionFunnelReport = ids()->reports('subscription-funnel')->get();
+```
+
+All those four report types support a single filter: `plans`. In this filter you can specify which plans ids you want to filter through, separated by commas:
+
+```php
+$report = ids()->reports('free-fall')->get(['plans' => '14,198,9811']);
+```
+
+### Role (`roles`)
+
+Role is a title that automatically gives a user some abilities. The `Role` resource has all methods provided by the `ResourceBlueprint` trait plus a `sync()` method. The `update()` method is overrode to include also an `$abilities` array, allowing you to update also a list of abilities for a given role.
+
+```php
+$role = ids()->roles(14)->get(); // get
+$updatedRole = ids()->roles(15)->update(['name' => 'super-admin'], ['a very long', 'abilities', 'list']);
+``` 
+
+The `sync()` method is responsible for syncing roles with a given user, using a nested resource. So you must first tell the SDK which is the user, and then call the `sync()` method with an array of roles in string format:
+
+```php
+$rolesCollection = ids()->users(1)->roles->sync(['guest', 'admin']);
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+name | string | Yes | The role name, like `admin`.
+title | string | No | The role title, just for description purposes.
+
+### Store (`stores`)
+
+A Store is a single client-app where the IDServer is accessed by, for example, the elektormagazine.com website. IDServer needs to know where the request is coming from, to allow some different actions according to the store. Each store must be authenticated to use the IDServer (see "Stores, Authentication and Authorization" section for more information).
+
+The `Store` resource uses the `ResourceBlueprint` trait, so you can use all methods provided by it.
+
+```php
+$store = ids()->stores(9)->get();
+$allStores = ids()->stores->all();
+```
+
+**Parameters**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+name | string | Yes | The store name, something like "Acme Store".
+url | string | Yes | The store URL, like "http://acmestore.com".
+mail_from | string | No | A name to be used for the "from" field in e-mails.
+currencies | array | Yes | An array of all currencies that store will accept. Example: `['USD', 'EUR', 'GBP']`.
+
+### Subscription (`subscriptions`)
+
+A Subscription is one of the most important resource in IDServer. With the `Subscription` resource you can get information about any subscription in the API, and also manage them. Besides the `ResourceBlueprint` trait, the `Subscription` resource has two additional methods: `expiring(int $days = 7): Collection` and `renew(array $attributes): IdsEntity`.
+
+- `expiring()`: Responsible for listing all expiring subscriptions in a given interval, in days, starting from today. For example, if you want to list all subscriptions that are going to expiring in the next 10 days (starting from today) you use:
+
+```php
+$expiringSubscriptions = ids()->subscriptions->expiring(10);
+```  
+
+- `renew()`: Responsible for renewing a given subscription. Internally, renewing a subscription is creating a new order related to it. This method requires some important parameters/attributes to be sent:
+
+**Parameters for Renewing a Subscription**
+
+Parameter | Type | Required | Description
+--------- | ---- | -------- | -----------
+currency | string| Yes | The currency related to this renewal process, like "USD" or "EUR".
+user_id | integer | Yes | The user that will have the renewal associated to.
+coupon | string | No | A valid coupon code, if any.
+plan_duration_id | integer | Yes | The plan duration ID related to the renewal process.
+store_id | integer | Yes | The store ID related to the action.
+payment_code | string | Yes | The payment method code. Example: `bank_transfer`, `ideal`, `giropay`, and others. Check with the financial department for more information about them. Remembering you can manage all payment methods using the `PaymentMethod` resource.
+
+```php
+$order = ids()->subscriptions(1)->renew($parameters);
+```
+
+### Tag (`tags`)
+
+Tags are an easy way to attach metadata information to a given resource. For now only users can have tags added, using nested resource. The `Tag` resource provides you three methods for managing tags in IDServer: `create(array|string $tags)`, `update(array|string $tags)` and `all(array $filters = [])`.
+
+```php
+// Creating tags for a given user
+$tagsCollection = ids()->users(1)->tags->create(['foo', 'bar');
+// Updating tags
+$tagsCollection = ids()->users(1)->tags->update(['foo', 'bar');
+// Listing all tags filtering by name "ba"
+$tagsCollection = ids()->users(1)->tags->all(['name' => 'ba'); // match "baz" and also "bar" for tag name
+```
+
+**Parameters**
+
+There's is no specific parameter, only the tag name in string, that is required.
