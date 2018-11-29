@@ -366,6 +366,12 @@ Parameter | Type | Required | Description
 code | string | Yes | The country's 2-digit code like `nl`, `us` or `br`
 name | string | Yes | The country's name
 
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | ----------
+name | string | Filter by the country name.
+
 ### Coupon (`coupons`)
 
 This resource is responsible for the `coupons` endpoint on the IDServer API. You can get information about coupons in a very easy way. It uses all the actions provided by the `ResourceBlueprint` trait.
@@ -411,6 +417,15 @@ duration | integer | Yes | The amount of months that duration has, for example `
 position | integer | No | The give order to display options to the user. 1 for the first one, for example.
 discount | array | Yes | This discount in fiat currency. The key must be the currency code and the value the amount of discount. Example: `['USD' => 1000]` for USD10 discount.
 
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | ----------
+stores | string/integer | Filter by store ID. One or multiples IDs separated by comma. Example: 1 or "1,2,3".
+is_active | boolean | Filter if the plan duration is active or not.
+
+> Durations are default sorted by the "position" field in ASC direction.
+
 ### FeaturedPlan (`featuredPlans`)
 
 This resource is responsible for managing the featured plans, for a home page, for example. The only reference to the plan is through the `plan_duration_id`. It has all the methods provided by the `ResourceBlueprint` trait, including pagination.
@@ -418,13 +433,6 @@ This resource is responsible for managing the featured plans, for a home page, f
 ```php
 $all = ids()->featuredPlans->all($filters);
 ```
-
-**Filters**
-
-Filter | Type | Description
---------- | ---- | -----------
-store | integer/string | A single or a list of stores IDs separated by comma. Example: 1 or "1,2,3,4,5".
-is_active | boolean | True only for active featured plans or false to non actives.
 
 **Parameters**
 
@@ -438,6 +446,15 @@ position | integer | No | The position to be ordered to the end user.
 image | string | Yes | The image URL to represent that plan.
 text | string | Yes | The text to be shown to the end user.
 details | array | Yes | An array of details (in the "What you get:" section)
+
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | -----------
+store | integer/string | A single or a list of stores IDs separated by comma. Example: 1 or "1,2,3,4,5".
+is_active | boolean | True only for active featured plans or false to non actives.
+
+> Featured plans are default sorted by the "position" field in ASC direction.
 
 ![featured plans](https://i.imgur.com/podQQEG.png)
 
@@ -576,6 +593,8 @@ The `Plan` resource has all available methods provided by the `ResourceBlueprint
 $closure = ids()->plans(123)->sendList();
 ```
 
+> Plans are default sorted by the "position" field in ASC direction.
+
 > The `sendList()` method returns a closure, so you can call it whenever you want, and the CSV file data will be echoed.
 
 The returned CSV file will contain all the following columns related to subscriptions:
@@ -680,7 +699,15 @@ currencies | array | Yes | An array of all currencies that store will accept. Ex
 
 ### Subscription (`subscriptions`)
 
-A Subscription is one of the most important resource in IDServer. With the `Subscription` resource you can get information about any subscription in the API, and also manage them. Besides the `ResourceBlueprint` trait, the `Subscription` resource has two additional methods: `expiring(int $days = 7): Collection` and `renew(array $attributes): IdsEntity`.
+A Subscription is one of the most important resource in IDServer. With the `Subscription` resource you can get information about any subscription in the API, and also manage them. 
+
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | ----------
+user_id | integer | Filter by the user ID.
+
+Besides the `ResourceBlueprint` trait, the `Subscription` resource has two additional methods: `expiring(int $days = 7): Collection` and `renew(array $attributes): IdsEntity`.
 
 - `expiring()`: Responsible for listing all expiring subscriptions in a given interval, in days, starting from today. For example, if you want to list all subscriptions that are going to expiring in the next 10 days (starting from today) you use:
 
@@ -722,9 +749,31 @@ $tagsCollection = ids()->users(1)->tags->all(['name' => 'ba']); // match "baz" a
 
 There's is no specific parameter, only the tag name in string, that is required.
 
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | ----------
+name | string | Filter by the tag name.
+
 ### User (`users`)
 
-The `User` resource is the heart of the IDServer. Everything is related to a user, and that is one of the reasons the `User` resources has a huge amount of custom methods and different helpers, making it easier to work with. The resource has 14 new methods besides the ones given by the `ResourceBlueprint` trait. Below you can find an explanation of each one, plus the required parameters and usage:
+The `User` resource is the heart of the IDServer. Everything is related to a user, and that is one of the reasons the `User` resources has a huge amount of custom methods and different helpers, making it easier to work with. 
+
+**Filters**
+
+Filter | Type | Description
+--------- | ---- | ----------
+ids | string | Filter by the users IDs separated by comma. Example: "1,2,3".
+role | string | Filter by role.
+name | string | Filter by name. It searches on `first_name` and `last_name` fields.
+first_name | string | Filter by first name only.
+last_name | string | Filter by last name only.
+email | string | Filter by email.
+username | string | Filter by username.
+birth | string | Filter by date of birth. Format: YYYY-MM-DD.
+status | string | Filter by user status. Possible values are `pending` and `confirmed`.
+
+The resource has 14 new methods besides the ones given by the `ResourceBlueprint` trait. Below you can find an explanation of each one, plus the required parameters and usage:
 
 - `getById()`: This is the same `get()` method from the `ResourceBlueprint` renamed to `getById()`. The `User` resource has an extra way of dealing with the `get()` method.
 
