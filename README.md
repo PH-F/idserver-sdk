@@ -682,7 +682,7 @@ store_id | integer | Yes | The store ID related to the action.
 payment_code | string | Yes | The payment method code. Example: `bank_transfer`, `ideal`, `giropay`, and others. Check with the financial department for more information about them. Remembering you can manage all payment methods using the `PaymentMethod` resource.
 
 ```php
-$order = ids()->subscriptions(1)->renew($parameters);
+$newOrder = ids()->subscriptions(1)->renew($parameters);
 ```
 
 ### Tag (`tags`)
@@ -691,11 +691,11 @@ Tags are an easy way to attach metadata information to a given resource. For now
 
 ```php
 // Creating tags for a given user
-$tagsCollection = ids()->users(1)->tags->create(['foo', 'bar');
+$tagsCollection = ids()->users(1)->tags->create(['foo', 'bar']);
 // Updating tags
-$tagsCollection = ids()->users(1)->tags->update(['foo', 'bar');
+$tagsCollection = ids()->users(1)->tags->update(['foo', 'bar']);
 // Listing all tags filtering by name "ba"
-$tagsCollection = ids()->users(1)->tags->all(['name' => 'ba'); // match "baz" and also "bar" for tag name
+$tagsCollection = ids()->users(1)->tags->all(['name' => 'ba']); // match "baz" and also "bar" for tag name
 ```
 
 **Parameters**
