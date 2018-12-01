@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
+use Xingo\IDServer\Entities;
 
 /**
  * Class DiscountGroup
@@ -21,5 +22,17 @@ class DiscountGroup extends Resource
     protected function getResourceName()
     {
         return 'discounts-groups';
+    }
+
+    /**
+     * Get discounts for the user.
+     *
+     * @return Collection
+     */
+    public function discounts()
+    {
+        $this->call('GET', "discounts-groups/$this->id/discounts");
+
+        return $this->makeCollection(null, null, Entities\Discount::class);
     }
 }
