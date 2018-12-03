@@ -14,7 +14,7 @@ class DiscountGroupTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    public function it_gets_all_discountgroups()
+    public function it_gets_all_discount_groups()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -37,7 +37,7 @@ class DiscountGroupTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_discountgroups()
+    public function it_paginates_all_discount_groups()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -68,7 +68,7 @@ class DiscountGroupTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_just_one_discountgroup_by_id()
+    public function it_gets_just_one_discount_group_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -85,7 +85,7 @@ class DiscountGroupTest extends TestCase
     }
 
     /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_discountgroup()
+    public function it_sends_correct_parameters_when_creating_a_new_discount_group()
     {
         $this->mockResponse(201);
 
@@ -130,6 +130,31 @@ class DiscountGroupTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('DELETE', $request->getMethod());
             $this->assertEquals('discounts-groups/2', $request->getUri()->getPath());
+        });
+    }
+
+    /** @test */
+    public function it_can_retrieve_the_discounts_of_a_group()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 1],
+                ['id' => 2],
+            ],
+        ]);
+
+        $collection = $this->manager->discountGroups(1)->discounts();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Entities\Discount::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals(2, $collection->last()->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('discounts', $request->getUri()->getPath());
+            $this->assertEquals('discount_group_id=1', $request->getUri()->getQuery());
         });
     }
 }
