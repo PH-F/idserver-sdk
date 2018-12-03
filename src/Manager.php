@@ -27,6 +27,12 @@ use Xingo\IDServer\Resources;
  * @method Resources\MailTemplate mailTemplates(int | array | Entities\User ...$resource)
  * @property Resources\MailLayout mailLayouts
  * @method Resources\MailLayout mailLayouts(int | array | Entities\User ...$resource)
+ * @property Resources\DiscountGroup discountGroups
+ * @method Resources\DiscountGroup discountGroups(int | array | Entities\User ...$resource)
+ * @property Resources\Discount discounts
+ * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
+ * @property Resources\Variant variants
+ * @method Resources\Variant variants(int | array | Entities\User ...$resource)
  */
 class Manager
 {
