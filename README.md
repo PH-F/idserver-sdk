@@ -53,7 +53,7 @@ The `Manager` class is the one responsible for all subsequent calls to the API. 
 
 Basically, the `Manager` class does not have much logic in it, but it uses two traits that are very important during the process:
 
-- `TokenSupport`: a set of methods responsible for managing the JWT token in the app's session. Every time a user is logged in the IDServer it returns a JWT (token) that we store in the current app's session, allowing us to reuse the same token for next calls.
+- `TokenSupport`: a set of methods responsible for managing the JWT token in the app's session. Every time a user is authenticated in the IDServer it returns a JWT (token) that we store in the current app's session, allowing us to reuse the same token for next calls.
 - `CallableResource`: basically two magic methods `__get()` and `__call()`. Let's say we call `ids()->users`. We're reaching the `__get()` magic method, which will return a `src/Resources/User.php` instance. You can call any method of this resource after that, like: `ids()->users->create([...])`.  
 
 ### The config file
@@ -68,15 +68,15 @@ This will create a `config/idserver.php` file in your Laravel app. This file has
 
 - `url`: it is the URL where the IDServer is installed;
 
-- `store`: the keys related to the store you are using with this SDK. Here you have two configurations: `web` and `cli`. `web` keys allow the store to call the IDServer using a web interface, like a web app, and `cli` keys allow the store to call the IDServer using the command line. For both settings ask Elektor/Xingo for those keys. They must be generated using the `generate:store-token {store} {--role=web}` command in the IDServer installation (not the SDK one).
+- `store`: the keys related to the store you are using with this SDK. Here you have two configurations: `web` and `cli`. `web` keys allow the store to call the IDServer using a web interface, like a web app, and `cli` keys allow the store to call the IDServer using the command line. For both settings ask Xingo for those keys. They must be generated using the `generate:store-token {store} {--role=web}` command in the IDServer API installation (not the SDK one).
 
-- `classes`: this configuration is a simple array to map entities and responses. By default each API call returns a `Entity` instance, but here you can ask for a custom class, like a Laravel model for example. This way you can call `ids()->users(1)->get()` and will get a `App\User` model instance, for example. For more information, take a look on [Entities Classes](#user-content-entities-classes) section.
+- `classes`: this configuration is a simple array to map entities and responses. By default each API call returns an `Entity` instance, but here you can ask for a custom class like a Laravel model for example. This way you can call `ids()->users(1)->get()` and will get an `App\User` model instance, for example. For more information, take a look on the [Entities Classes](#user-content-entities-classes) section.
 
 ### The Resources Classes
 
 Resources are classes that map the principal endpoints the IDServer has, for each resource. For example, for the `/users/1` call in the API we have the `User` resource with a `get()` method. 
 
-For every action in a specific resource ()let's say the user with ID equal 1) you can use the resource call as a method instead of a property. Like in the following example where we are sending the user ID as parameter:
+For every action in a specific resource (let's say the user with ID equal 1) you can use the resource call as a method instead of a property. Like in the following example where we are sending the user ID as parameter:
 
 ```php
 $user = ids()->users(1)->get();
@@ -96,7 +96,7 @@ The IDServer API can be called by N numbers of clients. That's why we have the c
 
 #### Web Stores
 
-Web stores are used when the user logs in with their credentials and want to manage their data. So the SDK must send both the "Client ID", the "Secret Key" and also the user token, called JWT. JWT is a token that contains information about the user and expiration time, for example. For more information about what the JWT is, please access [https://jwt.io]. In the SDK context every time a user does a "login" action, the API returns a valid JWT token and it is stored in the current session.
+Web stores are used when the user logs in with their credentials and want to manage their data. So the SDK must send both the "Client ID", the "Secret Key" and also the user token, called JWT. JWT is a token that contains information about the user and expiration time. For more information about what the JWT is, please access [https://jwt.io]. In the SDK context every time a user does a "login" action, the API returns a new valid JWT token which is stored in the current session.
 
 ```php
 ids()->users->login('foo@example.com', 'secret');
@@ -106,14 +106,14 @@ All following calls to the API will automatically include the necessary JWT for 
 
 ```php
 $user = ids()->users->login('foo@example.com', 'secret'); // $user->jwtToken()
-$users = ids()->users->all();
+$users = ids()->users->all(); // No need to add the token here, that will all be handled automagically
 ```
 
 > One important point here is that once the JWT is stored in the session you don't have to login the user every time again to perform some action. The SDK automatically will check if there's a valid JWT token in the session. If so it will add it to the header, allowing you to do the API call. Otherwise it will throw a `MissingJwtException`.
 
 ##### The `Auth` Middleware
 
-This SDK comes with a useful `Auth` middleware that should be used in all actions you want to protect by the JWT authentication. You can add it in your Laravel `Http/Kernel.php` file, for example, like `ids-auth` or just replacing the current `auth` one.
+This SDK comes with a useful `Auth` middleware that should be used in all actions you want to protect by the JWT authentication. You can add it in your Laravel `Http/Kernel.php` file, for example, like `ids-auth` or just replacing the current `auth` one. This middleware will check if there is a token set in the session. If no token can be found it will throw a `MissingJwtException`. 
 
 ```php
 protected $routeMiddleware = [
@@ -125,20 +125,19 @@ protected $routeMiddleware = [
 
 ##### Token Refresh
 
-Every JWT has an expiration time. The SDK knows that and has two Client Middlewares for Guzzle which are always checking for JWT in the session and also JWT changes.
+Every JWT has an expiration time. The SDK knows that and has two Client Middlewares for Guzzle which are always checking the JWT in the session and any JWT changes.
 
-Internally the IDServer API returns a `token_expired` JSON response when the JWT is expired. Once the SDK automatically is looking for these type of changes, if necessary, it automatically calls the "refresh" action in the IDServer, getting a fresh token, updating it in the current session. Then it calls the first action again with the new token, returning the correct response this time.
-Internally the IDServer API returns a `token_expired` JSON response when the JWT is expired. Once the SDK automatically is looking for these type of changes, if necessary, it automatically calls the "refresh" action in the IDServer, getting a fresh token, updating it in the current session. Then it calls the first action again with the new token, returning the correct response this time.
+Internally the IDServer API returns a `token_expired` JSON response when the JWT is expired. The SDK is automatically checking for these type of changes. If a `token_expired` response is returned, it automatically calls the "refresh" action in the IDServer. This will get a fresh token and update it in the current session. Then it calls the initial action again with the new token, returning the correct response this time.
 
-> All the JWT refresh process in made in background, you never have to worry about that when using this SDK. 
+> All the JWT refresh process is done in background, you never have to worry about that when using this SDK. 
 
 #### CLI Stores
 
-Sometimes it's necessary to have some CLI apps doing something using the IDServer API. In this case, we don't have a logged user, so we need a CLI client/key for that. If the call comes from a valid CLI Store we allow it without JWT authentication. All the necessary headers are created automatically according the environment the PHP is running in. If the app is running in console mode, we get the CLI Client ID and Secret Key from the config file. Otherwise the normal web Client ID and Secret Key are being used. 
+Sometimes it's necessary to have some CLI apps doing something using the IDServer API. In this case we don't have an authenticated user, so we need a CLI client/key for that. If the call comes from a valid CLI Store we allow it without JWT authentication. All the necessary headers are created automatically according the environment the PHP is running in. If the app is running in console mode, we get the CLI Client ID and Secret Key from the config file. Otherwise the normal web Client ID and Secret Key are being used. If you need to access the API from CLI mode you will have to ask Xingo for CLI credentials for you store.
 
 #### Authorization
 
-All IDServer authorization is made using the concept of "roles" and "abilities". You have basic roles with some default abilities, but the IDServer also allows you to add custom abilities to a given user. All abilities are returned as a Laravel collection. To retrieve all abilities a user has:
+All IDServer authorization is made using the concept of "roles" and "abilities". You have basic roles with some default abilities, but the IDServer also allows you to add custom abilities to a given user. All abilities are returned as a Laravel collection. To retrieve all abilities a user has you simply call this:
 
 ```php
 ids()
@@ -156,13 +155,13 @@ $first = ids()->abilities->all()->fist();
 echo $first->name; // foo.bar
 ```
 
-> If you have access to the IDServer repository, take a look on the `database/seeds/data/abiliites.php` file. You'll see all the abilities available in the IDServer API.
+> If you have access to the IDServer repository, take a look at the `database/seeds/data/abilities.php` file. You'll see all the abilities available in the IDServer API.
 
 ### Entities and Collections
 
 #### Entities Classes <a name="entities-classes"></a>
 
-All IDServer response is in the JSON format. To make things a bit easier we always return simples classes called "Entities". So if you are retrieving user data you'll get a User Entity as response. Each `Entity` class has a set of custom methods, like the `$user_entity->getName()` for example. This is the default behavior, making the SDK returning you simple entity classes.
+All IDServer response is in the JSON format. To make things a bit easier we always return simple classes called "Entities". So if you are retrieving user data you'll get a `Xingo\IDServer\Entities\User` as response. Each `Entity` class has a set of custom methods, like the `$userEntity->getName()` for example. This is the default behavior, making the SDK returning you simple entity classes. All `Entity` classes are using the `HasAttributes` trait which is adding a lot of Laravel features to the entities like accessors and casting.
 
 If you want to customize the returned class you can map them one by one in the config file. Let's say your Laravel app already has a `User` model, and every time you call `ids()->users(5)->get()` you don't want a user entity instance, but a `User` model. You can inform the SDK which class it should instantiate for you, mapping all the properties automatically.
 
@@ -191,15 +190,15 @@ var_dump($users->meta);
 
 #### The base Resource abstract class
 
-To make possible to call IDServers endpoints, sending always the correct information, and also expecting some formatted result, we created the abstract `Resource` class. All following resource classes must extends `Resource` to make integration with the backend easier.
+To make it possible to call IDServer endpoints, sending always the correct information, and also expecting some formatted result, we created the abstract `Resource` class. All following resource classes must extends `Resource` to make integration with the backend easier.
 
 This class has some important helper methods and each one has his own explanation. Here you can find some information about the most important ones:
 
-- `__invoke()`: this method makes possible to inform an individual resource in a "callable" way. It's the one responsible for making calls like `->users(1)` possible. It temporarily stores the desired ID, and then when calling the action, it's added. It's just to make the calling process easier and prettier.
+- `__invoke()`: this method makes it possible to invoke an individual resource in a "callable" way. It's the one responsible for making calls like `->users(1)` possible. It temporarily stores the desired ID, and then when calling the action, it's added. It's just to make the calling process easier and prettier.
 
-- `call()`: this method is used internally only, but here is where we make the request and process the response (both using GuzzleHttp). The response is returned but the `$this->content` property is filled with the JSON response, the content itself, making easier for further manipulation.
+- `call()`: this method is used internally only, This is where we make the request and process the response (both using GuzzleHttp). The response is returned but the `$this->content` property is filled with the JSON response, the content itself, making easier for further manipulation.
 
-- `makeEntity()`: this method is the one responsible for returning the correct `Entity` instance to the user. It basically gets the content from response and call the `EntityCreator` class sending the data received. If you are calling an endpoint using a `UserResource` this is the method that is going to return you a `User` entity instance.
+- `makeEntity()`: this method is the one responsible for returning the correct `Entity` instance to the user. It basically gets the content from response and calls the `EntityCreator` class sending the data received. If you are calling an endpoint using a `UserResource` this is the method that is going to return you a `User` entity instance.
 
 - `makeCollection()`: this method acts like the `makeEntity()` one, but for collections, appending also the `meta` values if present in the response data. 
 
@@ -207,9 +206,9 @@ This class has some important helper methods and each one has his own explanatio
 
 ##### `ResourceBlueprint`
 
-Usually some endpoints has common actions, like creating a new resource, listing multiple resources, deleting, etc. Those common actions have almost the same request/response workflow, so that is why the `ResourceBlueprint` exits. It is responsible for adding common behavior to resource classes, using the following methods:
+Usually the endpoints have common actions, like creating a new resource, listing multiple resources, deleting, etc. Those common actions have almost the same request/response workflow, so that is why the `ResourceBlueprint` exists. It is responsible for adding common behavior to resource classes, using the following methods:
 
-- `all(array $filters = []): Collection`: responsible for listing multiple resources. It can be literally all, or just some, using pagination (will be explained later on) for example. As you can see this method also return a `Collection` of entities (respecting the same resource type).
+- `all(array $filters = []): Collection`: responsible for listing multiple resources. It can be literally all, or just some, using pagination (will be explained later on). As you can see this method also returns a `Collection` of entities (respecting the same resource type).
 
 - `get(): IdsEntity`: responsible for returning a single resource. If you call `->users(1)->get()` it is expected to get the `User` entity with ID 1.
 
@@ -223,9 +222,9 @@ Basically, all resource classes use the `ResourceBlueprint` trait. When it's nec
 
 ##### `FilteredQuery` and `ResourceOrganizer`
 
-`FilteredQuery` is a trait used by the `ResourceBlueprint` one that is responsible for manipulating the query string that will be sent in the request. It also uses the `ResourceOrganizer` trait, that's basically responsible for adding pagination (by the `paginate($page, $per_page)` method), sorting (by the `sort($field, string $order = 'asc')` method) and filtering features to any resource class.
+`FilteredQuery` is a trait used by the `ResourceBlueprint` which is responsible for manipulating the query string that will be sent in the request. It also uses the `ResourceOrganizer` trait, which is responsible for adding pagination (by the `paginate($page, $perPage)` method), sorting (by the `sort($field, string $order = 'asc')` method) and filtering features to any resource class.
 
-If you want to paginate results for subscriptions, for example:
+If you want to paginate results for subscriptions, the call would look like:
 
 ```php
 $collection = ids()->subscriptions
@@ -242,7 +241,7 @@ $collection = ids()->subscriptions
     ->all(['user_id' => 1]);
 ```
 
-In this case we are requesting all subscriptions from the user ID 1, ordered descending by the `start_date` field, and asking for the first page, paginated with 10 subscriptions on each page.
+In this case we are requesting all subscriptions from the user with ID 1, ordered descending by the `start_date` field, and asking for the first page, paginated with 10 subscriptions on each page.
 
 ## Available Resources
 
@@ -251,7 +250,7 @@ In this case we are requesting all subscriptions from the user ID 1, ordered des
 Retrieves abilities from the IDServer. Usually, this resource needs to be called with `->all()` for listing all available abilities in the IDServer:
 
 ```php
-$collection_of_abilities = ids()->abilities->all();
+$collectionOfAbilities = ids()->abilities->all();
 // With pagination
 $collection = ids()->abilities->paginate(1, 10)->all(); // page 1, 10 per page
 ```
@@ -262,15 +261,16 @@ The `Ability` resource uses the `ResourceBlueprint`, so you also have access to 
 
 Parameter | Type | Required | Description
 --------- | ---- | -------- | -----------
-name | string | Yes | The ability name in snake_case format, like `create_user`.
+name | string | Yes | The ability name in snake_case format, prefixed with the entity this ability is for. Examples `users.create` or `users.special_ability`.
 title | string | No | Just a title for that ability, like 'Creates a new user'.
 
 ### Address (`addresses`)
 
-This resource is responsible for dealing with addresses in the IDServer. This class has its own `create()` method, basically because when creating a new address we need a nested resource, for example, "user" or "company". The final endpoint is something like `POST /users/1/addresses`.
+This resource is responsible for dealing with addresses in the IDServer. This class has its own customer`create()` method, basically because when creating a new address we need a nested resource. For example: "user" or "company". The final endpoint is something like `POST /users/1/addresses`.
 
 ```php
-$new_address = ids()->users(1)
+$newAddress = ids()
+    ->users(1)
     ->addresses
     ->create($params);
 ```
@@ -279,14 +279,14 @@ $new_address = ids()->users(1)
 
 Parameter | Type | Required | Description
 --------- | ---- | -------- | -----------
-type | string | No | The address type. Default to `extra`. Possible values: `contact`, `extra`, `shipping` and `invoice`.
-first_name | string | No | The user's first name.
-middle_name | string | No | The user's middle name.
-last_name | string | No | The user's last name.
+type | string | No | The address type. Default to `extra`. Possible values: `contact`, `extra`, `shipping` and `invoice`. The `contact` type is the main address that is used throughout the IDServer and will be used as fallback in case there is no `shipping` or `invoice` address.
+first_name | string | No | The custom first name for this address. Set to null to use the first_name of the user.
+middle_name | string | No | The custom middle name for this address. Set to null to use the middle_name of the user.
+last_name | string | No | The custom last name for this address. Set to null to use the last_name of the user.
 company | string | No | The company's name.
 department | string | No | The company's department name, if any.
 street | string | Yes | The street name.
-street_addition | string | No | Some other information for the street.
+street_addition | string | No | Some extra information for the street, if any.
 house_number | string | No | The house number.
 house_letter | string | No | The house letter, if any.
 city | string | Yes | The city name.
@@ -311,7 +311,7 @@ longitude | string/float | Filter by the longitude value.
 
 ### Communication (`communications`)
 
-This resources is responsible for dealing with the communications table in IDServer. Like the `Address` one it requires a nested resource to work ("user" or "company"):
+This resources is responsible for dealing with the communications table in the IDServer. Like the `Address` one it requires a nested resource to work ("user" or "company"):
 
 ```php
 $communication = ids()->communications
@@ -330,11 +330,11 @@ Parameter | Type | Required | Description
 --------- | ---- | -------- | -----------
 type | string | Yes | The communication type. Possible values are `phone`, `email`, `mobile`.
 value | string | Yes | The value itself, the phone number or the email, for example.
-is_primary | boolean | No | If that's the primary communication or not.
+is_primary | boolean | No | If this is the primary communication or not.
 
 ### Company (`companies`)
 
-This resource is responsible for dealing with "companies" information. A user belongs to a company, so he/she is part of one. Besides all the actions provided by the `ResourceBlueprint` trait, this resource also has `addresses()` and `communications()` methods, so you can get these information from a given company.
+This resource is responsible for dealing with "companies" information. A user belongs to a company, so he/she is part of one. Besides all the actions provided by the `ResourceBlueprint` trait, this resource also has `addresses()` and `communications()` methods, so you can get this information from a given company.
 
 ```php
 $company = ids()->companies(10)->get();
@@ -347,7 +347,7 @@ $communications = ids()->companies(10)->communications();
 Parameter | Type | Required | Description
 --------- | ---- | -------- | -----------
 name | string | Yes | The company's name
-vat | string | No | The company's VAT number
+vat | string | No | The company's VAT number.
 
 ### Country (`countries`)
 
@@ -363,7 +363,7 @@ $filteredCountries = ids()->countries->all(['name' => 'china']);
 
 Parameter | Type | Required | Description
 --------- | ---- | -------- | -----------
-code | string | Yes | The country's 2-digit code like `nl`, `us` or `br`
+code | string | Yes | The country's 2-digit code like `NL`, `US` or `BR`
 name | string | Yes | The country's name
 
 **Filters**
@@ -389,7 +389,7 @@ Parameter | Type | Required | Description
 promotion_id | integer | Yes | The promotion ID that the coupon is attached to
 code | string | Yes | The code for the coupon, something like `black-friday-18`, for example.
 usage_limit | integer | Yes | The amount of times this coupon can be used. Default to `0`.
-times_used | integer | No | This parameters is not used publicity, but it is incremented each time a coupon is used, internally.
+times_used | integer | No | This parameter is not used public, but it is incremented each time a coupon is used, internally.
 
 ### Duration (`durations`)
 
@@ -528,7 +528,7 @@ payment_code | string | Yes | The payment method code (there is not specific val
 #### Using the `payment()` method
 
 ```php
-$updated_order = ids()->orders(123)->payment([
+$updatedOrder = ids()->orders(123)->payment([
     'payment_number' => 871652389123,
     'status' => 'cancelled',
 ]);
@@ -541,7 +541,7 @@ $updated_order = ids()->orders(123)->payment([
 The `price()` method return some data related to an order. First, take a look on how to use it with this SDK, the request attributes and the response data.
 
 ```php
-$price_data = ids()->orders(123)->price($attributes);
+$priceData = ids()->orders(123)->price($attributes);
 ```
 
 The request attributes are (for `$attributes` variable):
@@ -578,7 +578,7 @@ discount_amount | integer/null | The absolute discount amount if any, or null.
 There are many types of available payment methods. This resource is responsible for managing them. The only method available is `all()` without any parameter.
 
 ```php
-$payment_methods = ids()->paymentMethods->all();
+$paymentMethods = ids()->paymentMethods->all();
 ```
 
 ### Plan (`plans`)
@@ -621,7 +621,7 @@ Promotions are related to coupon code. A coupon code belongs to a promotion. Thi
 
 ```php
 $promotion = ids()->promotions(123)->get();
-$paginated_promotions = ids()->promotions->paginate(2, 10)->all();
+$paginatedPromotions = ids()->promotions->paginate(2, 10)->all();
 ```
 
 **Parameters**
