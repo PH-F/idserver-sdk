@@ -293,8 +293,8 @@ city | string | Yes | The city name.
 province | string | No | The province.
 postcode | string | Yes | The postcode.
 country_id | integer | Yes | The country number in IDServer.
-latitude | decimal | No | The latitude.
-longitude | decimal | No | The longitude.
+latitude | decimal | No | The latitude. Cannot be set.
+longitude | decimal | No | The longitude. Cannot be set.
 
 **Filters**
 
