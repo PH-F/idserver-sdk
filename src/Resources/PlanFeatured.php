@@ -22,5 +22,4 @@ class PlanFeatured extends Resource
     {
         return 'plans-featured';
     }
-
 }
