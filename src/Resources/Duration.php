@@ -2,7 +2,8 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Concerns\ResourceBlueprint;
+use Xingo\IDServer\Concerns\FilteredQuery;
+use Xingo\IDServer\Concerns\NestedResource;
 
 /**
  * Class Duration
@@ -11,7 +12,8 @@ use Xingo\IDServer\Concerns\ResourceBlueprint;
  */
 class Duration extends Resource
 {
-    use ResourceBlueprint;
+    use NestedResource;
+    use FilteredQuery;
 
     /**
      * Get the custom resource name of this entity.
@@ -21,5 +23,18 @@ class Duration extends Resource
     protected function getResourceName()
     {
         return 'plans-durations';
+    }
+
+    /**
+     * @param array $filters
+     * @return Collection
+     */
+    public function all(array $filters = []): Collection
+    {
+        $query = $this->queryString($filters);
+
+        $this->call('GET', 'plans-durations', $query);
+
+        return $this->makeCollection();
     }
 }
