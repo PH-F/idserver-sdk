@@ -2,7 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Entities\Import as ImportEntity;
+use Xingo\IDServer\Contracts\IdsEntity;
 
 /**
  * Class Plan
@@ -12,9 +12,9 @@ use Xingo\IDServer\Entities\Import as ImportEntity;
 class Import extends Resource
 {
     /**
-     * @return ImportEntity
+     * @return IdsEntity
      */
-    public function get(): ImportEntity
+    public function get(): IdsEntity
     {
         $this->call('GET', "imports/$this->id");
 

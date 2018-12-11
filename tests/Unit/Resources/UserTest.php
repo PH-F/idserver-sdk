@@ -13,6 +13,7 @@ use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities\Ability;
 use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\Communication;
+use Xingo\IDServer\Entities\Import;
 use Xingo\IDServer\Entities\Note;
 use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
@@ -672,5 +673,28 @@ class UserTest extends TestCase
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals('foo', $collection->first()->text);
         $this->assertEquals('bar', $collection->last()->text);
+    }
+
+    /** @test */
+    public function it_can_import()
+    {
+        $this->mockResponse(201, [
+            'data' => [
+                'id' => 1,
+            ],
+        ]);
+
+        $import = $this->manager->users->import(['file' => new UploadedFile(TEST_PATH . 'Stub/image.png', 'import.xlsx')]);
+
+        $this->assertInstanceOf(Import::class, $import);
+        $this->assertEquals(1, $import->id);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('users/import', $request->getUri()->getPath());
+            $this->assertInstanceOf(MultipartStream::class, $request->getBody());
+            $this->assertContains('Content-Disposition: form-data; name="file"; filename="import.xlsx', $contents = $request->getBody()->getContents());
+            $this->assertContains('Content-Disposition: form-data; name="_method', $contents);
+        });
     }
 }
