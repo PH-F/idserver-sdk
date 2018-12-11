@@ -33,6 +33,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
+ * @property Resources\Import imports
+ * @method Resources\Import imports(int $resource)
  */
 class Manager
 {
