@@ -226,7 +226,7 @@ class User extends Resource
      */
     public function import($data): IdsEntity
     {
-        $this->asMultipart()->call('PATCH', 'users/import', $data);
+        $this->asMultipart()->call('POST', 'users/import', $data);
 
         return $this->makeEntity(null, Entities\Import::class);
     }

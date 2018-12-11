@@ -694,7 +694,6 @@ class UserTest extends TestCase
             $this->assertEquals('users/import', $request->getUri()->getPath());
             $this->assertInstanceOf(MultipartStream::class, $request->getBody());
             $this->assertContains('Content-Disposition: form-data; name="file"; filename="import.xlsx', $contents = $request->getBody()->getContents());
-            $this->assertContains('Content-Disposition: form-data; name="_method', $contents);
         });
     }
 }
