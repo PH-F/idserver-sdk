@@ -92,7 +92,7 @@ abstract class Resource
      *
      * @return Resource
      */
-    protected function asMultipart(): self
+    public function asMultipart(): self
     {
         $this->multipart = true;
 
