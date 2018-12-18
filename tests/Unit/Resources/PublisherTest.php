@@ -72,11 +72,11 @@ class PublisherTest extends TestCase
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
-        $item = $this->manager->publishers(1)->get();
+        $entity = $this->manager->publishers(1)->get();
 
-        $this->assertInstanceOf(Entities\Publisher::class, $item);
-        $this->assertInstanceOf(IdsEntity::class, $item);
-        $this->assertEquals(1, $item->id);
+        $this->assertInstanceOf(Entities\Publisher::class, $entity);
+        $this->assertInstanceOf(IdsEntity::class, $entity);
+        $this->assertEquals(1, $entity->id);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
@@ -105,12 +105,12 @@ class PublisherTest extends TestCase
     {
         $this->mockResponse(200);
 
-        $company = $this->manager->publishers(3)->update([
+        $entity = $this->manager->publishers(3)->update([
             'name' => 'Acme Publisher',
         ]);
 
-        $this->assertInstanceOf(Entities\Publisher::class, $company);
-        $this->assertInstanceOf(IdsEntity::class, $company);
+        $this->assertInstanceOf(Entities\Publisher::class, $entity);
+        $this->assertInstanceOf(IdsEntity::class, $entity);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
