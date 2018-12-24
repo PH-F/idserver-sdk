@@ -17,24 +17,4 @@ class Country extends Resource
     {
         return 'countries';
     }
-
-    /**
-     * @param array $filters
-     *
-     * @return Collection
-     * @throws \Xingo\IDServer\Exceptions\AuthorizationException
-     * @throws \Xingo\IDServer\Exceptions\ForbiddenException
-     * @throws \Xingo\IDServer\Exceptions\NotFoundException
-     * @throws \Xingo\IDServer\Exceptions\ServerException
-     * @throws \Xingo\IDServer\Exceptions\ThrottleException
-     * @throws \Xingo\IDServer\Exceptions\ValidationException
-     */
-    public function all(array $filters = []): Collection
-    {
-        $query = $this->queryString($filters);
-
-        $this->call('GET', 'countries', $query);
-
-        return $this->makeCollection();
-    }
 }

@@ -84,4 +84,66 @@ class CountryTest extends TestCase
             $this->assertEquals('countries/1', $request->getUri()->getPath());
         });
     }
+
+    /** @test */
+    public function it_can_be_created()
+    {
+        $params = [
+            'code' => 'NL',
+            'name' => [
+                'nl' => 'Nederland',
+                'en' => 'Netherlands'
+            ]
+        ];
+        $this->mockResponse(201, [
+            'data' => $params,
+        ]);
+
+        $country = $this->manager
+            ->countries
+            ->create(
+                $params
+            );
+
+        $this->assertInstanceOf(Entities\Country::class, $country);
+        $this->assertInstanceOf(IdsEntity::class, $country);
+        $this->assertEquals($params['code'], $country->code);
+
+        $this->assertRequest(function (Request $request) use ($params) {
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('countries', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($params), $request->getBody());
+        });
+    }
+
+    public function it_can_be_updated() {
+        $this->mockResponse(200);
+
+        $code = str_random(3);
+        $company = $this->manager->countries(3)->update([
+            'code' => $code,
+        ]);
+
+        $this->assertInstanceOf(Entities\Country::class, $company);
+        $this->assertInstanceOf(IdsEntity::class, $company);
+
+        $this->assertRequest(function (Request $request) use ($code) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('countries/3', $request->getUri()->getPath());
+            $this->assertEquals('code=' . $code, $request->getBody());
+        });
+    }
+    
+    public function it_can_be_deleted() {
+        $this->mockResponse(204);
+        $this->mockResponse(204);
+
+        $result = $this->manager->countries(1)->delete();
+        $this->assertTrue($result);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('DELETE', $request->getMethod());
+            $this->assertEquals('countries/1', $request->getUri()->getPath());
+        });
+    } 
 }
