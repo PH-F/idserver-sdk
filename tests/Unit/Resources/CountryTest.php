@@ -116,7 +116,8 @@ class CountryTest extends TestCase
         });
     }
 
-    public function it_can_be_updated() {
+    public function it_can_be_updated()
+    {
         $this->mockResponse(200);
 
         $code = str_random(3);
@@ -134,7 +135,8 @@ class CountryTest extends TestCase
         });
     }
     
-    public function it_can_be_deleted() {
+    public function it_can_be_deleted()
+    {
         $this->mockResponse(204);
         $this->mockResponse(204);
 
@@ -145,5 +147,5 @@ class CountryTest extends TestCase
             $this->assertEquals('DELETE', $request->getMethod());
             $this->assertEquals('countries/1', $request->getUri()->getPath());
         });
-    } 
+    }
 }
