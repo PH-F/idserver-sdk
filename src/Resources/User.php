@@ -218,6 +218,20 @@ class User extends Resource
     }
 
     /**
+     * Import users into the idserver.
+     *
+     * @param $data
+     *
+     * @return IdsEntity
+     */
+    public function import($data): IdsEntity
+    {
+        $this->asMultipart()->call('POST', 'users/import', $data);
+
+        return $this->makeEntity(null, Entities\Import::class);
+    }
+
+    /**
      * @param int|string $identifier
      * @return string
      */
