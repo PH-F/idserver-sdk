@@ -33,6 +33,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
+ * @property Resources\Country countries
+ * @method Resources\Country countries(int $resource)
  * @property Resources\Currency currencies
  * @method Resources\Currency currencies(int $resource)
  * @property Resources\Duration durations
