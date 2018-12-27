@@ -35,6 +35,14 @@ use Xingo\IDServer\Resources;
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
  * @property Resources\Import imports
  * @method Resources\Import imports(int $resource)
+ * @property Resources\Country countries
+ * @method Resources\Country countries(int $resource)
+ * @property Resources\Currency currencies
+ * @method Resources\Currency currencies(int $resource)
+ * @property Resources\Duration durations
+ * @method Resources\Duration durations(int | Entities\Duration $resource)
+ * @property Resources\Publisher publishers
+ * @method Resources\Publisher publishers(int $resource)
  */
 class Manager
 {

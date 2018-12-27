@@ -9,12 +9,12 @@ use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources\Collection;
 
-class CountryTest extends TestCase
+class PublisherTest extends TestCase
 {
     use Concerns\MockResponse;
 
     /** @test */
-    public function it_gets_all_countries()
+    public function it_gets_all_publishers()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -23,11 +23,11 @@ class CountryTest extends TestCase
             ],
         ]);
 
-        $collection = $this->manager->countries->all();
+        $collection = $this->manager->publishers->all();
 
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
-        $this->assertInstanceOf(Entities\Country::class, $collection->first());
+        $this->assertInstanceOf(Entities\Publisher::class, $collection->first());
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
 
@@ -37,7 +37,7 @@ class CountryTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_countries()
+    public function it_paginates_all_publishers()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -50,7 +50,7 @@ class CountryTest extends TestCase
             ]
         ]);
 
-        $collection = $this->manager->countries
+        $collection = $this->manager->publishers
             ->paginate(2, 1)
             ->all();
 
@@ -62,90 +62,74 @@ class CountryTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('countries', $request->getUri()->getPath());
+            $this->assertEquals('publishers', $request->getUri()->getPath());
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
 
-
     /** @test */
-    public function it_gets_just_one_country_by_id()
+    public function it_gets_just_one_publisher_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
-        $item = $this->manager->countries(1)->get();
+        $entity = $this->manager->publishers(1)->get();
 
-        $this->assertInstanceOf(Entities\Country::class, $item);
-        $this->assertInstanceOf(IdsEntity::class, $item);
-        $this->assertEquals(1, $item->id);
+        $this->assertInstanceOf(Entities\Publisher::class, $entity);
+        $this->assertInstanceOf(IdsEntity::class, $entity);
+        $this->assertEquals(1, $entity->id);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('countries/1', $request->getUri()->getPath());
+            $this->assertEquals('publishers/1', $request->getUri()->getPath());
         });
     }
 
     /** @test */
-    public function it_can_be_created()
+    public function it_sends_correct_parameters_when_creating_a_new_publisher()
     {
-        $params = [
-            'code' => 'NL',
-            'name' => [
-                'nl' => 'Nederland',
-                'en' => 'Netherlands'
-            ]
-        ];
-        $this->mockResponse(201, [
-            'data' => $params,
+        $this->mockResponse(201);
+
+        $this->manager->publishers->create($attributes = [
+            'name' => 'Acme Publisher',
         ]);
 
-        $country = $this->manager
-            ->countries
-            ->create(
-                $params
-            );
-
-        $this->assertInstanceOf(Entities\Country::class, $country);
-        $this->assertInstanceOf(IdsEntity::class, $country);
-        $this->assertEquals($params['code'], $country->code);
-
-        $this->assertRequest(function (Request $request) use ($params) {
+        $this->assertRequest(function (Request $request) use ($attributes) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('countries', $request->getUri()->getPath());
-            $this->assertEquals(http_build_query($params), $request->getBody());
+            $this->assertEquals('publishers', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
 
+    /** @test */
     public function it_can_be_updated()
     {
         $this->mockResponse(200);
 
-        $code = str_random(3);
-        $company = $this->manager->countries(3)->update([
-            'code' => $code,
+        $entity = $this->manager->publishers(3)->update([
+            'name' => 'Acme Publisher',
         ]);
 
-        $this->assertInstanceOf(Entities\Country::class, $company);
-        $this->assertInstanceOf(IdsEntity::class, $company);
+        $this->assertInstanceOf(Entities\Publisher::class, $entity);
+        $this->assertInstanceOf(IdsEntity::class, $entity);
 
-        $this->assertRequest(function (Request $request) use ($code) {
+        $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
-            $this->assertEquals('countries/3', $request->getUri()->getPath());
-            $this->assertEquals('code=' . $code, $request->getBody());
+            $this->assertEquals('publishers/3', $request->getUri()->getPath());
+            $this->assertEquals('name=Acme+Publisher', $request->getBody());
         });
     }
-    
+
+    /** @test */
     public function it_can_be_deleted()
     {
         $this->mockResponse(204);
-        $this->mockResponse(204);
 
-        $result = $this->manager->countries(1)->delete();
+        $result = $this->manager->publishers(2)->delete();
         $this->assertTrue($result);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('DELETE', $request->getMethod());
-            $this->assertEquals('countries/1', $request->getUri()->getPath());
+            $this->assertEquals('publishers/2', $request->getUri()->getPath());
         });
     }
 }

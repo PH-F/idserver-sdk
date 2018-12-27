@@ -9,12 +9,12 @@ use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
 use Xingo\IDServer\Resources\Collection;
 
-class CountryTest extends TestCase
+class CurrencyTest extends TestCase
 {
     use Concerns\MockResponse;
 
     /** @test */
-    public function it_gets_all_countries()
+    public function it_gets_all_currencies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -23,11 +23,11 @@ class CountryTest extends TestCase
             ],
         ]);
 
-        $collection = $this->manager->countries->all();
+        $collection = $this->manager->currencies->all();
 
         $this->assertInstanceOf(Collection::class, $collection);
         $this->assertCount(2, $collection);
-        $this->assertInstanceOf(Entities\Country::class, $collection->first());
+        $this->assertInstanceOf(Entities\Currency::class, $collection->first());
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->id);
 
@@ -37,7 +37,7 @@ class CountryTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_countries()
+    public function it_paginates_all_currencies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -50,7 +50,7 @@ class CountryTest extends TestCase
             ]
         ]);
 
-        $collection = $this->manager->countries
+        $collection = $this->manager->currencies
             ->paginate(2, 1)
             ->all();
 
@@ -62,90 +62,74 @@ class CountryTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('countries', $request->getUri()->getPath());
+            $this->assertEquals('currencies', $request->getUri()->getPath());
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
 
-
     /** @test */
-    public function it_gets_just_one_country_by_id()
+    public function it_gets_just_one_currency_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
-        $item = $this->manager->countries(1)->get();
+        $item = $this->manager->currencies(1)->get();
 
-        $this->assertInstanceOf(Entities\Country::class, $item);
+        $this->assertInstanceOf(Entities\Currency::class, $item);
         $this->assertInstanceOf(IdsEntity::class, $item);
         $this->assertEquals(1, $item->id);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('countries/1', $request->getUri()->getPath());
+            $this->assertEquals('currencies/1', $request->getUri()->getPath());
         });
     }
 
     /** @test */
-    public function it_can_be_created()
+    public function it_sends_correct_parameters_when_creating_a_new_currency()
     {
-        $params = [
-            'code' => 'NL',
-            'name' => [
-                'nl' => 'Nederland',
-                'en' => 'Netherlands'
-            ]
-        ];
-        $this->mockResponse(201, [
-            'data' => $params,
+        $this->mockResponse(201);
+
+        $this->manager->currencies->create($attributes = [
+            'name' => 'Acme Currency',
         ]);
 
-        $country = $this->manager
-            ->countries
-            ->create(
-                $params
-            );
-
-        $this->assertInstanceOf(Entities\Country::class, $country);
-        $this->assertInstanceOf(IdsEntity::class, $country);
-        $this->assertEquals($params['code'], $country->code);
-
-        $this->assertRequest(function (Request $request) use ($params) {
+        $this->assertRequest(function (Request $request) use ($attributes) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('countries', $request->getUri()->getPath());
-            $this->assertEquals(http_build_query($params), $request->getBody());
+            $this->assertEquals('currencies', $request->getUri()->getPath());
+            $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
 
+    /** @test */
     public function it_can_be_updated()
     {
         $this->mockResponse(200);
 
-        $code = str_random(3);
-        $company = $this->manager->countries(3)->update([
-            'code' => $code,
+        $company = $this->manager->currencies(3)->update([
+            'name' => 'Acme Currency',
         ]);
 
-        $this->assertInstanceOf(Entities\Country::class, $company);
+        $this->assertInstanceOf(Entities\Currency::class, $company);
         $this->assertInstanceOf(IdsEntity::class, $company);
 
-        $this->assertRequest(function (Request $request) use ($code) {
+        $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
-            $this->assertEquals('countries/3', $request->getUri()->getPath());
-            $this->assertEquals('code=' . $code, $request->getBody());
+            $this->assertEquals('currencies/3', $request->getUri()->getPath());
+            $this->assertEquals('name=Acme+Currency', $request->getBody());
         });
     }
-    
+
+    /** @test */
     public function it_can_be_deleted()
     {
         $this->mockResponse(204);
-        $this->mockResponse(204);
 
-        $result = $this->manager->countries(1)->delete();
+        $result = $this->manager->currencies(2)->delete();
         $this->assertTrue($result);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('DELETE', $request->getMethod());
-            $this->assertEquals('countries/1', $request->getUri()->getPath());
+            $this->assertEquals('currencies/2', $request->getUri()->getPath());
         });
     }
 }

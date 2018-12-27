@@ -2,22 +2,19 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Concerns\FilteredQuery;
+use Xingo\IDServer\Concerns\ResourceBlueprint;
 
 class Country extends Resource
 {
-    use FilteredQuery;
+    use ResourceBlueprint;
 
     /**
-     * @param array $filters
-     * @return Collection
+     * Get the name of the resource to be used in communication with the API.
+     *
+     * @return string
      */
-    public function all(array $filters = []): Collection
+    protected function getResourceName()
     {
-        $query = $this->queryString($filters);
-
-        $this->call('GET', 'countries', $query);
-
-        return $this->makeCollection();
+        return 'countries';
     }
 }
