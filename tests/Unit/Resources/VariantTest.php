@@ -7,6 +7,7 @@ use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
+use Xingo\IDServer\Entities\Variant;
 use Xingo\IDServer\Resources\Collection;
 
 class VariantTest extends TestCase
@@ -131,5 +132,17 @@ class VariantTest extends TestCase
             $this->assertEquals('DELETE', $request->getMethod());
             $this->assertEquals('plans-variants/2', $request->getUri()->getPath());
         });
+    }
+
+    /** @test */
+    public function it_is_priceable()
+    {
+        app()->setLocale('nl_NL');
+
+        $item = new Variant([
+            'price' => 7000,
+        ]);
+
+        $this->assertEquals('€ 70,00', $item->asPriceForHumans('price', 'EUR'));
     }
 }
