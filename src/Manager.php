@@ -15,6 +15,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Address addresses(int | Entities\Address $resource)
  * @property Resources\Company companies
  * @method Resources\Company companies(int | Entities\Company $resource)
+ * @property Resources\Reseller resellers
+ * @method Resources\Reseller resellers(int | Entities\Reseller $resource)
  * @property Resources\Role roles
  * @method Resources\Role roles(int | Entities\Role $resource)
  * @property Resources\Subscription subscriptions
