@@ -17,6 +17,13 @@ class User extends Entity
     protected $dates = ['date_of_birth'];
 
     /**
+     * @var array
+     */
+    protected $relationships = [
+        'reseller' => Reseller::class,
+    ];
+
+    /**
      * @return string
      */
     public function jwtToken()
