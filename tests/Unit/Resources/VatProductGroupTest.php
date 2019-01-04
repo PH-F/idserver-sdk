@@ -32,6 +32,7 @@ class VatProductGroupTest extends TestCase
         $this->assertEquals(2, $collection->last()->id);
 
         $this->assertRequest(function (Request $request) {
+            $this->assertEquals('vat/product-groups', $request->getUri()->getPath());
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }

@@ -12,4 +12,14 @@ class VatProductGroup extends Resource
         update as protected;
         delete as protected;
     }
+
+    /**
+     * Get the name of the resource to be used in communication with the API.
+     *
+     * @return string
+     */
+    protected function getResourceName()
+    {
+        return 'vat/product-groups';
+    }
 }
