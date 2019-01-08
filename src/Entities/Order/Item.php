@@ -19,14 +19,4 @@ class Item extends Entity
         'parentSubscription' => Subscription::class,
         'plan_duration' => Duration::class,
     ];
-
-    /**
-     * Get the total price of this item.
-     *
-     * @return int
-     */
-    public function getTotalAttribute()
-    {
-        return $this->price - $this->discount - $this->shipping_cost;
-    }
 }

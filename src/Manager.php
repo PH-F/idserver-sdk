@@ -45,6 +45,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Duration durations(int | Entities\Duration $resource)
  * @property Resources\Publisher publishers
  * @method Resources\Publisher publishers(int $resource)
+ * @property Resources\OrderItem orderItems
+ * @method Resources\OrderItem orderItems(int $resource)
  */
 class Manager
 {
