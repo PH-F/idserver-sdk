@@ -66,4 +66,15 @@ class PriceableTest extends TestCase
         $this->assertNull($item->asPriceForHumans('invalid', 'EUR'));
         $this->assertNull($item->asPriceForHumans(null, 'EUR'));
     }
+
+    /** @test */
+    public function it_can_show_currency_symbol()
+    {
+        $item = new Item();
+
+        app()->setLocale('nl_NL');
+
+        $this->assertEquals('NOK', $item->getCurrencySymbol('NOK'));
+        $this->assertEquals('€', $item->getCurrencySymbol('EUR'));
+    }
 }

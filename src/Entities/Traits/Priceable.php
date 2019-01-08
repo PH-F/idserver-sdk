@@ -11,6 +11,7 @@ trait Priceable
      *
      * @param string|int $field
      * @param string $currency
+     *
      * @return string
      */
     public function asPriceForHumans($field, $currency = null)
@@ -31,7 +32,6 @@ trait Priceable
             return null;
         }
 
-
         $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
 
         return $formatter->formatCurrency($field / 100, $currency);
@@ -45,5 +45,25 @@ trait Priceable
     public function getCurrencyValue()
     {
         return array_get((array)$this->currency, 'abbreviation');
+    }
+
+    /**
+     * Get the symbol of the connected or given currency.
+     *
+     * @param string|null $currency
+     *
+     * @return string
+     */
+    public function getCurrencySymbol($currency = null)
+    {
+        if (is_null($currency)) {
+            $currency = $this->getCurrencyValue();
+        }
+
+        $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
+
+        $value = $formatter->formatCurrency('0', $currency);
+
+        return trim(preg_replace('#[0-9.,\h]*#iu', '', $value));
     }
 }
