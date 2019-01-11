@@ -15,6 +15,7 @@ class Order extends Entity
     protected $relationships = [
         'items' => Item::class,
         'user' => User::class,
+        'coupon' => Coupon::class,
     ];
 
     /**
