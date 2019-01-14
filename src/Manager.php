@@ -43,6 +43,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Currency currencies(int $resource)
  * @property Resources\Duration durations
  * @method Resources\Duration durations(int | Entities\Duration $resource)
+ * @property Resources\ShippingCost shippingCosts
+ * @method Resources\ShippingCost shippingCosts(int | Entities\ShippingCost $resource)
  * @property Resources\Publisher publishers
  * @method Resources\Publisher publishers(int $resource)
  */
