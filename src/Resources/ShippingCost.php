@@ -20,6 +20,6 @@ class ShippingCost extends Resource
      */
     protected function getResourceName()
     {
-        return 'plans-shipping-costs';
+        return 'shipping-costs';
     }
 }

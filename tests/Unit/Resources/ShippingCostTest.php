@@ -62,7 +62,7 @@ class ShippingCostTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('plans-shipping-costs', $request->getUri()->getPath());
+            $this->assertEquals('shipping-costs', $request->getUri()->getPath());
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
@@ -80,7 +80,7 @@ class ShippingCostTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('plans-shipping-costs/1', $request->getUri()->getPath());
+            $this->assertEquals('shipping-costs/1', $request->getUri()->getPath());
         });
     }
 
@@ -95,7 +95,7 @@ class ShippingCostTest extends TestCase
 
         $this->assertRequest(function (Request $request) use ($attributes) {
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('plans-shipping-costs', $request->getUri()->getPath());
+            $this->assertEquals('shipping-costs', $request->getUri()->getPath());
             $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
@@ -114,7 +114,7 @@ class ShippingCostTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
-            $this->assertEquals('plans-shipping-costs/3', $request->getUri()->getPath());
+            $this->assertEquals('shipping-costs/3', $request->getUri()->getPath());
             $this->assertEquals('name=Acme+ShippingCost', $request->getBody());
         });
     }
@@ -129,7 +129,7 @@ class ShippingCostTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('DELETE', $request->getMethod());
-            $this->assertEquals('plans-shipping-costs/2', $request->getUri()->getPath());
+            $this->assertEquals('shipping-costs/2', $request->getUri()->getPath());
         });
     }
 }
