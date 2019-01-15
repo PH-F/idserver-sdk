@@ -14,7 +14,7 @@ class ShippingCostTest extends TestCase
     use Concerns\MockResponse;
 
     /** @test */
-    public function it_gets_all_shippingCosts()
+    public function it_gets_all_shipping_costs()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -37,7 +37,7 @@ class ShippingCostTest extends TestCase
     }
 
     /** @test */
-    public function it_paginates_all_shippingCosts()
+    public function it_paginates_all_shipping_costs()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -68,7 +68,7 @@ class ShippingCostTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_just_one_shippingCost_by_id()
+    public function it_gets_just_one_shipping_cost_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -85,7 +85,7 @@ class ShippingCostTest extends TestCase
     }
 
     /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_shippingCost()
+    public function it_sends_correct_parameters_when_creating_a_new_shipping_cost()
     {
         $this->mockResponse(201);
 
