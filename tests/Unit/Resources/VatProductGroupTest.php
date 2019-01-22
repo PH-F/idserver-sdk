@@ -73,11 +73,11 @@ class VatProductGroupTest extends TestCase
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
-        $item = $this->manager->vatProductGroups(1)->get();
+        $group = $this->manager->vatProductGroups(1)->get();
 
-        $this->assertInstanceOf(Entities\VatProductGroup::class, $item);
-        $this->assertInstanceOf(IdsEntity::class, $item);
-        $this->assertEquals(1, $item->id);
+        $this->assertInstanceOf(Entities\VatProductGroup::class, $group);
+        $this->assertInstanceOf(IdsEntity::class, $group);
+        $this->assertEquals(1, $group->id);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
@@ -86,7 +86,7 @@ class VatProductGroupTest extends TestCase
     }
 
     /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_duration()
+    public function it_sends_correct_parameters_when_creating_a_new_vat_product_group()
     {
         $this->mockResponse(201);
 
@@ -106,12 +106,12 @@ class VatProductGroupTest extends TestCase
     {
         $this->mockResponse(200);
 
-        $company = $this->manager->vatProductGroups(3)->update([
+        $productGroup = $this->manager->vatProductGroups(3)->update([
             'name' => 'Acme Duration',
         ]);
 
-        $this->assertInstanceOf(Entities\VatProductGroup::class, $company);
-        $this->assertInstanceOf(IdsEntity::class, $company);
+        $this->assertInstanceOf(Entities\VatProductGroup::class, $productGroup);
+        $this->assertInstanceOf(IdsEntity::class, $productGroup);
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
