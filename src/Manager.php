@@ -49,6 +49,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Publisher publishers(int $resource)
  * @property Resources\OrderItem orderItems
  * @method Resources\OrderItem orderItems(int $resource)
+ * @property Resources\VatProductGroup vatProductGroups
+ * @method Resources\VatProductGroup vatProductGroups(int | Entities\VatProductGroup $resource)
  */
 class Manager
 {
