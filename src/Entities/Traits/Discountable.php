@@ -21,6 +21,6 @@ trait Discountable
             return null;
         }
 
-        return ($field / 100) . '%';
+        return round($field / 100, 2) . '%';
     }
 }
