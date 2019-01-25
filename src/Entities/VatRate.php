@@ -14,5 +14,4 @@ class VatRate extends Entity
     protected $relationships = [
         'country' => Country::class,
     ];
-
 }
