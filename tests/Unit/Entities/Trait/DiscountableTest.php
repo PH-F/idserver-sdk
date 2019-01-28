@@ -13,7 +13,18 @@ class DiscountableTest extends TestCase
         $rate = new VatRate();
         $this->assertEquals('100%', $rate->asDiscountForHumans(10000));
         $this->assertEquals('50%', $rate->asDiscountForHumans(5000));
-        $this->assertEquals('55.55%', $rate->asDiscountForHumans(5555));
+    }
+
+    /** @test */
+    public function it_rounds_the_discount_with_one_digit_correctly() {
+        $rate = new VatRate();
+        $this->assertEquals('27.5%', $rate->asDiscountForHumans(2750));
+    }
+
+    /** @test */
+    public function it_rounds_the_discount_with_two_digits_correctly() {
+        $rate = new VatRate();
+        $this->assertEquals('19.28%', $rate->asDiscountForHumans(1928));
     }
 
     /** @test */
