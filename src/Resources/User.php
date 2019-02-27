@@ -150,7 +150,7 @@ class User extends Resource
         $this->call('GET', "users/$this->id/addresses");
 
         return (new Collection($this->contents['data']))
-            ->map(function($data) {
+            ->map(function ($data) {
                 return $this->makeEntity(
                     $data,
                     Entities\Address::class
