@@ -2,7 +2,6 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Intervention\Image\ImageManager;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
@@ -26,6 +25,7 @@ class User extends Resource
      * @param string $password
      * @param bool $remember
      * @param array $claims
+     *
      * @return IdsEntity
      */
     public function login(string $email, string $password, bool $remember = false, array $claims = []): IdsEntity
@@ -70,6 +70,7 @@ class User extends Resource
 
     /**
      * @param string $token
+     *
      * @return IdsEntity
      */
     public function confirm(string $token): IdsEntity
@@ -83,6 +84,7 @@ class User extends Resource
 
     /**
      * @param mixed $avatar
+     *
      * @return IdsEntity
      */
     public function changeAvatar($avatar): IdsEntity
@@ -148,7 +150,7 @@ class User extends Resource
         $this->call('GET', "users/$this->id/addresses");
 
         return (new Collection($this->contents['data']))
-            ->map(function ($data) {
+            ->map(function($data) {
                 return $this->makeEntity(
                     $data,
                     Entities\Address::class
@@ -158,6 +160,7 @@ class User extends Resource
 
     /**
      * @param int|string $identifier
+     *
      * @return string
      */
     public function forgotPassword($identifier): string
@@ -175,6 +178,7 @@ class User extends Resource
      * @param int|string $identifier
      * @param string $token
      * @param string $password
+     *
      * @return bool
      */
     public function updatePassword($identifier, string $token, string $password): bool
@@ -192,6 +196,7 @@ class User extends Resource
 
     /**
      * @param string $password
+     *
      * @return bool
      */
     public function changePassword(string $password): bool
@@ -233,6 +238,7 @@ class User extends Resource
 
     /**
      * @param int|string $identifier
+     *
      * @return string
      */
     private function userIdentifierField($identifier): string

@@ -6,7 +6,6 @@ use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
-use Intervention\Image\ImageManager;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
