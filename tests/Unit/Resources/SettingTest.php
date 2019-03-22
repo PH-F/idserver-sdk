@@ -31,7 +31,7 @@ class SettingTest extends TestCase
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals(2, $collection->last()->entity_id);
 
-        $this->assertRequest(function(Request $request) {
+        $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('navision/settings', $request->getUri()->getPath());
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
@@ -62,7 +62,7 @@ class SettingTest extends TestCase
         $this->assertEquals(1, $collection->meta->per_page);
         $this->assertEquals(3, $collection->meta->total);
 
-        $this->assertRequest(function(Request $request) {
+        $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('navision/settings', $request->getUri()->getPath());
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
@@ -86,7 +86,7 @@ class SettingTest extends TestCase
 
         $this->assertInstanceOf(Entities\Navision\Setting::class, $settings->first());
 
-        $this->assertRequest(function(Request $request) use($data) {
+        $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('navision/settings', $request->getUri()->getPath());
             $this->assertEquals(http_build_query($data), (string)$request->getBody());
