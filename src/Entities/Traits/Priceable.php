@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Entities\Traits;
 
+use Illuminate\Support\Arr;
 use NumberFormatter;
 
 trait Priceable
@@ -21,7 +22,7 @@ trait Priceable
         }
 
         if (is_array($field)) {
-            $field = array_get($field, $currency);
+            $field = Arr::get($field, $currency);
         }
 
         if (is_null($currency)) {
@@ -44,7 +45,7 @@ trait Priceable
      */
     public function getCurrencyValue()
     {
-        return array_get((array)$this->currency, 'abbreviation');
+        return Arr::get((array)$this->currency, 'abbreviation');
     }
 
     /**

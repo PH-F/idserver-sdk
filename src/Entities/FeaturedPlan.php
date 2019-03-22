@@ -2,6 +2,8 @@
 
 namespace Xingo\IDServer\Entities;
 
+use Illuminate\Support\Arr;
+
 class FeaturedPlan extends Entity
 {
     /**
@@ -41,7 +43,7 @@ class FeaturedPlan extends Entity
     {
         return collect($this->details)
             ->filter(function ($detail) use ($type) {
-                return array_get($detail, 'type') === $type;
+                return Arr::get($detail, 'type') === $type;
             })
             ->sortBy('position')
             ->values()

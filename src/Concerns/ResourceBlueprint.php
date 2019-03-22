@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Concerns;
 
+use Illuminate\Support\Str;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Resources\Collection;
 
@@ -72,6 +73,6 @@ trait ResourceBlueprint
      */
     protected function getResourceName()
     {
-        return strtolower(str_plural(class_basename(static::class)));
+        return strtolower(Str::plural(class_basename(static::class)));
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Unit\Entities;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Tests\Concerns\MockResponse;
 use Tests\TestCase;
@@ -166,7 +167,7 @@ class EntityTest extends TestCase
 
         $this->assertTrue(isset($entity->foo));
         $this->assertTrue(isset($entity['foo']));
-        $this->assertEquals('Bar', array_get($entity, 'foo'));
+        $this->assertEquals('Bar', Arr::get($entity, 'foo'));
         $this->assertEquals('Bar', data_get($entity, 'foo'));
     }
 

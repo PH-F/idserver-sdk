@@ -3,6 +3,7 @@
 namespace Tests\Unit\Resources;
 
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Str;
 use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
@@ -120,7 +121,7 @@ class CountryTest extends TestCase
     {
         $this->mockResponse(200);
 
-        $code = str_random(3);
+        $code = Str::random(3);
         $company = $this->manager->countries(3)->update([
             'code' => $code,
         ]);

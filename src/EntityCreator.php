@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use Xingo\IDServer\Contracts\IdsEntity;
@@ -65,7 +66,7 @@ class EntityCreator
      */
     protected function createInstance(string $class, array $attributes)
     {
-        $relation = array_get($this->classes, $class);
+        $relation = Arr::get($this->classes, $class);
         $instance = new $class();
 
         if ($relation) {
@@ -110,10 +111,10 @@ class EntityCreator
      */
     private function createRelation(string $name, $data, array $relations)
     {
-        $class = array_get($relations, $name);
-        $class = array_get($this->classes, $class, $class);
+        $class = Arr::get($relations, $name);
+        $class = Arr::get($this->classes, $class, $class);
 
-        if ($name === str_plural($name)) {
+        if ($name === Str::plural($name)) {
             $collection = new Collection($data);
 
             return $collection->map(function ($item) use ($class) {

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Xingo\IDServer\Concerns\CallableResource;
 use Xingo\IDServer\Concerns\CustomException;
@@ -83,7 +84,7 @@ abstract class Resource
         $shortName = (new \ReflectionClass($class))
             ->getShortName();
 
-        return str_plural(strtolower($shortName));
+        return Str::plural(strtolower($shortName));
     }
 
     /**

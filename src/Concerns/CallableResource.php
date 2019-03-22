@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Concerns;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Xingo\IDServer\Resources\Resource;
 
@@ -39,7 +40,7 @@ trait CallableResource
         $resource = $this->$name;
 
         if ($resource instanceof Resource && is_callable($resource)) {
-            $first = array_first($arguments);
+            $first = Arr::first($arguments);
 
             return is_array($first) ?
                 $resource($first) :

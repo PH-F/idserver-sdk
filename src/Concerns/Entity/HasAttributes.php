@@ -5,6 +5,7 @@ namespace Xingo\IDServer\Concerns\Entity;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes as BaseHasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasRelationships;
+use Illuminate\Support\Arr;
 
 trait HasAttributes
 {
@@ -29,20 +30,22 @@ trait HasAttributes
 
     /**
      * @param mixed $value
+     *
      * @return Carbon
      */
     protected function asDateTime($value)
     {
         if (is_array($value)) {
-            return Carbon::parse(array_get($value, 'date'))
-                ->timezone(array_get($value, 'timezone'));
+            return Carbon::parse(Arr::get($value, 'date'), Arr::get($value, 'timezone'))
+                ->setTimezone(config('app.timezone'));
         }
 
-        return $this->baseAsDateTime($value);
+        return $this->baseAsDateTime($value)->setTimezone(config('app.timezone'));
     }
 
     /**
      * @param string $name
+     *
      * @return mixed|null
      */
     public function __get(string $name)
@@ -63,6 +66,7 @@ trait HasAttributes
      * Get a relationship value from a method.
      *
      * @param  string $method
+     *
      * @return mixed
      *
      * @throws \LogicException
@@ -71,7 +75,7 @@ trait HasAttributes
     {
         $relation = $this->$method();
 
-        return tap($relation, function ($results) use ($method) {
+        return tap($relation, function($results) use ($method) {
             $this->setRelation($method, $results);
         });
     }

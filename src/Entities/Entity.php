@@ -3,9 +3,10 @@
 namespace Xingo\IDServer\Entities;
 
 use ArrayAccess;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Database\Eloquent\Concerns\HasRelationships;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use JsonSerializable;
 use Xingo\IDServer\Concerns\Entity\HasAttributes;
@@ -18,7 +19,7 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
         HasTimestamps,
         JsonArraySupport;
 
-    protected const DATE_FORMAT = 'Y-m-d H:i:s';
+    protected const DATE_FORMAT = DateTime::RFC3339_EXTENDED;
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -41,7 +42,14 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
      */
     protected function getDateFormat()
     {
-        return $this->dateFormat ?: static::DATE_FORMAT;
+        $format = $this->dateFormat ?: static::DATE_FORMAT;
+
+        // https://bugs.php.net/bug.php?id=75577
+        if (version_compare(PHP_VERSION, '7.3.0-dev', '<')) {
+            $format = str_replace('.v', '.u', $format);
+        }
+
+        return $format;
     }
 
     /**

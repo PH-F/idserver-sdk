@@ -1,41 +1,43 @@
 {
-    "name": "xingo/idserver-sdk",
-    "description": "The Xingo IDServer SDK in PHP",
-    "homepage": "http://github.com/PH-F/idserver-sdk",
-    "authors": [
-        {
-            "name": "Junior Grossi",
-            "email": "juniorgro@gmail.com",
-            "homepage": "http://jgrossi.com"
-        }
-    ],
-    "require": {
-        "php": ">=7.0.0",
-        "illuminate/support": "~5.4",
-        "guzzlehttp/guzzle": "^6.3"
-    },
-    "require-dev": {
-        "orchestra/testbench": "3.4.*",
-        "phpunit/phpunit": "~6.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Xingo\\IDServer\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Xingo\\IDServer\\ServiceProvider"
-            ]
-        }
+  "name": "xingo/idserver-sdk",
+  "description": "The Xingo IDServer SDK in PHP",
+  "homepage": "http://github.com/PH-F/idserver-sdk",
+  "authors": [
+    {
+      "name": "Junior Grossi",
+      "email": "juniorgro@gmail.com",
+      "homepage": "http://jgrossi.com"
     }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "illuminate/support": "~5.4",
+    "guzzlehttp/guzzle": "^6.3",
+    "ext-intl": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "orchestra/testbench": "3.4.*",
+    "phpunit/phpunit": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Xingo\\IDServer\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Xingo\\IDServer\\ServiceProvider"
+      ]
+    }
+  }
 }
