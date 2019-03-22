@@ -75,7 +75,7 @@ trait HasAttributes
     {
         $relation = $this->$method();
 
-        return tap($relation, function($results) use ($method) {
+        return tap($relation, function ($results) use ($method) {
             $this->setRelation($method, $results);
         });
     }
