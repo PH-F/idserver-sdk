@@ -2,12 +2,8 @@
 
 namespace Xingo\IDServer\Entities;
 
-use Xingo\IDServer\Entities\Traits\Discountable;
-
 class VatRule extends Entity
 {
-    use Discountable;
-
     /**
      * @var array
      */
