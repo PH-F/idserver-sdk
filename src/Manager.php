@@ -55,6 +55,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\VatRate vatRates(int | Entities\VatRate $resource)
  * @property Resources\VatRule vatRules
  * @method Resources\VatRule vatRules(int | Entities\VatRule $resource)
+ * @property Resources\VatRule vatCustomerGroups
+ * @method Resources\VatRule vatCustomerGroups(int | Entities\vatCustomerGroup $resource)
  */
 class Manager
 {
