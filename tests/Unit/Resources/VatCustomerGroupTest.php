@@ -36,21 +36,4 @@ class VatCustomerGroupTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_gets_just_one_vat_customer_group_by_id()
-    {
-        $this->mockResponse(200, ['data' => ['id' => 1]]);
-
-        $customerGroup = $this->manager->vatCustomerGroups(1)->get();
-
-        $this->assertInstanceOf(Entities\VatCustomerGroup::class, $customerGroup);
-        $this->assertInstanceOf(IdsEntity::class, $customerGroup);
-        $this->assertEquals(1, $customerGroup->id);
-
-        $this->assertRequest(function (Request $request) {
-            $this->assertEquals('GET', $request->getMethod());
-            $this->assertEquals('vat/customer-groups/1', $request->getUri()->getPath());
-        });
-    }
 }
