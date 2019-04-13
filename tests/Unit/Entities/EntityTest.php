@@ -56,7 +56,7 @@ class EntityTest extends TestCase
     /** @test */
     public function it_converts_string_date_fields_to_carbon_instances()
     {
-        $this->mockResponse(200, ['data' => ['created_at' => '2017-12-31 01:02:03']]);
+        $this->mockResponse(200, ['data' => ['created_at' => '2017-12-31T23:05:13.000000Z']]);
 
         $user = $this->manager->users(1)->get();
 
