@@ -14,6 +14,6 @@ trait FilteredQuery
     {
         $organizer = $this->organizerQuery();
 
-        return array_merge($filters, $organizer);
+        return array_merge(['filter' => $filters], $organizer);
     }
 }

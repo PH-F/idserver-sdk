@@ -184,7 +184,7 @@ class UserTest extends TestCase
             $this->assertEquals('users', $request->getUri()->getPath());
 
             $this->assertEquals(
-                'first_name=foo&username=bar&page=1&per_page=10',
+                'filter%5Bfirst_name%5D=foo&filter%5Busername%5D=bar&page=1&per_page=10',
                 $request->getUri()->getQuery()
             );
         });

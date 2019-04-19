@@ -115,7 +115,7 @@ class TagTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('tags', $request->getUri()->getPath());
-            $this->assertEquals('name=fo&page=1&per_page=10', $request->getUri()->getQuery());
+            $this->assertEquals('filter%5Bname%5D=fo&page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
 }
