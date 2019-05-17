@@ -48,7 +48,7 @@ abstract class Resource
     protected $multipart = false;
 
     /**
-     * @param Client $client
+     * @param  Client  $client
      */
     public function __construct(Client $client)
     {
@@ -57,7 +57,8 @@ abstract class Resource
     }
 
     /**
-     * @param array $param
+     * @param  array  $param
+     *
      * @return Resource|$this
      */
     public function __invoke(array $param): Resource
@@ -74,7 +75,8 @@ abstract class Resource
     }
 
     /**
-     * @param Resource $class
+     * @param  Resource  $class
+     *
      * @return string
      */
     public function toShortName(Resource $class = null): string
@@ -101,9 +103,10 @@ abstract class Resource
     }
 
     /**
-     * @param string $method
-     * @param string $uri
-     * @param array $params
+     * @param  string  $method
+     * @param  string  $uri
+     * @param  array  $params
+     *
      * @return Response
      * @throws \Xingo\IDServer\Exceptions\AuthorizationException
      * @throws \Xingo\IDServer\Exceptions\ForbiddenException
@@ -128,9 +131,10 @@ abstract class Resource
     /**
      * Make a call and stream the response.
      *
-     * @param string $method
-     * @param string $uri
-     * @param array $params
+     * @param  string  $method
+     * @param  string  $uri
+     * @param  array  $params
+     *
      * @return \Psr\Http\Message\StreamInterface
      * @throws \Xingo\IDServer\Exceptions\AuthorizationException
      * @throws \Xingo\IDServer\Exceptions\ForbiddenException
@@ -149,7 +153,8 @@ abstract class Resource
     }
 
     /**
-     * @param array $params
+     * @param  array  $params
+     *
      * @return array
      */
     protected function convertNullToEmptyString(array $params): array
@@ -166,8 +171,9 @@ abstract class Resource
     }
 
     /**
-     * @param array $attributes
-     * @param string|null $class
+     * @param  array  $attributes
+     * @param  string|null  $class
+     *
      * @return IdsEntity
      */
     protected function makeEntity(array $attributes = null, ?string $class = null): IdsEntity
@@ -179,9 +185,10 @@ abstract class Resource
     }
 
     /**
-     * @param array|null $data
-     * @param array|null $meta
-     * @param null|string $class
+     * @param  array|null  $data
+     * @param  array|null  $meta
+     * @param  null|string  $class
+     *
      * @return Collection
      */
     protected function makeCollection(
@@ -208,10 +215,11 @@ abstract class Resource
     /**
      * Make the Guzzle request.
      *
-     * @param string $method
-     * @param string $uri
-     * @param array $params
-     * @param array $options
+     * @param  string  $method
+     * @param  string  $uri
+     * @param  array  $params
+     * @param  array  $options
+     *
      * @return mixed|\Psr\Http\Message\ResponseInterface
      * @throws \Xingo\IDServer\Exceptions\AuthorizationException
      * @throws \Xingo\IDServer\Exceptions\ForbiddenException
@@ -243,9 +251,10 @@ abstract class Resource
      * That can be multipart or form-data request. When form-data request we will
      * send the parameters as query string in case of GET request.
      *
-     * @param string $method
-     * @param array $params
-     * @param array $options
+     * @param  string  $method
+     * @param  array  $params
+     * @param  array  $options
+     *
      * @return array
      */
     private function getRequestOptions($method, array $params, array $options): array
@@ -258,17 +267,38 @@ abstract class Resource
 
         $parameter = strtoupper($method) === 'GET' ? 'query' : 'form_params';
 
-        return array_merge([
+        $options = array_merge([
             $parameter => $this->convertNullToEmptyString($params),
         ], $options);
+
+        return $this->attachIncludesToRequest($options);
+    }
+
+    /**
+     * Attach include parameters to the request.
+     * This is for including relationships.
+     *
+     * @param  array  $options
+     *
+     * @return array
+     */
+    protected function attachIncludesToRequest(array $options)
+    {
+        if ($this->includes === null) {
+            return $options;
+        }
+
+        $options['query']['include'] = $this->includes;
+        return $options;
     }
 
     /**
      * Format the array payload to a multipart content array. This will require some special
      * formatting of the attribute names and values.
      *
-     * @param array $params
-     * @param string|null $parent
+     * @param  array  $params
+     * @param  string|null  $parent
+     *
      * @return array
      */
     private function formatPayloadToMultipartContent(array $params, string $parent = null)
@@ -276,7 +306,7 @@ abstract class Resource
         $data = [];
         foreach ($params as $key => $value) {
             if ($parent !== null) {
-                $key = $parent . "[$key]";
+                $key = $parent."[$key]";
             }
 
             if (is_array($value)) {
@@ -296,8 +326,9 @@ abstract class Resource
      * set the key as name and value as contents. In case a file is
      * passed we automatically open a stream to that file.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
+     *
      * @return array
      */
     private function formatAttributeToMultipartContent($key, $value)
@@ -318,7 +349,8 @@ abstract class Resource
     /**
      * Retrieve the custom entity class.
      *
-     * @param null|string $class
+     * @param  null|string  $class
+     *
      * @return null|string
      */
     protected function retrieveEntityClass(?string $class)

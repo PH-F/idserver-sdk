@@ -52,6 +52,43 @@ class ResourceTest extends TestCase
     }
 
     /** @test */
+    public function it_can_send_include_parameter()
+    {
+        $this->mockResponse();
+
+        $this->manager->subscriptions(1)->include('foo.bar,baz')->get();
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('subscriptions/1?include=foo.bar%2Cbaz', $request->getRequestTarget());
+        });
+    }
+
+    /** @test */
+    public function it_can_send_include_parameter_with_other_get_parameters()
+    {
+        $this->mockResponse();
+
+        $this->manager->subscriptions->include('foo.bar,baz')->all();
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('subscriptions?page=1&per_page=10&include=foo.bar%2Cbaz', $request->getRequestTarget());
+        });
+    }
+
+    /** @test */
+    public function it_can_send_include_parameter_with_post_parameters()
+    {
+        $this->mockResponse();
+
+        $this->manager->subscriptions->include(['foo.bar', 'baz'])->create(['name' => 'foo']);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('subscriptions?include=foo.bar%2Cbaz', $request->getRequestTarget());
+            $this->assertEquals('name=foo', (string) $request->getBody());
+        });
+    }
+
+    /** @test */
     public function it_can_make_an_entity_instance()
     {
         $user = app()->make(Resources\User::class);
@@ -131,7 +168,7 @@ class ResourceTest extends TestCase
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
 
-        $user = (object)['id' => 1];
+        $user = (object) ['id' => 1];
         $resource = $manager->users($user);
 
         $this->assertEquals($resource->id, 1);
@@ -239,7 +276,7 @@ class ResourceTest extends TestCase
             ->all();
 
         $this->assertRequest(function (Request $request) {
-            $query = 'page=2&per_page=1&sort=' . urlencode('+foo');
+            $query = 'page=2&per_page=1&sort='.urlencode('+foo');
             $this->assertEquals($query, $request->getUri()->getQuery());
         });
 
@@ -296,7 +333,7 @@ class MultipartResource extends Resource
     {
         return $this->asMultipart()
             ->call('PATCH', "foo/{$this->id}/bar", [
-                'file' => new UploadedFile(TEST_PATH . 'Stub/image.png', 'foo.png'),
+                'file' => new UploadedFile(TEST_PATH.'Stub/image.png', 'foo.png'),
                 'key' => 'my-value',
                 'user' => [
                     'first_name' => 'John',

@@ -15,13 +15,19 @@ trait ResourceOrganizer
     protected $perPage = 10;
 
     /**
+     * @var int
+     */
+    protected $includes = null;
+
+    /**
      * @var string
      */
     protected $sortBy;
 
     /**
-     * @param int|boolean $page
-     * @param int $perPage
+     * @param  int|boolean  $page
+     * @param  int  $perPage
+     *
      * @return $this
      */
     public function paginate($page = 1, int $perPage = 10)
@@ -39,8 +45,9 @@ trait ResourceOrganizer
     }
 
     /**
-     * @param string|array $field
-     * @param string $order
+     * @param  string|array  $field
+     * @param  string  $order
+     *
      * @return $this
      */
     public function sort($field, string $order = 'asc')
@@ -50,6 +57,24 @@ trait ResourceOrganizer
         }
 
         $this->sortBy = $this->parseSortQuery($field);
+
+        return $this;
+    }
+
+    /**
+     * Include the given relationships.
+     *
+     * @param array|string $relationships
+     *
+     * @return $this
+     */
+    public function include($relationships)
+    {
+        if (is_array($relationships)) {
+            $relationships = implode(',', $relationships);
+        }
+
+        $this->includes = $relationships;
 
         return $this;
     }
@@ -68,7 +93,8 @@ trait ResourceOrganizer
     }
 
     /**
-     * @param array $fields
+     * @param  array  $fields
+     *
      * @return string
      */
     protected function parseSortQuery(array $fields): string
