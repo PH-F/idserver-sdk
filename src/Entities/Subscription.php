@@ -14,7 +14,7 @@ class Subscription extends Entity
         'store' => Entities\Store::class,
         'user' => Entities\User::class,
         'plan' => Entities\Plan::class,
-        'parent' => Entities\Subscription::class,
+        'original' => Entities\Subscription::class,
         'order' => Entities\Order::class,
     ];
 
