@@ -22,7 +22,7 @@ class EntityTest extends TestCase
                 'store' => ['id' => 2],
                 'user' => ['id' => 3],
                 'plan' => ['id' => 4],
-                'parent' => ['id' => 5],
+                'original' => ['id' => 5],
                 'order' => ['id' => 6],
             ],
         ]);
@@ -46,8 +46,8 @@ class EntityTest extends TestCase
         $this->assertInstanceOf(Entities\Plan::class, $subscription->plan);
         $this->assertEquals(4, $subscription->plan->id);
 
-        $this->assertInstanceOf(Entities\Subscription::class, $subscription->parent);
-        $this->assertEquals(5, $subscription->parent->id);
+        $this->assertInstanceOf(Entities\Subscription::class, $subscription->original);
+        $this->assertEquals(5, $subscription->original->id);
 
         $this->assertInstanceOf(Entities\Order::class, $subscription->order);
         $this->assertEquals(6, $subscription->order->id);
