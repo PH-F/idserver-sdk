@@ -87,6 +87,8 @@ class PriceableTest extends TestCase
             'USD' => 9500,
         ];
 
+        app()->setLocale('nl_NL');
+
         $this->assertEquals([
             'EUR' => '€ 70,00',
             'USD' => 'US$ 95,00',
