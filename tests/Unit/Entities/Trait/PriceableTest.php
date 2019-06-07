@@ -77,4 +77,19 @@ class PriceableTest extends TestCase
         $this->assertEquals('NOK', $item->getCurrencySymbol('NOK'));
         $this->assertEquals('€', $item->getCurrencySymbol('EUR'));
     }
+
+    /** @test */
+    public function it_can_map_to_prices_for_humans()
+    {
+        $item = new Item();
+        $prices = [
+            'EUR' => 7000,
+            'USD' => 9500,
+        ];
+
+        $this->assertEquals([
+            'EUR' => '€ 70,00',
+            'USD' => 'US$ 95,00',
+        ], $item->mapToPriceForHumans($prices));
+    }
 }
