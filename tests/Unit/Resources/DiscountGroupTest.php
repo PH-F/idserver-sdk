@@ -154,7 +154,7 @@ class DiscountGroupTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('discounts', $request->getUri()->getPath());
-            $this->assertEquals('discount_group_id=1', $request->getUri()->getQuery());
+            $this->assertEquals('filter%5Bdiscount_group_id%5D=1&page=1&per_page=-1', $request->getUri()->getQuery());
         });
     }
 }

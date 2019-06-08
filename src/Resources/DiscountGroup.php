@@ -31,9 +31,9 @@ class DiscountGroup extends Resource
      */
     public function discounts()
     {
-        $this->call('GET', 'discounts', [
-            'discount_group_id' => $this->id,
-        ]);
+        $query = $this->paginate(false)->queryString(['discount_group_id' => $this->id]);
+
+        $this->call('GET', 'discounts', $query);
 
         return $this->makeCollection(null, null, Entities\Discount::class);
     }
