@@ -22,7 +22,9 @@ class Plan extends Resource
      */
     public function sendList(array $filters = [])
     {
-        $body = $this->stream('GET', "plans/$this->id/send-list", $filters);
+        $body = $this->stream('GET', "plans/$this->id/send-list", [
+            'filter' => $filters,
+        ]);
 
         return function () use ($body) {
             while (!$body->eof()) {

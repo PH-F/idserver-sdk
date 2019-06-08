@@ -16,7 +16,8 @@ class Grid extends Resource
     /**
      * Get all grid data.
      *
-     * @param array $filters
+     * @param  array  $filters
+     *
      * @return \Illuminate\Support\Collection
      */
     public function data(array $filters = []): \Illuminate\Support\Collection
@@ -32,12 +33,15 @@ class Grid extends Resource
      * Export the grid data. This can be with or without filters.
      * It will return a callback printing the output of the stream.
      *
-     * @param array $filters
+     * @param  array  $filters
+     *
      * @return \Closure
      */
     public function export(array $filters = [])
     {
-        $body = $this->stream('GET', "grids/$this->id/export", $filters);
+        $body = $this->stream('GET', "grids/$this->id/export", [
+            'filter' => $filters,
+        ]);
 
         return function () use ($body) {
             while (!$body->eof()) {

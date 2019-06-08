@@ -99,7 +99,7 @@ class GridTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('grids/users/export', $request->getUri()->getPath());
-            $this->assertEquals('name=Foo', $request->getUri()->getQuery());
+            $this->assertEquals('filter%5Bname%5D=Foo', $request->getUri()->getQuery());
         });
     }
 }

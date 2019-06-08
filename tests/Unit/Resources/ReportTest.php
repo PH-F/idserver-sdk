@@ -35,7 +35,7 @@ class ReportTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('reports/funnel-subscriptions', $request->getUri()->getPath());
-            $this->assertEquals('date=2018-01-01', $request->getUri()->getQuery());
+            $this->assertEquals('filter%5Bdate%5D=2018-01-01', $request->getUri()->getQuery());
         });
     }
 }
