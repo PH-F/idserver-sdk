@@ -31,6 +31,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\MailLayout mailLayouts(int | array | Entities\User ...$resource)
  * @property Resources\DiscountGroup discountGroups
  * @method Resources\DiscountGroup discountGroups(int | array | Entities\User ...$resource)
+ * @property Resources\Plan plans
+ * @method Resources\Plan plans(int | array | Entities\Plan ...$resource)
  * @property Resources\Discount discounts
  * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants

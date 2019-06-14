@@ -7,6 +7,7 @@ use Tests\Concerns;
 use Tests\TestCase;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
+use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Resources\Collection;
 
 class PlanTest extends TestCase
@@ -146,5 +147,33 @@ class PlanTest extends TestCase
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('plans/1/send-list', $request->getUri()->getPath());
         });
+    }
+
+    /** @test */
+    public function it_can_list_active_users_for_plan()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['id' => 1],
+                ['id' => 2],
+            ],
+        ]);
+
+        $collection = $this->manager->plans(1)->users([
+            'date' => '2018-01-01',
+        ]);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('plans/1/users', $request->getUri()->getPath());
+            $this->assertEquals('filter%5Bdate%5D=2018-01-01&page=1&per_page=10', $request->getUri()->getQuery());
+        });
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Subscription::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals(1, $collection->first()->id);
+        $this->assertEquals(2, $collection->last()->id);
     }
 }
