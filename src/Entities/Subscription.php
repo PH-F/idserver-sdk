@@ -24,6 +24,7 @@ class Subscription extends Entity
     protected $dates = [
         'start_date',
         'end_date',
+        'extended_end_date',
     ];
 
     /**
@@ -37,6 +38,6 @@ class Subscription extends Entity
             return false;
         }
 
-        return Carbon::now()->between($this->start_date, $this->end_date);
+        return Carbon::now()->between($this->start_date, $this->extended_end_date ?? $this->end_date);
     }
 }
