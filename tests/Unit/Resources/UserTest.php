@@ -14,6 +14,7 @@ use Xingo\IDServer\Entities\Address;
 use Xingo\IDServer\Entities\Communication;
 use Xingo\IDServer\Entities\Import;
 use Xingo\IDServer\Entities\Note;
+use Xingo\IDServer\Entities\Order;
 use Xingo\IDServer\Entities\Subscription;
 use Xingo\IDServer\Entities\User;
 use Xingo\IDServer\Events\TokenRefreshed;
@@ -535,6 +536,26 @@ class UserTest extends TestCase
         $this->assertInstanceOf(IdsEntity::class, $collection->first());
         $this->assertEquals('foo.create', $collection->first()->name);
         $this->assertEquals('bar.update', $collection->last()->name);
+    }
+
+    /** @test */
+    public function it_can_list_user_orders()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['number' => '100001'],
+                ['number' => '100004'],
+            ],
+        ]);
+
+        $collection = $this->manager->users(1)->orders();
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(Order::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals('100001', $collection->first()->number);
+        $this->assertEquals('100004', $collection->last()->number);
     }
 
     /** @test */
