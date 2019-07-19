@@ -143,11 +143,14 @@ class User extends Resource
     }
 
     /**
+     * @param array $filters
      * @return Collection
      */
-    public function orders(): Collection
+    public function orders(array $filters = []): Collection
     {
-        $this->call('GET', "users/$this->id/orders");
+        $query = $this->queryString($filters);
+
+        $this->call('GET', "users/$this->id/orders", $query);
 
         return $this->makeCollection(null, null, Entities\Order::class);
     }
