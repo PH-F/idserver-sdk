@@ -30,7 +30,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(201, [
             'data' => $data = [
-                'id' => 1,
+                'id'    => 1,
                 'email' => 'john@example.com',
             ],
         ]);
@@ -69,7 +69,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(200, [
             'data' => [
-                'id' => 1,
+                'id'    => 1,
                 'email' => 'john@example.com',
             ],
         ]);
@@ -175,7 +175,7 @@ class UserTest extends TestCase
         $users = $this->manager->users
             ->all($filters = [
                 'first_name' => 'foo',
-                'username' => 'bar',
+                'username'   => 'bar',
             ]);
 
         $this->assertCount(1, $users);
@@ -196,8 +196,8 @@ class UserTest extends TestCase
     {
         $this->mockResponse(200, [
             'data' => [
-                'id' => 1,
-                'email' => 'john@example.com',
+                'id'         => 1,
+                'email'      => 'john@example.com',
                 'first_name' => 'foo',
             ],
         ]);
@@ -223,7 +223,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(422, [
             'message' => 'The given data is invalid',
-            'errors' => [
+            'errors'  => [
                 'email' => [
                     'The email field is required.'
                 ],
@@ -243,7 +243,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(200, [
             'token' => 'foo',
-            'data' => ['email' => 'john@example.com'],
+            'data'  => ['email' => 'john@example.com'],
         ]);
 
         /** @var User $user */
@@ -257,7 +257,7 @@ class UserTest extends TestCase
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('auth/login', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
-                'email' => 'john@example.com',
+                'email'    => 'john@example.com',
                 'password' => 'secret',
                 'remember' => false,
             ]), $request->getBody());
@@ -269,7 +269,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(200, [
             'token' => 'foo',
-            'data' => ['email' => 'john@example.com'],
+            'data'  => ['email' => 'john@example.com'],
         ]);
 
         /** @var User $user */
@@ -283,7 +283,7 @@ class UserTest extends TestCase
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('auth/login', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
-                'email' => 'john@example.com',
+                'email'    => 'john@example.com',
                 'password' => 'secret',
                 'remember' => true,
             ]), $request->getBody());
@@ -302,11 +302,11 @@ class UserTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals(http_build_query([
-                'email' => 'john@example.com',
+                'email'    => 'john@example.com',
                 'password' => 'secret',
                 'remember' => false,
-                'claims' => ['foo' => true],
-            ]), (string)$request->getBody());
+                'claims'   => ['foo' => true],
+            ]), (string) $request->getBody());
         });
     }
 
@@ -327,7 +327,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(200, [
             'token' => 'foo',
-            'data' => [],
+            'data'  => [],
         ]);
 
         /** @var User $user */
@@ -355,6 +355,29 @@ class UserTest extends TestCase
         });
 
         Event::assertDispatched(TokenRefreshed::class);
+    }
+
+    /** @test */
+    public function it_will_only_attempt_once_to_refresh_the_token()
+    {
+        Event::fake();
+
+        $this->mockResponse(401, ["token_expired"]); // Initial trigger
+        $this->mockResponse(401, ["token_expired"]); // Response from the refresh action
+
+        try {
+            $this->manager->users->all();
+        } catch (Exceptions\AuthorizationException $e) {
+            $this->assertTrue(true);
+        }
+
+        $this->assertCount(2, $this->history);
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('PUT', $request->getMethod());
+            $this->assertEquals('auth/refresh', $request->getUri()->getPath());
+        });
+
+        Event::assertNotDispatched(TokenRefreshed::class);
     }
 
     /** @test */
@@ -437,7 +460,7 @@ class UserTest extends TestCase
         ]);
 
         $user = $this->manager->users(1)
-            ->changeAvatar(new UploadedFile(TEST_PATH . 'Stub/image.png', 'foo.png'));
+            ->changeAvatar(new UploadedFile(TEST_PATH.'Stub/image.png', 'foo.png'));
 
         $this->assertInstanceOf(IdsEntity::class, $user);
         $this->assertEquals(1, $user->id);
@@ -563,7 +586,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(201, [
             'user_id' => 2,
-            'token' => 'temporary-token',
+            'token'   => 'temporary-token',
         ]);
 
         $token = $this->manager->users->forgotPassword(2);
@@ -582,7 +605,7 @@ class UserTest extends TestCase
     {
         $this->mockResponse(201, [
             'user_id' => 2,
-            'token' => 'temporary-token',
+            'token'   => 'temporary-token',
         ]);
 
         $token = $this->manager->users->forgotPassword('foo@bar.com');
@@ -594,7 +617,7 @@ class UserTest extends TestCase
             $this->assertEquals('users/forgot-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
                 'email' => 'foo@bar.com',
-            ]), (string)$request->getBody());
+            ]), (string) $request->getBody());
         });
     }
 
@@ -612,8 +635,8 @@ class UserTest extends TestCase
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/update-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
-                'id' => 10,
-                'token' => 'fake-token',
+                'id'       => 10,
+                'token'    => 'fake-token',
                 'password' => 'abc123',
             ]), $request->getBody());
         });
@@ -633,8 +656,8 @@ class UserTest extends TestCase
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/update-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
-                'email' => 'foo@bar.com',
-                'token' => 'fake-token',
+                'email'    => 'foo@bar.com',
+                'token'    => 'fake-token',
                 'password' => 'abc123',
             ]), $request->getBody());
         });
@@ -671,7 +694,7 @@ class UserTest extends TestCase
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PATCH', $request->getMethod());
             $this->assertEquals('users/4/reset-password', $request->getUri()->getPath());
-            $this->assertEmpty((string)$request->getBody());
+            $this->assertEmpty((string) $request->getBody());
         });
     }
 
@@ -704,7 +727,7 @@ class UserTest extends TestCase
             ],
         ]);
 
-        $import = $this->manager->users->import(['file' => new UploadedFile(TEST_PATH . 'Stub/image.png', 'import.xlsx')]);
+        $import = $this->manager->users->import(['file' => new UploadedFile(TEST_PATH.'Stub/image.png', 'import.xlsx')]);
 
         $this->assertInstanceOf(Import::class, $import);
         $this->assertEquals(1, $import->id);
