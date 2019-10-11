@@ -250,6 +250,19 @@ class User extends Resource
     }
 
     /**
+     * @param array $filters
+     * @return Collection
+     */
+    public function reportConfigurations(array $filters = []): Collection
+    {
+        $query = $this->queryString($filters);
+
+        $this->call('GET', "users/$this->id/reports", $query);
+
+        return $this->makeCollection(null, null, Entities\User\Report::class);
+    }
+
+    /**
      * @param int|string $identifier
      *
      * @return string

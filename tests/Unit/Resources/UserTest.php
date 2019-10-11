@@ -739,4 +739,32 @@ class UserTest extends TestCase
             $this->assertContains('Content-Disposition: form-data; name="file"; filename="import.xlsx', $contents = $request->getBody()->getContents());
         });
     }
+
+    /** @test */
+    public function it_can_get_report_configurations_for_user()
+    {
+        $this->mockResponse(200, [
+            'data' => [
+                ['interval' => 'daily'],
+                ['interval' => 'monthly'],
+            ],
+        ]);
+
+        $collection = $this->manager->users(1)->reportConfigurations([
+            'type' => 'subscription',
+        ]);
+
+        $this->assertInstanceOf(Collection::class, $collection);
+        $this->assertCount(2, $collection);
+        $this->assertInstanceOf(User\Report::class, $collection->first());
+        $this->assertInstanceOf(IdsEntity::class, $collection->first());
+        $this->assertEquals('daily', $collection->first()->interval);
+        $this->assertEquals('monthly', $collection->last()->interval);
+
+        $this->assertRequest(function (Request $request) {
+            $this->assertEquals('GET', $request->getMethod());
+            $this->assertEquals('users/1/reports', $request->getUri()->getPath());
+            $this->assertEquals('filter%5Btype%5D=subscription&page=1&per_page=10', $request->getUri()->getQuery());
+        });
+    }
 }
