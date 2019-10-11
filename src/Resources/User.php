@@ -263,6 +263,19 @@ class User extends Resource
     }
 
     /**
+     * @param  string  $type
+     * @param  array  $data
+     *
+     * @return Collection
+     */
+    public function updateReportConfigurations(string $type, array $data = []): Collection
+    {
+        $this->call('PUT', "users/$this->id/reports/".$type, $data);
+
+        return $this->makeCollection(null, null, Entities\User\Report::class);
+    }
+
+    /**
      * @param int|string $identifier
      *
      * @return string
