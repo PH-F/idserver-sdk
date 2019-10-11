@@ -778,7 +778,7 @@ class UserTest extends TestCase
             ],
         ]);
 
-        $collection = $this->manager->users(1)->updateReportConfigurations('subscriptions', [
+        $collection = $this->manager->users(1)->updateReportConfigurations('subscription', [
             'intervals' => [
                 'daily',
                 'monthly'
@@ -794,7 +794,7 @@ class UserTest extends TestCase
 
         $this->assertRequest(function (Request $request) {
             $this->assertEquals('PUT', $request->getMethod());
-            $this->assertEquals('users/1/reports/subscriptions', $request->getUri()->getPath());
+            $this->assertEquals('users/1/reports/subscription', $request->getUri()->getPath());
             $this->assertEquals('intervals%5B0%5D=daily&intervals%5B1%5D=monthly', (string) $request->getBody());
         });
     }
