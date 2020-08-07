@@ -2,9 +2,24 @@
 
 namespace Xingo\IDServer\Resources;
 
-use Xingo\IDServer\Concerns\ResourceBlueprint;
+use Illuminate\Support\Collection;
+use Xingo\IDServer\Concerns\FilteredQuery;
 
 class Floating extends Resource
 {
-    use ResourceBlueprint;
+    use FilteredQuery;
+
+    /**
+     * @param  array  $filters
+     *
+     * @return Collection
+     */
+    public function store(array $filters = []): Collection
+    {
+        $this->call('POST', "floatings/$this->id", [
+            'filter' => $filters
+        ]);
+
+        return $this->makeCollection();
+    }
 }
