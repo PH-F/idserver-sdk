@@ -17,6 +17,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Company companies(int | Entities\Company $resource)
  * @property Resources\Reseller resellers
  * @method Resources\Reseller resellers(int | Entities\Reseller $resource)
+ * @property Resources\Report reports
+ * @method Resources\Report reports(int | Entities\Report $resource)
  * @property Resources\Role roles
  * @method Resources\Role roles(int | Entities\Role $resource)
  * @property Resources\Subscription subscriptions
@@ -43,6 +45,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Country countries(int $resource)
  * @property Resources\Currency currencies
  * @method Resources\Currency currencies(int $resource)
+ * @property Resources\Floating floatings
+ * @method Resources\Floating floatings(int $resource)
  * @property Resources\Duration durations
  * @method Resources\Duration durations(int | Entities\Duration $resource)
  * @property Resources\ShippingCost shippingCosts
