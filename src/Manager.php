@@ -33,10 +33,14 @@ use Xingo\IDServer\Resources;
  * @method Resources\MailLayout mailLayouts(int | array | Entities\User ...$resource)
  * @property Resources\DiscountGroup discountGroups
  * @method Resources\DiscountGroup discountGroups(int | array | Entities\User ...$resource)
+ * @property Resources\EffortGroup effortGroups
+ * @method Resources\EffortGroup effortGroups(int | array | Entities\User ...$resource)
  * @property Resources\Plan plans
  * @method Resources\Plan plans(int | array | Entities\Plan ...$resource)
  * @property Resources\Discount discounts
  * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
+ * @property Resources\Effort efforts
+ * @method Resources\Effort efforts(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
  * @property Resources\Import imports
@@ -47,8 +51,6 @@ use Xingo\IDServer\Resources;
  * @method Resources\Currency currencies(int $resource)
  * @property Resources\Floating floatings
  * @method Resources\Floating floatings(int $resource)
- * @property Resources\FloatingSetting floatingSettings
- * @method Resources\FloatingSetting floatingSettings(int $resource)
  * @property Resources\Duration durations
  * @method Resources\Duration durations(int | Entities\Duration $resource)
  * @property Resources\ShippingCost shippingCosts
