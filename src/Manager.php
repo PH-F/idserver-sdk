@@ -47,6 +47,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Currency currencies(int $resource)
  * @property Resources\Floating floatings
  * @method Resources\Floating floatings(int $resource)
+ * @property Resources\FloatingSetting floatingsSettings
+ * @method Resources\FloatingSetting floatingsSettings(int $resource)
  * @property Resources\Duration durations
  * @method Resources\Duration durations(int | Entities\Duration $resource)
  * @property Resources\ShippingCost shippingCosts
