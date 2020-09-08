@@ -9,5 +9,4 @@ use Xingo\IDServer\Entities\Traits\Priceable;
 
 class Invoice extends Entity
 {
-
 }
