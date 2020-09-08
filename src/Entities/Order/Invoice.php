@@ -6,5 +6,4 @@ use Xingo\IDServer\Entities\Entity;
 
 class Invoice extends Entity
 {
-
 }
