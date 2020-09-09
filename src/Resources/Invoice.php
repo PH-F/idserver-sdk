@@ -27,5 +27,4 @@ class Invoice extends Resource
     {
         return 'invoices';
     }
-
 }
