@@ -43,6 +43,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Effort efforts(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
+ * @property Resources\Download downloads
+ * @method Resources\Download downloads(int $resource)
  * @property Resources\Import imports
  * @method Resources\Import imports(int $resource)
  * @property Resources\Country countries
