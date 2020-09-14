@@ -81,7 +81,7 @@ trait ResourceBlueprint
      *
      * @return \Closure
      */
-    public function download(): IdsEntity
+    public function downloadStream(): IdsEntity
     {
         $body = $this->stream('GET', $this->getResourceName() . "/$this->id");
 
