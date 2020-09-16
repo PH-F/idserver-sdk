@@ -31,4 +31,13 @@ class Transaction extends Resource
         return $this->makeEntity(null, Entities\Transaction::class);
     }
 
+    /**
+     * @return IdsEntity
+     */
+    public function get(): IdsEntity
+    {
+        $this->call('GET', "transactions/$this->id");
+
+        return $this->makeEntity();
+    }
 }
