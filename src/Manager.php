@@ -47,6 +47,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Download downloads(int $resource)
  * @property Resources\Import imports
  * @method Resources\Import imports(int $resource)
+ * @property Resources\Transaction transactions
+ * @method Resources\Transaction transactions(int $resource)
  * @property Resources\Country countries
  * @method Resources\Country countries(int $resource)
  * @property Resources\Currency currencies
