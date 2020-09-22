@@ -13,7 +13,7 @@ class Invoice extends Resource
 {
     use ResourceBlueprint {
         all as protected;
-        get as protected;
+//        get as protected;
         create as protected;
         delete as protected;
     }
