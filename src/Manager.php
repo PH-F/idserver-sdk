@@ -45,6 +45,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
  * @property Resources\Download downloads
  * @method Resources\Download downloads(int $resource)
+ * @property Resources\Invoice invoices
+ * @method Resources\Invoice invoices(int $resource)
  * @property Resources\Import imports
  * @method Resources\Import imports(int $resource)
  * @property Resources\Transaction transactions

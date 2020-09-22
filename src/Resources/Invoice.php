@@ -27,4 +27,19 @@ class Invoice extends Resource
     {
         return 'invoices';
     }
+
+    /**
+     * @param array $filters
+     * @return Collection
+     */
+    public function open(array $filters = []): Collection
+    {
+        $query = $this->queryString($filters);
+
+        $uri = 'invoices/open';
+
+        $this->call('GET', $uri, $query);
+
+        return $this->makeCollection();
+    }
 }
