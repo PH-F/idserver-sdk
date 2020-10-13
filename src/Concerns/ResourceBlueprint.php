@@ -75,4 +75,20 @@ trait ResourceBlueprint
     {
         return strtolower(Str::plural(class_basename(static::class)));
     }
+
+    /**
+     * Download the data.
+     *
+     * @return \Closure
+     */
+    public function downloadStream()
+    {
+        $body = $this->stream('GET', $this->getResourceName() . "/$this->id");
+
+        return function () use ($body) {
+            while (!$body->eof()) {
+                echo $body->read(1024);
+            }
+        };
+    }
 }
