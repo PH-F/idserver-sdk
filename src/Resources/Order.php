@@ -28,6 +28,32 @@ class Order extends Resource
     }
 
     /**
+     * Create a new invoice after the previous credit.
+     *
+     * @param array $attributes
+     * @return \Xingo\IDServer\Contracts\IdsEntity
+     */
+    public function reinvoice(array $attributes)
+    {
+        $this->call('PATCH', "orders/$this->id/reinvoice", $attributes);
+
+        return $this->makeEntity();
+    }
+
+    /**
+     * Create a new invoice after the previous credit.
+     *
+     * @param array $attributes
+     * @return \Xingo\IDServer\Contracts\IdsEntity
+     */
+    public function credit(array $attributes)
+    {
+        $this->call('PATCH', "orders/$this->id/credit", $attributes);
+
+        return $this->makeEntity();
+    }
+
+    /**
      * Get price information for a subscription.
      *
      * @param array $attributes

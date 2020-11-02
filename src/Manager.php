@@ -17,6 +17,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Company companies(int | Entities\Company $resource)
  * @property Resources\Reseller resellers
  * @method Resources\Reseller resellers(int | Entities\Reseller $resource)
+ * @property Resources\Report reports
+ * @method Resources\Report reports(int | Entities\Report $resource)
  * @property Resources\Role roles
  * @method Resources\Role roles(int | Entities\Role $resource)
  * @property Resources\Subscription subscriptions
@@ -31,18 +33,32 @@ use Xingo\IDServer\Resources;
  * @method Resources\MailLayout mailLayouts(int | array | Entities\User ...$resource)
  * @property Resources\DiscountGroup discountGroups
  * @method Resources\DiscountGroup discountGroups(int | array | Entities\User ...$resource)
+ * @property Resources\EffortGroup effortGroups
+ * @method Resources\EffortGroup effortGroups(int | array | Entities\User ...$resource)
  * @property Resources\Plan plans
  * @method Resources\Plan plans(int | array | Entities\Plan ...$resource)
  * @property Resources\Discount discounts
  * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
+ * @property Resources\Effort efforts
+ * @method Resources\Effort efforts(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
+ * @property Resources\Download downloads
+ * @method Resources\Download downloads(int $resource)
+ * @property Resources\Invoice invoices
+ * @method Resources\Invoice invoices(int $resource)
  * @property Resources\Import imports
  * @method Resources\Import imports(int $resource)
+ * @property Resources\Transaction transactions
+ * @method Resources\Transaction transactions(int $resource)
+ * @property Resources\TransactionItem transactionItems
+ * @method Resources\TransactionItem transactionItems(int $resource)
  * @property Resources\Country countries
  * @method Resources\Country countries(int $resource)
  * @property Resources\Currency currencies
  * @method Resources\Currency currencies(int $resource)
+ * @property Resources\Floating floatings
+ * @method Resources\Floating floatings(int $resource)
  * @property Resources\Duration durations
  * @method Resources\Duration durations(int | Entities\Duration $resource)
  * @property Resources\ShippingCost shippingCosts
