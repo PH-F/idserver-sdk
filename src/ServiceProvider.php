@@ -147,7 +147,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function getAuthenticationType($type = null): string
     {
-        return $type ?: app()->runningInConsole() && !app()->runningUnitTests() ?
+        return ($type ?: app()->runningInConsole() && !app()->runningUnitTests()) ?
             'cli' : 'web';
     }
 }
