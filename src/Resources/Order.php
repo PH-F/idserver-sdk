@@ -75,6 +75,7 @@ class Order extends Resource
      */
     public function recover(string $orderNr, string $invoiceNr, string $email)
     {
+        \Log::debug(__FUNCTION__);
         $this->call('GET', "orders-recover/$orderNr/$invoiceNr/$email");
 
         return $this->makeEntity();
