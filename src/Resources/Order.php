@@ -86,6 +86,4 @@ class Order extends Resource
 
         return $this->makeEntity();
     }
-
-
 }
