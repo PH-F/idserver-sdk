@@ -61,17 +61,23 @@ class Order extends Resource
      */
     public function price(array $attributes)
     {
+        \Log::debug(__FUNCTION__);
         $this->call('GET', "orders-price", $attributes);
 
         return $this->makeEntity(null, Price::class);
     }
 
-
     /**
-     * Find order bij ordernr and invoicenr
-     *
-     * @param array $attributes
-     * @return Order
+     * @param string $orderNr
+     * @param string $invoiceNr
+     * @param string $email
+     * @return \Xingo\IDServer\Contracts\IdsEntity
+     * @throws \Xingo\IDServer\Exceptions\AuthorizationException
+     * @throws \Xingo\IDServer\Exceptions\ForbiddenException
+     * @throws \Xingo\IDServer\Exceptions\NotFoundException
+     * @throws \Xingo\IDServer\Exceptions\ServerException
+     * @throws \Xingo\IDServer\Exceptions\ThrottleException
+     * @throws \Xingo\IDServer\Exceptions\ValidationException
      */
     public function recover(string $orderNr, string $invoiceNr, string $email)
     {
