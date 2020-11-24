@@ -73,9 +73,9 @@ class Order extends Resource
      * @param array $attributes
      * @return Order
      */
-    public function find(string $orderNr, string $invoiceNr )
+    public function recover(string $orderNr, string $invoiceNr, string $email)
     {
-        $this->call('GET', "orders-find/$orderNr/$invoiceNr");
+        $this->call('GET', "orders-recover/$orderNr/$invoiceNr/$email");
 
         return $this->makeEntity();
     }
