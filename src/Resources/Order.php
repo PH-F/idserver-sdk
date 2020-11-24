@@ -73,12 +73,10 @@ class Order extends Resource
      * @param array $attributes
      * @return Order
      */
-    public function find(string $orderNr, string $invoiceNr )
+    public function find(string $orderNr, string $invoiceNr)
     {
         $this->call('GET', "orders-find/$orderNr/$invoiceNr");
 
         return $this->makeEntity();
     }
-
-
 }
