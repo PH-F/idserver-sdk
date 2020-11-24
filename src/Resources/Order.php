@@ -61,7 +61,6 @@ class Order extends Resource
      */
     public function price(array $attributes)
     {
-        \Log::debug(__FUNCTION__);
         $this->call('GET', "orders-price", $attributes);
 
         return $this->makeEntity(null, Price::class);
@@ -81,7 +80,6 @@ class Order extends Resource
      */
     public function recover(string $orderNr, string $invoiceNr, string $email)
     {
-        \Log::debug(__FUNCTION__);
         $this->call('GET', "orders-recover/$orderNr/$invoiceNr/$email");
 
         return $this->makeEntity();
