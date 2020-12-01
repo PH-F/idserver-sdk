@@ -34,6 +34,20 @@ class Subscription extends Entity
      */
     public function isActive()
     {
+        if (!in_array($this->status, ['active', 'expiring', 'non-renewable'])) {
+            return false;
+        }
+
+        return Carbon::now()->between($this->start_date, $this->extended_end_date ?? $this->end_date);
+    }
+
+    /**
+     * Show the address types as badges.
+     *
+     * @return string
+     */
+    public function isRenewable()
+    {
         if (!in_array($this->status, ['active', 'expiring'])) {
             return false;
         }
