@@ -4,6 +4,7 @@ namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
+use Xingo\IDServer\Entities;
 
 /**
  * Class Dunning
