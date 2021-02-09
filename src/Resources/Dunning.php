@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Illuminate\Support\Collection;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
@@ -39,9 +40,11 @@ class Dunning extends Resource
         return $this->makeEntity(null, Entities\Dunning::class);
     }
 
-    public function reminder()
+    public function reminder(array $filters = []): Collection
     {
-        $this->call('PUT', 'dunnings/reminder');
+        $this->call('PUT', 'dunnings/reminder', [
+            'filter' => $filters
+        ]);
 
         return $this->makeCollection();
     }
