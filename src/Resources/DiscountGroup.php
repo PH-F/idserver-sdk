@@ -37,4 +37,18 @@ class DiscountGroup extends Resource
 
         return $this->makeCollection(null, null, Entities\Discount::class);
     }
+
+    /**
+     * Get discounts for the user.
+     *
+     * @return Collection
+     */
+    public function inclusions()
+    {
+        $query = $this->paginate(false)->queryString(['discount_group_id' => $this->id]);
+
+        $this->call('GET', 'discounts-inclusions', $query);
+
+        return $this->makeCollection(null, null, Entities\DiscountInclusion::class);
+    }
 }
