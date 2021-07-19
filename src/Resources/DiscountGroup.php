@@ -37,5 +37,4 @@ class DiscountGroup extends Resource
 
         return $this->makeCollection(null, null, Entities\Discount::class);
     }
-
 }
