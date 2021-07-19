@@ -84,4 +84,23 @@ class Order extends Resource
 
         return $this->makeEntity();
     }
+
+    /**
+     * @param string $orderNr
+     * @param string $invoiceNr
+     * @param string $email
+     * @return \Xingo\IDServer\Contracts\IdsEntity
+     * @throws \Xingo\IDServer\Exceptions\AuthorizationException
+     * @throws \Xingo\IDServer\Exceptions\ForbiddenException
+     * @throws \Xingo\IDServer\Exceptions\NotFoundException
+     * @throws \Xingo\IDServer\Exceptions\ServerException
+     * @throws \Xingo\IDServer\Exceptions\ThrottleException
+     * @throws \Xingo\IDServer\Exceptions\ValidationException
+     */
+    public function recurring()
+    {
+        $this->call('GET', "recurring");
+
+        return $this->makeEntity();
+    }
 }
