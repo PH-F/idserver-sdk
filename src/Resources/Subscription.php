@@ -38,7 +38,6 @@ class Subscription extends Resource
     }
 
     /**
-     * @param array $attributes
      * @return IdsEntity
      */
     public function stopRecurring(): IdsEntity
