@@ -42,7 +42,7 @@ class Subscription extends Resource
      */
     public function stopRecurring(): IdsEntity
     {
-        $this->call('PUT', "/subscriptions/$this->id/recurring/stop/");
+        $this->call('PUT', "subscriptions/$this->id/recurring/stop");
 
         return $this->makeEntity(null, Entities\Order::class);
     }
