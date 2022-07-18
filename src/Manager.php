@@ -41,6 +41,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\Discount discounts(int | array | Entities\User ...$resource)
  * @property Resources\Effort efforts
  * @method Resources\Effort efforts(int | array | Entities\User ...$resource)
+ * @property Resources\Asset assets
+ * @method Resources\Asset assets(int | array | Entities\User ...$resource)
  * @property Resources\Variant variants
  * @method Resources\Variant variants(int | array | Entities\User ...$resource)
  * @property Resources\Download downloads
