@@ -45,7 +45,7 @@ class Subscription extends Resource
     {
         $this->call('PUT', "subscriptions/$this->id/cancel", $attributes);
 
-        return $this->makeCollection();
+        return $this->makeEntity(null, Entities\Order::class);
     }
 
     /**
