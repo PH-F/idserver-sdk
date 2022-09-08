@@ -38,6 +38,17 @@ class Subscription extends Resource
     }
 
     /**
+     * @param array $attributes
+     * @return IdsEntity
+     */
+    public function cancel(array $attributes): IdsEntity
+    {
+        $this->call('PUT', "subscriptions/$this->id/cancel", $attributes);
+
+        return $this->makeCollection();
+    }
+
+    /**
      * @return IdsEntity
      */
     public function stopRecurring(): IdsEntity
