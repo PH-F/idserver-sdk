@@ -22,9 +22,9 @@ class Coupon extends Resource
      *
      * @return IdsEntity
      */
-    public function import($data): IdsEntity
+    public function import($data, $promotionId): IdsEntity
     {
-        $this->asMultipart()->call('POST', 'coupons/import', $data);
+        $this->asMultipart()->call('POST', 'coupons/import/' . $promotionId, $data);
 
         return $this->makeEntity(null, Entities\Coupon::class);
     }
