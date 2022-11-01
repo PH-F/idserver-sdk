@@ -28,5 +28,4 @@ class Coupon extends Resource
 
         return $this->makeEntity(null, Entities\Coupon::class);
     }
-
 }
