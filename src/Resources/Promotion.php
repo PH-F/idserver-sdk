@@ -4,7 +4,6 @@ namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 
-
 /**
  * Class Promotion
  *
