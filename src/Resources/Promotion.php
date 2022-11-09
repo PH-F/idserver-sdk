@@ -4,6 +4,7 @@ namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 
+
 /**
  * Class Promotion
  *
@@ -16,7 +17,7 @@ class Promotion extends Resource
     /**
      * Get users that have the plan. By default it will send the users that currently have
      * an active subscription. It's also possible to send a date for which you want to
-     * have the results.
+     * have the results.`
      *
      * @param  array  $filters
      *
@@ -28,6 +29,6 @@ class Promotion extends Resource
 
         $this->call('GET', "promotions/loyalty", $query);
 
-        return $this->makeCollection(null, null, Entities\Promotion::class);
+        return $this->makeCollection(null, null, \Xingo\IDServer\Entities\Promotion::class);
     }
 }
