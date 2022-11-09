@@ -73,6 +73,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\OrderItem orderItems(int $resource)
  * @property Resources\VatProductGroup vatProductGroups
  * @method Resources\VatProductGroup vatProductGroups(int | Entities\VatProductGroup $resource)
+ * @property Resources\Promotion promotion
+ * @method Resources\Promotion promotion(int | Entities\Promotion $resource)
  * @property Resources\VatRate vatRates
  * @method Resources\VatRate vatRates(int | Entities\VatRate $resource)
  * @property Resources\VatRule vatRules
