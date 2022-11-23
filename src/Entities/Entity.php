@@ -19,7 +19,7 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
         HasTimestamps,
         JsonArraySupport;
 
-    protected const DATE_FORMAT = DateTime::RFC3339_EXTENDED;
+    protected const DATE_FORMAT = "Y-m-d\\TH:i:s.uP";
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
