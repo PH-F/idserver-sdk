@@ -34,7 +34,7 @@ class Subscription extends Entity
      */
     public function isActive()
     {
-        if (!in_array(str_replace('limited_','',$this->status), ['active', 'expiring', 'non-renewable'])) {
+        if (!in_array(str_replace('limited_', '', $this->status), ['active', 'expiring', 'non-renewable'])) {
             return false;
         }
 
