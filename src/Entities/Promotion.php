@@ -17,5 +17,6 @@ class Promotion extends Entity
      */
     protected $relationships = [
         'plan_durations' => Duration::class,
+        'stores'         => Store::class,
     ];
 }
