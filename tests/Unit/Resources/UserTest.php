@@ -46,7 +46,7 @@ class UserTest extends TestCase
         $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users', $request->getUri()->getPath());
-            $this->assertEquals(http_build_query($data), $request->getBody());
+            $this->assertEquals(http_build_query($data), (string) $request->getBody());
         });
     }
 
@@ -214,7 +214,7 @@ class UserTest extends TestCase
         $this->assertRequest(function (Request $request) use ($data) {
             $this->assertEquals('PUT', $request->getMethod());
             $this->assertEquals('users/1', $request->getUri()->getPath());
-            $this->assertEquals(http_build_query($data), $request->getBody());
+            $this->assertEquals(http_build_query($data), (string) $request->getBody());
         });
     }
 
@@ -260,7 +260,8 @@ class UserTest extends TestCase
                 'email'    => 'john@example.com',
                 'password' => 'secret',
                 'remember' => false,
-            ]), $request->getBody());
+                'ip'       => '',
+            ]), (string) $request->getBody());
         });
     }
 
@@ -286,7 +287,8 @@ class UserTest extends TestCase
                 'email'    => 'john@example.com',
                 'password' => 'secret',
                 'remember' => true,
-            ]), $request->getBody());
+                'ip'       => '',
+            ]), (string) $request->getBody());
         });
     }
 
@@ -306,6 +308,7 @@ class UserTest extends TestCase
                 'password' => 'secret',
                 'remember' => false,
                 'claims'   => ['foo' => true],
+                'ip'       => '',
             ]), (string) $request->getBody());
         });
     }
@@ -638,7 +641,7 @@ class UserTest extends TestCase
                 'id'       => 10,
                 'token'    => 'fake-token',
                 'password' => 'abc123',
-            ]), $request->getBody());
+            ]), (string) $request->getBody());
         });
     }
 
@@ -659,7 +662,7 @@ class UserTest extends TestCase
                 'email'    => 'foo@bar.com',
                 'token'    => 'fake-token',
                 'password' => 'abc123',
-            ]), $request->getBody());
+            ]), (string) $request->getBody());
         });
     }
 
@@ -678,7 +681,7 @@ class UserTest extends TestCase
             $this->assertEquals('users/4/change-password', $request->getUri()->getPath());
             $this->assertEquals(http_build_query([
                 'password' => 'secret',
-            ]), $request->getBody());
+            ]), (string) $request->getBody());
         });
     }
 
