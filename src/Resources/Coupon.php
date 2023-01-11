@@ -38,7 +38,7 @@ class Coupon extends Resource
      */
     public function code(string $code)
     {
-        $this->call('GET', "coupon/code/" . $code);
+        $this->call('GET', "coupons/code/" . $code);
 
         return $this->makeEntity();
     }
