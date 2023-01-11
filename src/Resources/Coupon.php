@@ -28,4 +28,18 @@ class Coupon extends Resource
 
         return $this->makeEntity(null, Entities\Coupon::class);
     }
+
+    /**
+     * get coupon and promotion by code via the idserver.
+     *
+     * @param $code
+     *
+     * @return IdsEntity
+     */
+    public function code(string $code)
+    {
+        $this->call('GET', "coupon/code/" . $code);
+
+        return $this->makeEntity();
+    }
 }
