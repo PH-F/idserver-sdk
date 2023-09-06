@@ -17,4 +17,11 @@ class VatRule extends Resource
     {
         return 'vat/rules';
     }
+
+    public function check($vatNumber)
+    {
+        $this->call('GET', "vies/$vatNumber");
+
+        return $this->makeEntity();
+    }
 }

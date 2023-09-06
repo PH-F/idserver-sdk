@@ -25,10 +25,4 @@ class Communication extends Resource
         return $this->makeEntity();
     }
 
-    public function check($vatNumber)
-    {
-        $this->call('GET', "vies/$vatNumber");
-
-        return $this->makeEntity();
-    }
 }
