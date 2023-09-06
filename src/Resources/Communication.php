@@ -24,5 +24,4 @@ class Communication extends Resource
 
         return $this->makeEntity();
     }
-
 }
