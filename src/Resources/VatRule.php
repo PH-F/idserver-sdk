@@ -22,6 +22,7 @@ class VatRule extends Resource
     {
         $this->call('GET', "vies/$vatNumber");
 
-        return $this->makeEntity();
+//        return (new Collection($this->contents['data']));
+        return $this->contents['data'];
     }
 }
