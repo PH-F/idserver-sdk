@@ -57,6 +57,8 @@ use Xingo\IDServer\Resources;
  * @method Resources\TransactionItem transactionItems(int $resource)
  * @property Resources\Country countries
  * @method Resources\Country countries(int $resource)
+ * @property Resources\Coupon coupons
+ * @method Resources\Coupon coupons(int $resource)
  * @property Resources\Currency currencies
  * @method Resources\Currency currencies(int $resource)
  * @property Resources\Floating floatings
