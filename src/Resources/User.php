@@ -299,4 +299,14 @@ class User extends Resource
 
         return $validator->passes() ? 'email' : 'id';
     }
+
+
+    public function check($email)
+    {
+        $this->call('GET', "membership/$email");
+
+//        return (new Collection($this->contents['data']));
+
+        return $this->contents['data'];
+    }
 }
