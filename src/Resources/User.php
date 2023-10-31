@@ -248,6 +248,20 @@ class User extends Resource
     }
 
     /**
+     * Retreives Shopify multipass token.
+     *
+     * @return string
+     */
+    public function multipass(string $ip = null): bool
+    {
+        $this->call('POST', "users/{$this->id}/multipass", [
+            'ip' => $ip
+        ]);
+
+        return $this->contents['token'];
+    }
+
+    /**
      * Import users into the idserver.
      *
      * @param $data
