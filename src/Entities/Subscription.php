@@ -24,6 +24,7 @@ class Subscription extends Entity
     protected $dates = [
         'start_date',
         'end_date',
+        'cancelled_at',
         'extended_end_date',
     ];
 
