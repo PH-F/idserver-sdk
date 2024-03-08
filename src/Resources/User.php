@@ -69,6 +69,16 @@ class User extends Resource
     }
 
     /**
+     * @return Collection
+     */
+    public function getByEmail($email)
+    {
+        $this->call('GET', "users/?filter[email]=$email");
+
+        return $this->contents['data'];
+    }
+
+    /**
      * @param string $token
      *
      * @return IdsEntity
@@ -314,12 +324,14 @@ class User extends Resource
         return $validator->passes() ? 'email' : 'id';
     }
 
-
+    /**
+     * @param string $email
+     *
+     * @return array
+     */
     public function check($email)
     {
         $this->call('GET', "membership/$email");
-
-//        return (new Collection($this->contents['data']));
 
         return $this->contents['data'];
     }
