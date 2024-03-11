@@ -69,11 +69,13 @@ class User extends Resource
     }
 
     /**
-     * @return Collection
+     * @return bool
      */
-    public function getByEmail($email)
+    public function exists($email)
     {
-        $this->call('GET', "users/?filter[email]=$email");
+        $this->call('POST', "users/exists", [
+            'email' => $email,
+        ]);
 
         return $this->contents['data'];
     }
