@@ -73,9 +73,9 @@ class User extends Resource
      */
     public function exists($email)
     {
-        $this->call('get', "users/exists/" . $email);
+        $this->call('GET', "users/exists/" . $email);
 
-        return $this->contents['data'];
+        return $this->contents['exists'];
     }
 
     /**
