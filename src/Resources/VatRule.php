@@ -26,4 +26,13 @@ class VatRule extends Resource
 
         return $this->contents['data'];
     }
+
+    /**
+     * get all vat rules
+     */
+    public function rates($rateId = null)
+    {
+        $this->call('GET', "vat/rates/list/" . $rateId);
+        return $this->contents['data'];
+    }
 }
