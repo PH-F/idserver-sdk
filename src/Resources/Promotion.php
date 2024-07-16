@@ -2,6 +2,7 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Xingo\IDServer\Entities;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 
 /**
@@ -29,5 +30,21 @@ class Promotion extends Resource
         $this->call('GET', "promotions/loyalty", $query);
 
         return $this->makeCollection(null, null, \Xingo\IDServer\Entities\Promotion::class);
+    }
+
+    /**
+     * Creates promotional code and links it to a user.
+     *
+     * @param integer $promotionId
+     * @return void
+     */
+    public function redeem(int $promotionId)
+    {
+        $this->call('GET', "promotions/" . $promotionId . "/redeem");
+
+        return $this->makeEntity(
+            $this->contents['data'],
+            Entities\Coupon::class
+        );
     }
 }
