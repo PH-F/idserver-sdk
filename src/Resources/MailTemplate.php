@@ -28,4 +28,15 @@ class MailTemplate extends Resource
     {
         return Template::class;
     }
+
+    /**
+     * @param array $attributes
+     * @return IdsEntity
+     */
+    public function test(array $attributes = []): bool
+    {
+        $response = $this->call('POST', $this->getResourceName() . "/$this->id/test", $attributes);
+
+        return 204 === $response->getStatusCode();
+    }
 }
