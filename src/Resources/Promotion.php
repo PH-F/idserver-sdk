@@ -29,7 +29,7 @@ class Promotion extends Resource
 
         $this->call('GET', "promotions/loyalty", $query);
 
-        return $this->makeCollection(null, null, \Xingo\IDServer\Entities\Promotion::class);``
+        return $this->makeCollection(null, null, \Xingo\IDServer\Entities\Promotion::class);
     }
 
     public function referToFriend(array $filters = [])
