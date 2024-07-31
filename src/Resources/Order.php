@@ -28,6 +28,19 @@ class Order extends Resource
     }
 
     /**
+     * Update setMandate information of the order.
+     *
+     * @param array $attributes
+     * @return \Xingo\IDServer\Contracts\IdsEntity
+     */
+    public function setMandate(array $attributes)
+    {
+        $this->call('PATCH', "orders/$this->id/setMandate", $attributes);
+
+        return $this->makeEntity();
+    }
+
+    /**
      * Create a new invoice after the previous credit.
      *
      * @param array $attributes
