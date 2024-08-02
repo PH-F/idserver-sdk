@@ -335,4 +335,16 @@ class User extends Resource
 
         return $this->contents['data'];
     }
+
+    /**
+     * @param array $options [grace_period, per_page, page, limited, trial]
+     *
+     * @return array
+     */
+    public function members($options = [])
+    {
+        $this->call('GET', "users/members", $options);
+
+        return $this->contents;
+    }
 }
