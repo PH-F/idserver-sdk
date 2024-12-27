@@ -25,6 +25,11 @@ trait ResourceOrganizer
     protected $sortBy;
 
     /**
+     * @var array|string|null
+     */
+    protected $relations;
+
+    /**
      * @param  int|boolean  $page
      * @param  int  $perPage
      *
@@ -103,5 +108,17 @@ trait ResourceOrganizer
             return 'desc' === strtolower($order) ?
                 "-$field" : "+$field";
         })->implode(',');
+    }
+
+    public function withRelations($relations = []): static
+    {
+        $this->relations = $relations;
+        return $this;
+    }
+
+    public function withoutRelations(): static
+    {
+        $this->relations = '';
+        return $this;
     }
 }
