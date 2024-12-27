@@ -110,13 +110,13 @@ trait ResourceOrganizer
         })->implode(',');
     }
 
-    public function withRelations($relations = []): static
+    public function withRelations($relations = [])
     {
         $this->relations = $relations;
         return $this;
     }
 
-    public function withoutRelations(): static
+    public function withoutRelations()
     {
         $this->relations = '';
         return $this;
