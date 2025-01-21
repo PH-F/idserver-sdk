@@ -64,7 +64,7 @@ class Tag extends Resource
         }
 
         $class = get_class($object);
-        if(strstr($class, 'Publisher')) {
+        if (strstr($class, 'Publisher')) {
             return 'publishers';
         }
 
