@@ -14,7 +14,7 @@ class User extends Entity
     /**
      * @var array
      */
-    protected $dates = ['date_of_birth'];
+    protected $dates = ['date_of_birth', 'member_since', 'full_member_since'];
 
     /**
      * @var array

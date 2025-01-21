@@ -117,6 +117,10 @@ abstract class Resource
      */
     protected function call(string $method, string $uri, array $params = []): Response
     {
+        if ($this->relations !== null) {
+            $params['_relations_'] = $this->relations;
+        }
+
         $response = $this->request($method, $uri, $params, [
             'headers' => [
                 'Accept' => 'application/json',
