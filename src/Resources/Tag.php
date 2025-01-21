@@ -16,7 +16,9 @@ class Tag extends Resource
      */
     public function create($tags)
     {
-        $this->call('POST', "users/{$this->parent->id}/tags", [
+        $entity = $this->getEntityType($this->parent);
+
+        $this->call('POST', "{$entity}/{$this->parent->id}/tags", [
             'tags' => $tags,
         ]);
 
@@ -29,7 +31,9 @@ class Tag extends Resource
      */
     public function update($tags)
     {
-        $this->call('PUT', "users/{$this->parent->id}/tags", [
+        $entity = $this->getEntityType($this->parent);
+
+        $this->call('PUT', "{$entity}/{$this->parent->id}/tags", [
             'tags' => $tags,
         ]);
 
@@ -42,12 +46,23 @@ class Tag extends Resource
      */
     public function all(array $filters = []): Collection
     {
+        $entity = $this->getEntityType($this->parent);
+
         $query = $this->queryString($filters);
 
-        $uri = is_null($this->parent) ? 'tags' : "users/{$this->parent->id}/tags";
+        $uri = is_null($this->parent) ? 'tags' : "{$entity}/{$this->parent->id}/tags";
 
         $this->call('GET', $uri, $query);
 
         return $this->makeCollection();
+    }
+
+    private function getEntityType($object)
+    {
+        $class = get_class($object);
+        if(strstr($class, 'Publisher')) {
+            return 'publishers';
+        }
+        return 'users';
     }
 }
