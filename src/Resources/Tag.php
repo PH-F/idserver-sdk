@@ -60,7 +60,7 @@ class Tag extends Resource
     private function getEntityType($object)
     {
         $class = get_class($object);
-        if(strstr($class, 'Publisher')) {
+        if (strstr($class, 'Publisher')) {
             return 'publishers';
         }
         return 'users';
