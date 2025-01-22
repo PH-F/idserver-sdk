@@ -3,6 +3,7 @@
 namespace Xingo\IDServer\Resources;
 
 use Xingo\IDServer\Concerns\ResourceBlueprint;
+use Xingo\IDServer\Entities;
 use Xingo\IDServer\Entities\Order\Price;
 
 /**
@@ -115,5 +116,17 @@ class Order extends Resource
         $this->call('GET', "recurring");
 
         return $this->makeEntity();
+    }
+
+    /**
+     * Get notes for the order.
+     *
+     * @return Collection
+     */
+    public function notes()
+    {
+        $this->call('GET', "orders/$this->id/notes");
+
+        return $this->makeCollection(null, null, Entities\Note::class);
     }
 }
