@@ -37,4 +37,10 @@ class DiscountGroup extends Resource
 
         return $this->makeCollection(null, null, Entities\Discount::class);
     }
+
+    public function recipients()
+    {
+        $this->call('GET', $this->getResourceName . "/recipients/" . $this->id);
+        return $this->makeCollection(null, null, Entities\DiscountGroup::class);
+    }
 }
