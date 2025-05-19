@@ -22,7 +22,13 @@ class VatRule extends Resource
     {
         $this->call('GET', "vies/$vatNumber");
 
-//        return (new Collection($this->contents['data']));
+        return $this->contents['data'];
+    }
+
+
+    public function checkApi($vatNumber)
+    {
+        $this->call('GET', "vies-api/$vatNumber");
 
         return $this->contents['data'];
     }
