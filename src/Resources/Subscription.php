@@ -2,6 +2,8 @@
 
 namespace Xingo\IDServer\Resources;
 
+use Illuminate\Support\Collection;
+use Xingo\IDServer\Concerns\FilteredQuery;
 use Xingo\IDServer\Concerns\ResourceBlueprint;
 use Xingo\IDServer\Contracts\IdsEntity;
 use Xingo\IDServer\Entities;
@@ -14,6 +16,7 @@ use Xingo\IDServer\Entities;
 class Subscription extends Resource
 {
     use ResourceBlueprint;
+    use FilteredQuery;
 
     /**
      * @param int $days
@@ -56,5 +59,20 @@ class Subscription extends Resource
         $this->call('PUT', "subscriptions/$this->id/recurring/stop");
 
         return $this->makeEntity(null, Entities\Order::class);
+    }
+
+
+    /**
+     * @param  array  $filters
+     *
+     * @return Collection
+     */
+    public function pdf(array $filters = []): Collection
+    {
+        $this->call('POST', "subscriptions/pdf", [
+            'filter' => $filters
+        ]);
+
+        return $this->makeCollection();
     }
 }
