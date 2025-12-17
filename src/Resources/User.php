@@ -69,9 +69,19 @@ class User extends Resource
     }
 
     /**
-     * @return bool
+     * @return IdsEntity
      */
-    public function exists($email)
+    public function getByEmail(string $email): IdsEntity
+    {
+        $this->call('GET', "users/email/" . $email);
+
+        return $this->makeEntity();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function exists(string $email)
     {
         $this->call('GET', "users/exists/" . $email);
 
@@ -344,6 +354,18 @@ class User extends Resource
     public function members($options = [])
     {
         $this->call('GET', "users/members", $options);
+
+        return $this->contents;
+    }
+
+    /**
+     * @param array $products [customer, products]
+     *
+     * @return array
+     */
+    public function addMembershipProducts(array $data)
+    {
+        $this->call('POST', "users/memberships", $data);
 
         return $this->contents;
     }
