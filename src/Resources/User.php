@@ -369,4 +369,16 @@ class User extends Resource
 
         return $this->contents;
     }
+
+    public function createAndAssignSubscription($email, $abbreviation, $subscriptionId)
+    {
+        $data = [
+            'email' => $email,
+            'abbreviation' => $abbreviation,
+            'subscription_id' => $subscriptionId,
+        ];
+        $this->call('POST', "users/createAndAssignSubscription", $data);
+
+        return $this->contents;
+    }
 }
