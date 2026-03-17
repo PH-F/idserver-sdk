@@ -29,9 +29,9 @@ class EffortGroup extends Resource
      *
      * @return Collection
      */
-    public function efforts()
+    public function efforts($floatable = null)
     {
-        $query = $this->paginate(false)->queryString(['effort_group_id' => $this->id]);
+        $query = $this->paginate(false)->queryString(['effort_group_id' => $this->id, 'floatable' => $floatable]);
 
         $this->call('GET', 'efforts', $query);
 
