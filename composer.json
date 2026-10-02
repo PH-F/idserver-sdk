@@ -15,8 +15,8 @@
   ],
   "require": {
     "php": ">=7.1.0",
-    "illuminate/support": "~5.4|~6|~7|~8",
-    "guzzlehttp/guzzle": "^6.3|~7",
+    "illuminate/support": "~5.4|~6|~7|~8|~9|~10|~11|~12|~13",
+    "guzzlehttp/guzzle": "^6.3|~7|~8",
     "ext-intl": "*",
     "ext-json": "*"
   },
