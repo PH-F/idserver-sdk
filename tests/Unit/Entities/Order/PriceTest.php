@@ -7,8 +7,7 @@ use Xingo\IDServer\Entities\Order\Price;
 
 class PriceTest extends TestCase
 {
-    /** @test */
-    public function it_can_get_the_duration_discount()
+    public function test_can_get_the_duration_discount()
     {
         app()->setLocale('nl_NL');
 

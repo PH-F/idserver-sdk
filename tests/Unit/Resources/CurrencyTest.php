@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources\Collection;
 class CurrencyTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_currencies()
+    public function test_gets_all_currencies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,9 +33,7 @@ class CurrencyTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_paginates_all_currencies()
+    public function test_paginates_all_currencies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -66,9 +62,7 @@ class CurrencyTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_gets_just_one_currency_by_id()
+    public function test_gets_just_one_currency_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -83,9 +77,7 @@ class CurrencyTest extends TestCase
             $this->assertEquals('currencies/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_currency()
+    public function test_sends_correct_parameters_when_creating_a_new_currency()
     {
         $this->mockResponse(201);
 
@@ -99,9 +91,7 @@ class CurrencyTest extends TestCase
             $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -118,9 +108,7 @@ class CurrencyTest extends TestCase
             $this->assertEquals('name=Acme+Currency', $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
 

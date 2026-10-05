@@ -13,9 +13,7 @@ use Xingo\IDServer\Resources\Collection;
 class PlanTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_plans()
+    public function test_gets_all_plans()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -36,9 +34,7 @@ class PlanTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_paginates_all_plans()
+    public function test_paginates_all_plans()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -67,9 +63,7 @@ class PlanTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_gets_just_one_plan_by_id()
+    public function test_gets_just_one_plan_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -84,9 +78,7 @@ class PlanTest extends TestCase
             $this->assertEquals('plans/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_plan()
+    public function test_sends_correct_parameters_when_creating_a_new_plan()
     {
         $this->mockResponse(201);
 
@@ -100,9 +92,7 @@ class PlanTest extends TestCase
             $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -119,9 +109,7 @@ class PlanTest extends TestCase
             $this->assertEquals('name=Acme+Plan', $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
 
@@ -133,9 +121,7 @@ class PlanTest extends TestCase
             $this->assertEquals('plans/2', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_export_the_send_list_of_a_plan()
+    public function test_can_export_the_send_list_of_a_plan()
     {
         $this->mockResponse();
 
@@ -148,9 +134,7 @@ class PlanTest extends TestCase
             $this->assertEquals('plans/1/send-list', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_list_active_users_for_plan()
+    public function test_can_list_active_users_for_plan()
     {
         $this->mockResponse(200, [
             'data' => [

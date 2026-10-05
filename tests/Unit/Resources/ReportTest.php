@@ -13,9 +13,7 @@ use Xingo\IDServer\Resources;
 class ReportTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_can_get_a_certain_report()
+    public function test_can_get_a_certain_report()
     {
         $this->mockResponse(200, [
             'data' => [

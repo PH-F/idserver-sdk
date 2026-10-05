@@ -9,9 +9,7 @@ use Tests\TestCase;
 class PaymentMethodTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_can_list_all_tags()
+    public function test_can_list_all_tags()
     {
         $this->mockResponse(201, [
             'data' => [

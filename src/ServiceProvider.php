@@ -96,10 +96,12 @@ class ServiceProvider extends BaseServiceProvider
     {
         $type = $this->getAuthenticationType($type);
 
-        return [
+        return array_filter([
             'X-XINGO-Client-ID' => config("idserver.store.$type.client_id"),
             'X-XINGO-Secret-Key' => config("idserver.store.$type.secret_key"),
-        ];
+        ], static function ($value) {
+            return $value !== null;
+        });
     }
 
     /**

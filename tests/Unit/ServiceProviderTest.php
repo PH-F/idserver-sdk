@@ -7,8 +7,7 @@ use Tests\TestCase;
 
 class ServiceProviderTest extends TestCase
 {
-    /** @test */
-    public function it_sets_the_cli_mode_for_jobs_in_sync()
+    public function test_sets_the_cli_mode_for_jobs_in_sync()
     {
         $this->assertEquals('web', ids()->client()->getConfig('headers')['X-XINGO-Client-ID']);
         $this->assertEquals('web', ids()->client()->getConfig('headers')['X-XINGO-Secret-Key']);
@@ -18,9 +17,7 @@ class ServiceProviderTest extends TestCase
         $this->assertEquals('web', ids()->client()->getConfig('headers')['X-XINGO-Client-ID']);
         $this->assertEquals('web', ids()->client()->getConfig('headers')['X-XINGO-Secret-Key']);
     }
-
-    /** @test */
-    public function it_sets_the_locale_header_based_on_the_app_locale()
+    public function test_sets_the_locale_header_based_on_the_app_locale()
     {
         app()->setLocale('ab_CD');
 

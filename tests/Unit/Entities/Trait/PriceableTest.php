@@ -8,8 +8,7 @@ use Xingo\IDServer\Entities\Plan;
 
 class PriceableTest extends TestCase
 {
-    /** @test */
-    public function it_can_show_the_price_for_humans_based_on_locale()
+    public function test_can_show_the_price_for_humans_based_on_locale()
     {
         $item = new Item();
 
@@ -21,9 +20,7 @@ class PriceableTest extends TestCase
         $this->assertEquals('€75.00', $item->asPriceForHumans(7500, 'EUR'));
         $this->assertEquals('$75.00', $item->asPriceForHumans(7500, 'USD'));
     }
-
-    /** @test */
-    public function it_can_show_the_price_for_humans_based_on_entity_field()
+    public function test_can_show_the_price_for_humans_based_on_entity_field()
     {
         $item = new Item([
             'price' => 7500,
@@ -39,9 +36,7 @@ class PriceableTest extends TestCase
         $this->assertEquals('€75.00', $item->asPriceForHumans('price', 'EUR'));
         $this->assertEquals('$75.00', $item->asPriceForHumans('price', 'USD'));
     }
-
-    /** @test */
-    public function it_can_show_the_price_for_an_array_field()
+    public function test_can_show_the_price_for_an_array_field()
     {
         $item = new Plan([
             'price' => [
@@ -54,9 +49,7 @@ class PriceableTest extends TestCase
         $this->assertEquals('€ 70,00', $item->asPriceForHumans('price', 'EUR'));
         $this->assertEquals('US$ 95,00', $item->asPriceForHumans('price', 'USD'));
     }
-
-    /** @test */
-    public function it_will_return_null_if_no_data_is_given()
+    public function test_will_return_null_if_no_data_is_given()
     {
         $item = new Item([
             'price' => 7500,
@@ -66,9 +59,7 @@ class PriceableTest extends TestCase
         $this->assertNull($item->asPriceForHumans('invalid', 'EUR'));
         $this->assertNull($item->asPriceForHumans(null, 'EUR'));
     }
-
-    /** @test */
-    public function it_can_show_currency_symbol()
+    public function test_can_show_currency_symbol()
     {
         $item = new Item();
 
@@ -77,9 +68,7 @@ class PriceableTest extends TestCase
         $this->assertEquals('NOK', $item->getCurrencySymbol('NOK'));
         $this->assertEquals('€', $item->getCurrencySymbol('EUR'));
     }
-
-    /** @test */
-    public function it_can_map_to_prices_for_humans()
+    public function test_can_map_to_prices_for_humans()
     {
         $item = new Item();
         $prices = [

@@ -30,6 +30,24 @@ abstract class Entity implements ArrayAccess, Arrayable, IdsEntity, Jsonable, Js
     protected $relationships = [];
 
     /**
+     * API entities are DTOs backed by remote responses, not persisted
+     * Eloquent models.
+     *
+     * @var bool
+     */
+    public $exists = false;
+
+    /**
+     * @var bool
+     */
+    public $wasRecentlyCreated = false;
+
+    /**
+     * @var bool
+     */
+    public $preventsLazyLoading = false;
+
+    /**
      * @param array $attributes
      */
     public function __construct(array $attributes = [])

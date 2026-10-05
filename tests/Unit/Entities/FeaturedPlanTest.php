@@ -8,8 +8,7 @@ use Xingo\IDServer\EntityCreator;
 
 class FeaturedPlanTest extends TestCase
 {
-    /** @test */
-    public function it_has_pros()
+    public function test_has_pros()
     {
         $plan = $this->getFeaturedPlan();
 
@@ -21,9 +20,7 @@ class FeaturedPlanTest extends TestCase
             ]
         ], $plan->pros());
     }
-
-    /** @test */
-    public function it_has_cons()
+    public function test_has_cons()
     {
         $plan = $this->getFeaturedPlan();
 

@@ -13,9 +13,7 @@ use Xingo\IDServer\Resources\Collection;
 class OrderItemTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 

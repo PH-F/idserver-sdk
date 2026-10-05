@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources\Collection;
 class MailableTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_mailables()
+    public function test_gets_all_mailables()
     {
         $this->mockResponse(200, [
             'data' => [

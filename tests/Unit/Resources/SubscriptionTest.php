@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources\Collection;
 class SubscriptionTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_subscriptions()
+    public function test_gets_all_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,9 +33,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_paginates_all_subscriptions()
+    public function test_paginates_all_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -66,9 +62,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_gets_just_one_subscription_by_id()
+    public function test_gets_just_one_subscription_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -83,9 +77,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals('subscriptions/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_gets_expiring_subscriptions()
+    public function test_gets_expiring_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -107,9 +99,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals('days=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_subscription()
+    public function test_sends_correct_parameters_when_creating_a_new_subscription()
     {
         $this->mockResponse(201);
 
@@ -126,9 +116,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_do_not_send_a_missing_coupon_attribute_when_creating()
+    public function test_do_not_send_a_missing_coupon_attribute_when_creating()
     {
         $this->mockResponse(201);
 
@@ -142,9 +130,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_renewed_and_an_order_is_created()
+    public function test_can_be_renewed_and_an_order_is_created()
     {
         $this->mockResponse(201);
         $this->mockResponse(201);
@@ -162,9 +148,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals('currency=EUR', $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -181,9 +165,7 @@ class SubscriptionTest extends TestCase
             $this->assertEquals('plan_id=2', $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
 

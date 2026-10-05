@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources\Collection;
 class ImportTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_just_one_import_by_id()
+    public function test_gets_just_one_import_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 

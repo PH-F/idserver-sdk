@@ -272,7 +272,7 @@ class User extends Resource
      *
      * @return string
      */
-    public function multipass(string $ip = null): string
+    public function multipass(?string $ip = null): string
     {
         $this->call('POST', "users/{$this->id}/multipass", [
             'ip' => $ip
