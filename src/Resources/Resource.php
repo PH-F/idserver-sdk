@@ -79,7 +79,7 @@ abstract class Resource
      *
      * @return string
      */
-    public function toShortName(Resource $class = null): string
+    public function toShortName(?Resource $class = null): string
     {
         $class = $class ?: static::class;
 
@@ -180,7 +180,7 @@ abstract class Resource
      *
      * @return IdsEntity
      */
-    protected function makeEntity(array $attributes = null, ?string $class = null): IdsEntity
+    protected function makeEntity(?array $attributes = null, ?string $class = null): IdsEntity
     {
         $class = $class ?: $this->retrieveEntityClass($class);
         $attributes = $attributes ?: $this->contents['data'] ?? [];
@@ -196,8 +196,8 @@ abstract class Resource
      * @return Collection
      */
     protected function makeCollection(
-        array $data = null,
-        array $meta = null,
+        ?array $data = null,
+        ?array $meta = null,
         ?string $class = null
     ): Collection {
         $class = $class ?: $this->retrieveEntityClass($class);
@@ -305,7 +305,7 @@ abstract class Resource
      *
      * @return array
      */
-    private function formatPayloadToMultipartContent(array $params, string $parent = null)
+    private function formatPayloadToMultipartContent(array $params, ?string $parent = null)
     {
         $data = [];
         foreach ($params as $key => $value) {
@@ -343,11 +343,16 @@ abstract class Resource
             $value = fopen($value->getRealPath(), 'r+');
         }
 
-        return [
+        $attribute = [
             'name' => $key,
             'contents' => null === $value ? '' : $value,
-            'filename' => $filename ?? null,
         ];
+
+        if (isset($filename)) {
+            $attribute['filename'] = $filename;
+        }
+
+        return $attribute;
     }
 
     /**

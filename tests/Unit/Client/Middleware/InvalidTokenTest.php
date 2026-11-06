@@ -11,9 +11,7 @@ use Xingo\IDServer\Manager;
 class InvalidTokenTest extends TestCase
 {
     use MockResponse;
-
-    /** @test */
-    public function it_will_refresh_the_token_if_it_is_invalid()
+    public function test_will_refresh_the_token_if_it_is_invalid()
     {
         $this->mockResponse(200, ['token_expired']);
         $this->mockResponse(204, [], ['Authorization' => 'Bearer valid-token']);
@@ -34,9 +32,7 @@ class InvalidTokenTest extends TestCase
         $this->assertTrue($request->hasHeader('Authorization'));
         $this->assertEquals('Bearer valid-token', $request->getHeaderLine('Authorization'));
     }
-
-    /** @test */
-    public function it_will_not_refresh_the_token_with_normal_response()
+    public function test_will_not_refresh_the_token_with_normal_response()
     {
         $this->mockResponse(201);
 

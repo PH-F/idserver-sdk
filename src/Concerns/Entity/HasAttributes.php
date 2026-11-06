@@ -29,6 +29,26 @@ trait HasAttributes
     }
 
     /**
+     * Get the attributes that should be converted to dates.
+     *
+     * Laravel 11 removed support for the legacy $dates property from the
+     * Eloquent trait. SDK entities still use it for API response hydration.
+     *
+     * @return array<int, string>
+     */
+    public function getDates()
+    {
+        $dates = $this->dates ?? [];
+
+        if ($this->usesTimestamps()) {
+            $dates[] = $this->getCreatedAtColumn();
+            $dates[] = $this->getUpdatedAtColumn();
+        }
+
+        return array_values(array_unique($dates));
+    }
+
+    /**
      * @param mixed $value
      *
      * @return Carbon

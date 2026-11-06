@@ -10,7 +10,7 @@ class TestCase extends BaseTestCase
     /**
      * Setup the test case and register test directory to be able to load stubs.
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -10,9 +10,7 @@ use Xingo\IDServer\Entities\User;
 class UserTest extends TestCase
 {
     use MockResponse;
-
-    /** @test */
-    public function it_can_get_the_name_of_the_user()
+    public function test_can_get_the_name_of_the_user()
     {
         $user = new User([
             'first_name' => ' John ',
@@ -22,9 +20,7 @@ class UserTest extends TestCase
 
         $this->assertEquals('John der Doe', $user->name());
     }
-
-    /** @test */
-    public function it_can_get_the_name_of_the_user_with_missing_middle_and_last_name()
+    public function test_can_get_the_name_of_the_user_with_missing_middle_and_last_name()
     {
         $user = new User([
             'first_name' => 'John',
@@ -32,9 +28,7 @@ class UserTest extends TestCase
 
         $this->assertEquals('John', $user->name());
     }
-
-    /** @test */
-    public function it_can_check_if_the_user_has_permission_on_a_certain_ability()
+    public function test_can_check_if_the_user_has_permission_on_a_certain_ability()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -53,9 +47,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->hasAbility('users.list'));
         $this->assertFalse($user->hasAbility('users.create'));
     }
-
-    /** @test */
-    public function it_will_return_true_if_the_user_has_access_to_everything()
+    public function test_will_return_true_if_the_user_has_access_to_everything()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -70,9 +62,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->hasAbility('users.list'));
         $this->assertTrue($user->hasAbility('users.create'));
     }
-
-    /** @test */
-    public function it_can_check_if_the_user_is_deleted()
+    public function test_can_check_if_the_user_is_deleted()
     {
         $user = new User();
 

@@ -13,9 +13,7 @@ use Xingo\IDServer\Resources\Collection;
 class CountryTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_countries()
+    public function test_gets_all_countries()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -36,9 +34,7 @@ class CountryTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_paginates_all_countries()
+    public function test_paginates_all_countries()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -67,10 +63,7 @@ class CountryTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-
-    /** @test */
-    public function it_gets_just_one_country_by_id()
+    public function test_gets_just_one_country_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -85,9 +78,7 @@ class CountryTest extends TestCase
             $this->assertEquals('countries/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_be_created()
+    public function test_can_be_created()
     {
         $params = [
             'code' => 'NL',
@@ -117,7 +108,7 @@ class CountryTest extends TestCase
         });
     }
 
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -136,7 +127,7 @@ class CountryTest extends TestCase
         });
     }
     
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
         $this->mockResponse(204);

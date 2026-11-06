@@ -8,8 +8,7 @@ use Xingo\IDServer\EntityCreator;
 
 class OrderTest extends TestCase
 {
-    /** @test */
-    public function it_has_items()
+    public function test_has_items()
     {
         $data = [
             'items' => [
@@ -24,9 +23,7 @@ class OrderTest extends TestCase
 
         $this->assertEquals('Subscription X', $order->items->first()->name);
     }
-
-    /** @test */
-    public function it_is_priceable()
+    public function test_is_priceable()
     {
         app()->setLocale('nl_NL');
 

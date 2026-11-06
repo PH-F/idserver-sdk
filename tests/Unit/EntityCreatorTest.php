@@ -11,8 +11,7 @@ use Xingo\IDServer\Resources;
 
 class EntityCreatorTest extends TestCase
 {
-    /** @test */
-    public function it_returns_the_correct_type_even_for_no_custom_classes()
+    public function test_returns_the_correct_type_even_for_no_custom_classes()
     {
         $creator = new EntityCreator(Resources\User::class);
         $entity = $creator->entity(['name' => 'John']);
@@ -20,9 +19,7 @@ class EntityCreatorTest extends TestCase
         $this->assertInstanceOf(IdsEntity::class, $entity);
         $this->assertEquals('John', $entity->name);
     }
-
-    /** @test */
-    public function it_can_replace_an_entity_instance_by_a_custom_one()
+    public function test_can_replace_an_entity_instance_by_a_custom_one()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => \Tests\Stub\Entities\FakeUser::class,
@@ -34,9 +31,7 @@ class EntityCreatorTest extends TestCase
         $this->assertInstanceOf(\Tests\Stub\Entities\FakeUser::class, $entity);
         $this->assertEquals('John', $entity->name);
     }
-
-    /** @test */
-    public function it_cannot_return_a_custom_instance_that_does_not_extend_the_base_one()
+    public function test_cannot_return_a_custom_instance_that_does_not_extend_the_base_one()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\Subscription::class => \Tests\Stub\Standard\FakeSubscription::class,
@@ -48,9 +43,7 @@ class EntityCreatorTest extends TestCase
         $creator = new EntityCreator(Resources\Subscription::class);
         $creator->entity(['name' => 'John']);
     }
-
-    /** @test */
-    public function it_can_return_a_custom_instance_if_it_implements_the_right_interface()
+    public function test_can_return_a_custom_instance_if_it_implements_the_right_interface()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => \Tests\Stub\Entities\FakeIdsEntity::class,
@@ -63,9 +56,7 @@ class EntityCreatorTest extends TestCase
         $this->assertEquals('John', $entity->name);
         $this->assertInstanceOf(IdsEntity::class, $entity);
     }
-
-    /** @test */
-    public function it_works_if_the_base_class_is_an_eloquent_model()
+    public function test_works_if_the_base_class_is_an_eloquent_model()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\User::class => \Tests\Stub\Eloquent\FakeIdsModel::class,
@@ -79,9 +70,7 @@ class EntityCreatorTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $entity->created_at);
         $this->assertInstanceOf(IdsEntity::class, $entity);
     }
-
-    /** @test */
-    public function it_adds_collection_relation_to_entity_class()
+    public function test_adds_collection_relation_to_entity_class()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\Role::class => \Tests\Stub\Entities\FakeRole::class,
@@ -103,9 +92,7 @@ class EntityCreatorTest extends TestCase
         $this->assertInstanceOf(Resources\Collection::class, $role->abilities);
         $this->assertInstanceOf(\Tests\Stub\Entities\FakeAbility::class, $role->abilities->first());
     }
-
-    /** @test */
-    public function it_adds_collection_relation_for_eloquent_model()
+    public function test_adds_collection_relation_for_eloquent_model()
     {
         $this->app['config']->set('idserver.classes', [
             Entities\Role::class => \Tests\Stub\Eloquent\FakeRole::class,
@@ -127,9 +114,7 @@ class EntityCreatorTest extends TestCase
         $this->assertInstanceOf(Resources\Collection::class, $role->abilities);
         $this->assertInstanceOf(\Tests\Stub\Eloquent\FakeAbility::class, $role->abilities->first());
     }
-
-    /** @test */
-    public function it_can_create_nested_relations()
+    public function test_can_create_nested_relations()
     {
         $creator = new EntityCreator(Resources\Order::class);
         $order = $creator->entity([
@@ -151,4 +136,45 @@ class EntityCreatorTest extends TestCase
         $this->assertInstanceOf(Entities\Duration::class, $order->items->first()->plan_duration);
         $this->assertEquals('Duration x', $order->items->first()->plan_duration->name);
     }
+
+    public function test_hydrates_custom_entity_mappings(): void
+    {
+        foreach (self::customEntityMappings() as [$resource, $entity, $customEntity]) {
+            $this->app['config']->set('idserver.classes', [$entity => $customEntity]);
+
+            $instance = (new EntityCreator($resource))->entity(['name' => 'John']);
+
+            self::assertInstanceOf($customEntity, $instance);
+            self::assertSame('John', $instance->name);
+        }
+    }
+
+    /**
+     * @return array<string, array{0: class-string, 1: class-string, 2: class-string}>
+     */
+    public static function customEntityMappings(): array
+    {
+        return [
+            'user' => [Resources\User::class, Entities\User::class, CustomUser::class],
+            'address' => [Resources\Address::class, Entities\Address::class, CustomAddress::class],
+            'subscription' => [Resources\Subscription::class, Entities\Subscription::class, CustomSubscription::class],
+            'order' => [Resources\Order::class, Entities\Order::class, CustomOrder::class],
+        ];
+    }
+}
+
+class CustomUser extends Entities\User
+{
+}
+
+class CustomAddress extends Entities\Address
+{
+}
+
+class CustomSubscription extends Entities\Subscription
+{
+}
+
+class CustomOrder extends Entities\Order
+{
 }

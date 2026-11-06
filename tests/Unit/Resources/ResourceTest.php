@@ -20,9 +20,7 @@ use Xingo\IDServer\Resources\Resource;
 class ResourceTest extends TestCase
 {
     use MockResponse;
-
-    /** @test */
-    public function it_returns_a_psr7_response_when_calling_a_json_endpoint()
+    public function test_returns_a_psr7_response_when_calling_a_json_endpoint()
     {
         $this->mockResponse();
 
@@ -37,9 +35,7 @@ class ResourceTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $response);
     }
-
-    /** @test */
-    public function it_will_send_a_json_accept_header()
+    public function test_will_send_a_json_accept_header()
     {
         $this->mockResponse();
 
@@ -50,9 +46,7 @@ class ResourceTest extends TestCase
             $this->assertContains('application/json', $request->getHeader('Accept'));
         });
     }
-
-    /** @test */
-    public function it_can_send_include_parameter()
+    public function test_can_send_include_parameter()
     {
         $this->mockResponse();
 
@@ -62,9 +56,7 @@ class ResourceTest extends TestCase
             $this->assertEquals('subscriptions/1?include=foo.bar%2Cbaz', $request->getRequestTarget());
         });
     }
-
-    /** @test */
-    public function it_can_send_include_parameter_with_other_get_parameters()
+    public function test_can_send_include_parameter_with_other_get_parameters()
     {
         $this->mockResponse();
 
@@ -74,9 +66,7 @@ class ResourceTest extends TestCase
             $this->assertEquals('subscriptions?page=1&per_page=10&include=foo.bar%2Cbaz', $request->getRequestTarget());
         });
     }
-
-    /** @test */
-    public function it_can_send_include_parameter_with_post_parameters()
+    public function test_can_send_include_parameter_with_post_parameters()
     {
         $this->mockResponse();
 
@@ -87,9 +77,7 @@ class ResourceTest extends TestCase
             $this->assertEquals('name=foo', (string) $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_make_an_entity_instance()
+    public function test_can_make_an_entity_instance()
     {
         $user = app()->make(Resources\User::class);
 
@@ -102,9 +90,7 @@ class ResourceTest extends TestCase
         $this->assertInstanceOf(IdsEntity::class, $entity);
         $this->assertEquals('John', $entity->name);
     }
-
-    /** @test */
-    public function it_will_have_the_token_automatically_in_the_request_when_available()
+    public function test_will_have_the_token_automatically_in_the_request_when_available()
     {
         $this->mockResponse(200, ['data' => ['id' => 10]]);
         $this->manager->setToken('foo');
@@ -121,9 +107,7 @@ class ResourceTest extends TestCase
 
         $this->manager->users(10)->get();
     }
-
-    /** @test */
-    public function it_is_callable_and_returns_a_resource_instance()
+    public function test_is_callable_and_returns_a_resource_instance()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -132,12 +116,10 @@ class ResourceTest extends TestCase
 
         $this->assertTrue(is_callable($manager->users));
         $this->assertInstanceOf(Resource::class, $resource);
-        $this->assertInternalType('integer', $resource->id);
+        $this->assertIsInt($resource->id);
         $this->assertEquals($resource->id, $manager->users($resource->id)->id);
     }
-
-    /** @test */
-    public function it_can_have_an_instance_and_it_matches_get_method()
+    public function test_can_have_an_instance_and_it_matches_get_method()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
@@ -150,9 +132,7 @@ class ResourceTest extends TestCase
 
         $this->assertEquals($resource->id, $entity->id);
     }
-
-    /** @test */
-    public function it_accepts_a_string_as_invoke_parameter()
+    public function test_accepts_a_string_as_invoke_parameter()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
@@ -161,9 +141,7 @@ class ResourceTest extends TestCase
 
         $this->assertEquals($resource->id, 1);
     }
-
-    /** @test */
-    public function it_accepts_an_object_as_invoke_parameter()
+    public function test_accepts_an_object_as_invoke_parameter()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $manager = app()->make('idserver.manager');
@@ -173,9 +151,7 @@ class ResourceTest extends TestCase
 
         $this->assertEquals($resource->id, 1);
     }
-
-    /** @test */
-    public function it_can_have_nested_resources_and_they_are_callable_as_well()
+    public function test_can_have_nested_resources_and_they_are_callable_as_well()
     {
         $manager = app()->make('idserver.manager');
 
@@ -186,9 +162,7 @@ class ResourceTest extends TestCase
         $this->assertInstanceOf(Resources\User::class, $tags->parent);
         $this->assertEquals(1, $tags->parent->id);
     }
-
-    /** @test */
-    public function it_throws_an_exception_if_the_uri_is_wrong()
+    public function test_throws_an_exception_if_the_uri_is_wrong()
     {
         $this->mockResponse(404);
 
@@ -196,9 +170,7 @@ class ResourceTest extends TestCase
 
         $this->manager->users(1)->get();
     }
-
-    /** @test */
-    public function it_gets_the_resource_name_from_class_name()
+    public function test_gets_the_resource_name_from_class_name()
     {
         $class = app(Resources\User::class);
         $this->assertEquals('users', $class->toShortName());
@@ -209,9 +181,7 @@ class ResourceTest extends TestCase
         $class = app(Resources\Address::class);
         $this->assertEquals('addresses', $class->toShortName());
     }
-
-    /** @test */
-    public function it_paginates_using_a_custom_method()
+    public function test_paginates_using_a_custom_method()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -240,9 +210,7 @@ class ResourceTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_allows_to_disable_pagination_when_necessary()
+    public function test_allows_to_disable_pagination_when_necessary()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -263,9 +231,7 @@ class ResourceTest extends TestCase
             $this->assertEquals('page=1&per_page=-1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_be_sorted()
+    public function test_can_be_sorted()
     {
         $this->mockResponse(200);
         $this->mockResponse(200);
@@ -296,9 +262,7 @@ class ResourceTest extends TestCase
             ]), $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_create_multipart_requests()
+    public function test_can_create_multipart_requests()
     {
         $this->mockResponse(200);
 
@@ -312,17 +276,17 @@ class ResourceTest extends TestCase
             $this->assertInstanceOf(MultipartStream::class, $request->getBody());
             $contents = $request->getBody()->getContents();
 
-            $this->assertContains('Content-Disposition: form-data; name="file"; filename="foo.png', $contents);
-            $this->assertContains('Content-Disposition: form-data; name="key', $contents);
-            $this->assertContains('Content-Disposition: form-data; name="user[first_name]', $contents);
-            $this->assertContains('Content-Disposition: form-data; name="user[last_name]', $contents);
-            $this->assertContains('Content-Disposition: form-data; name="user[company][name]', $contents);
-            $this->assertContains('Content-Disposition: form-data; name="_method', $contents);
+            $this->assertStringContainsString('Content-Disposition: form-data; name="file"; filename="foo.png', $contents);
+            $this->assertStringContainsString('Content-Disposition: form-data; name="key', $contents);
+            $this->assertStringContainsString('Content-Disposition: form-data; name="user[first_name]', $contents);
+            $this->assertStringContainsString('Content-Disposition: form-data; name="user[last_name]', $contents);
+            $this->assertStringContainsString('Content-Disposition: form-data; name="user[company][name]', $contents);
+            $this->assertStringContainsString('Content-Disposition: form-data; name="_method', $contents);
 
-            $this->assertContains('my-value', $contents);
-            $this->assertContains('John', $contents);
-            $this->assertContains('Doe', $contents);
-            $this->assertContains('Laravel', $contents);
+            $this->assertStringContainsString('my-value', $contents);
+            $this->assertStringContainsString('John', $contents);
+            $this->assertStringContainsString('Doe', $contents);
+            $this->assertStringContainsString('Laravel', $contents);
         });
     }
 }

@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources\Collection;
 class SettingTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_settings()
+    public function test_gets_all_settings()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -37,9 +35,7 @@ class SettingTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_paginates_all_settings()
+    public function test_paginates_all_settings()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -68,9 +64,7 @@ class SettingTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200, [
             'data' => [

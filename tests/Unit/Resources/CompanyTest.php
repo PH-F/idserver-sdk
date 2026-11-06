@@ -14,9 +14,7 @@ use Xingo\IDServer\Resources\Collection;
 class CompanyTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_companies()
+    public function test_gets_all_companies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -37,9 +35,7 @@ class CompanyTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_paginates_all_companies()
+    public function test_paginates_all_companies()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -68,9 +64,7 @@ class CompanyTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_gets_just_one_company_by_id()
+    public function test_gets_just_one_company_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -85,9 +79,7 @@ class CompanyTest extends TestCase
             $this->assertEquals('companies/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_sends_correct_parameters_when_creating_a_new_company()
+    public function test_sends_correct_parameters_when_creating_a_new_company()
     {
         $this->mockResponse(201);
 
@@ -103,9 +95,7 @@ class CompanyTest extends TestCase
             $this->assertEquals(http_build_query($attributes), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -122,9 +112,7 @@ class CompanyTest extends TestCase
             $this->assertEquals('name=Acme+Two+Inc', $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
 
@@ -136,9 +124,7 @@ class CompanyTest extends TestCase
             $this->assertEquals('companies/2', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_have_addresses()
+    public function test_can_have_addresses()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -156,10 +142,7 @@ class CompanyTest extends TestCase
         $this->assertEquals('foo', $collection->first()->street);
         $this->assertEquals('bar', $collection->last()->street);
     }
-
-
-    /** @test */
-    public function it_can_have_communications()
+    public function test_can_have_communications()
     {
         $this->mockResponse(200, [
             'data' => [

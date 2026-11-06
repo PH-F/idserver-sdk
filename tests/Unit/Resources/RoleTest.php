@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources\Collection;
 class RoleTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_roles()
+    public function test_gets_all_roles()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -36,9 +34,7 @@ class RoleTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_update_abilities_when_updating_a_role()
+    public function test_can_update_abilities_when_updating_a_role()
     {
         // Call to update /roles/1
         $this->mockResponse(200, ['data' => ['id' => 1]]);
@@ -80,9 +76,7 @@ class RoleTest extends TestCase
             ]), (string)$request->getBody());
         });
     }
-
-    /** @test */
-    public function it_always_have_a_abilities_collection_as_property()
+    public function test_always_have_a_abilities_collection_as_property()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -100,9 +94,7 @@ class RoleTest extends TestCase
         $this->assertInstanceOf(Collection::class, $role->abilities);
         $this->assertInstanceOf(Entities\Ability::class, $role->abilities->first());
     }
-
-    /** @test */
-    public function it_can_sync_roles_of_parent()
+    public function test_can_sync_roles_of_parent()
     {
         $this->mockResponse(200, [
             'data' => [

@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources;
 class AbilityTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_lists_all_abilities()
+    public function test_lists_all_abilities()
     {
         $this->mockResponse(200, [
             'data' => [

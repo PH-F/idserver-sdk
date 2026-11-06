@@ -6,8 +6,7 @@ use Tests\TestCase;
 
 class HasAttributesTest extends TestCase
 {
-    /** @test */
-    public function it_can_have_accessors()
+    public function test_can_have_accessors()
     {
         $user = new TempUser([
             'first' => 'John',
@@ -22,18 +21,14 @@ class HasAttributesTest extends TestCase
 
         $this->assertEquals('John', $user->full_name);
     }
-
-    /** @test */
-    public function it_can_have_mutators()
+    public function test_can_have_mutators()
     {
         $user = new TempUser();
         $user->first = 'john';
 
         $this->assertEquals('John', $user->first);
     }
-
-    /** @test */
-    public function it_can_read_date_as_iso_string()
+    public function test_can_read_date_as_iso_string()
     {
         config()->set('app.timezone', 'Europe/Amsterdam');
 
@@ -41,9 +36,7 @@ class HasAttributesTest extends TestCase
 
         $this->assertEquals('2018-10-10 10:15:23', $user->created_at->toDateTimeString());
     }
-
-    /** @test */
-    public function it_can_read_date_as_array()
+    public function test_can_read_date_as_array()
     {
         config()->set('app.timezone', 'Australia/Perth');
 

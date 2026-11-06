@@ -8,8 +8,7 @@ use Xingo\IDServer\Entities\Plan;
 
 class ShippingCostTest extends TestCase
 {
-    /** @test */
-    public function it_is_priceable()
+    public function test_is_priceable()
     {
         app()->setLocale('nl_NL');
 

@@ -7,8 +7,7 @@ use Xingo\IDServer\Entities\Import;
 
 class ImportTest extends TestCase
 {
-    /** @test */
-    public function it_can_determine_if_its_finished()
+    public function test_can_determine_if_its_finished()
     {
         $import = new Import;
 

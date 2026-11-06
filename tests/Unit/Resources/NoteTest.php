@@ -11,9 +11,7 @@ use Xingo\IDServer\Entities;
 class NoteTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_can_be_created_using_nested_resource()
+    public function test_can_be_created_using_nested_resource()
     {
         $this->mockResponse(201, [
             'data' => ['text' => 'foo'],
@@ -36,9 +34,7 @@ class NoteTest extends TestCase
             $this->assertEquals(http_build_query($params), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -55,9 +51,7 @@ class NoteTest extends TestCase
             $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
 

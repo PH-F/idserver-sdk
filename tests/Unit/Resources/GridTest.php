@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources\Collection;
 class GridTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_can_get_the_grid_data()
+    public function test_can_get_the_grid_data()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -36,9 +34,7 @@ class GridTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_filter_the_grid()
+    public function test_can_filter_the_grid()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -69,9 +65,7 @@ class GridTest extends TestCase
             $this->assertEquals('filter%5Bname%5D=Foo&page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_export_the_grid_as_a_stream()
+    public function test_can_export_the_grid_as_a_stream()
     {
         $this->mockResponse();
 
@@ -84,9 +78,7 @@ class GridTest extends TestCase
             $this->assertEquals('grids/users/export', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_export_and_filter()
+    public function test_can_export_and_filter()
     {
         $this->mockResponse();
 

@@ -24,9 +24,7 @@ use Xingo\IDServer\Resources\Collection;
 class UserTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_creates_a_user_with_201_status()
+    public function test_creates_a_user_with_201_status()
     {
         $this->mockResponse(201, [
             'data' => $data = [
@@ -49,9 +47,7 @@ class UserTest extends TestCase
             $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_checks_validation_when_creating_user_with_422_status()
+    public function test_checks_validation_when_creating_user_with_422_status()
     {
         $this->mockResponse(422, [
             'errors' => ['name' => 'Name is required'],
@@ -63,9 +59,7 @@ class UserTest extends TestCase
         $this->manager->users
             ->create([]);
     }
-
-    /** @test */
-    public function it_gets_a_user_with_a_200_status()
+    public function test_gets_a_user_with_a_200_status()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -87,9 +81,7 @@ class UserTest extends TestCase
             $this->assertEquals('users/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_gets_all_users()
+    public function test_gets_all_users()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -110,9 +102,7 @@ class UserTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_be_filtered_by_id()
+    public function test_can_be_filtered_by_id()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -136,9 +126,7 @@ class UserTest extends TestCase
             $this->assertEquals(http_build_query(['ids' => '3,5,7']), $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_be_filtered_by_id_using_an_array()
+    public function test_can_be_filtered_by_id_using_an_array()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -162,9 +150,7 @@ class UserTest extends TestCase
             $this->assertEquals(http_build_query(['ids' => '3,5,7']), $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_be_filtered_using_multiple_filters()
+    public function test_can_be_filtered_using_multiple_filters()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -190,9 +176,7 @@ class UserTest extends TestCase
             );
         });
     }
-
-    /** @test */
-    public function it_updates_a_user_with_a_200_status()
+    public function test_updates_a_user_with_a_200_status()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -217,9 +201,7 @@ class UserTest extends TestCase
             $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_will_throw_a_validation_exception_when_updating_a_user_returns_validation_errors()
+    public function test_will_throw_a_validation_exception_when_updating_a_user_returns_validation_errors()
     {
         $this->mockResponse(422, [
             'message' => 'The given data is invalid',
@@ -237,9 +219,7 @@ class UserTest extends TestCase
             'email' => ''
         ]);
     }
-
-    /** @test */
-    public function it_logs_in_a_user_with_200_status()
+    public function test_logs_in_a_user_with_200_status()
     {
         $this->mockResponse(200, [
             'token' => 'foo',
@@ -260,12 +240,11 @@ class UserTest extends TestCase
                 'email'    => 'john@example.com',
                 'password' => 'secret',
                 'remember' => false,
-            ]), $request->getBody());
+                'ip'       => '',
+            ]), (string) $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_login_with_remember_me()
+    public function test_can_login_with_remember_me()
     {
         $this->mockResponse(200, [
             'token' => 'foo',
@@ -286,12 +265,11 @@ class UserTest extends TestCase
                 'email'    => 'john@example.com',
                 'password' => 'secret',
                 'remember' => true,
-            ]), $request->getBody());
+                'ip'       => '',
+            ]), (string) $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_send_a_claims_array_to_the_login_endpoint()
+    public function test_can_send_a_claims_array_to_the_login_endpoint()
     {
         $this->mockResponse(200, ['token' => 'bar']);
 
@@ -306,12 +284,11 @@ class UserTest extends TestCase
                 'password' => 'secret',
                 'remember' => false,
                 'claims'   => ['foo' => true],
+                'ip'       => '',
             ]), (string) $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_checks_for_login_with_401_status()
+    public function test_checks_for_login_with_401_status()
     {
         $this->mockResponse(401, ['data' => []]);
 
@@ -321,9 +298,7 @@ class UserTest extends TestCase
         $this->manager->users
             ->login('john@example.com', 'secret');
     }
-
-    /** @test */
-    public function it_saves_the_user_jwt_in_the_session_after_login_with_200_status()
+    public function test_saves_the_user_jwt_in_the_session_after_login_with_200_status()
     {
         $this->mockResponse(200, [
             'token' => 'foo',
@@ -337,9 +312,7 @@ class UserTest extends TestCase
         $this->assertNotEmpty($jwt = $this->manager->getToken());
         $this->assertEquals($jwt, $user->jwtToken());
     }
-
-    /** @test */
-    public function it_can_refresh_the_jwt()
+    public function test_can_refresh_the_jwt()
     {
         Event::fake();
 
@@ -356,9 +329,7 @@ class UserTest extends TestCase
 
         Event::assertDispatched(TokenRefreshed::class);
     }
-
-    /** @test */
-    public function it_will_only_attempt_once_to_refresh_the_token()
+    public function test_will_only_attempt_once_to_refresh_the_token()
     {
         Event::fake();
 
@@ -379,9 +350,7 @@ class UserTest extends TestCase
 
         Event::assertNotDispatched(TokenRefreshed::class);
     }
-
-    /** @test */
-    public function it_can_get_a_user_by_get_method()
+    public function test_can_get_a_user_by_get_method()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $this->mockResponse(200, ['data' => ['id' => 2]]);
@@ -394,9 +363,7 @@ class UserTest extends TestCase
             $this->assertEquals('users/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
         $this->mockResponse(204);
@@ -409,9 +376,7 @@ class UserTest extends TestCase
             $this->assertEquals('users/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_throws_a_500_exception_error()
+    public function test_can_throws_a_500_exception_error()
     {
         $this->mockResponse(500);
 
@@ -419,9 +384,7 @@ class UserTest extends TestCase
 
         $this->manager->users(1)->delete();
     }
-
-    /** @test */
-    public function it_throws_a_throttle_exception_if_429_status_code_is_returned()
+    public function test_throws_a_throttle_exception_if_429_status_code_is_returned()
     {
         $this->mockResponse(429);
 
@@ -429,9 +392,7 @@ class UserTest extends TestCase
 
         $this->manager->users(2)->delete();
     }
-
-    /** @test */
-    public function it_can_be_confirmed()
+    public function test_can_be_confirmed()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
         $user = $this->manager->users(1)->confirm('fake-token');
@@ -451,9 +412,7 @@ class UserTest extends TestCase
         $this->expectException(Exceptions\ValidationException::class);
         $this->manager->users(1)->confirm('fake-token');
     }
-
-    /** @test */
-    public function it_can_change_avatar()
+    public function test_can_change_avatar()
     {
         $this->mockResponse(200, [
             'data' => ['id' => 1, 'picture' => 'https://image.com/foo.png'],
@@ -470,13 +429,11 @@ class UserTest extends TestCase
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users/1/avatar', $request->getUri()->getPath());
             $this->assertInstanceOf(MultipartStream::class, $request->getBody());
-            $this->assertContains('Content-Disposition: form-data; name="avatar"; filename="foo.png', $contents = $request->getBody()->getContents());
-            $this->assertContains('Content-Disposition: form-data; name="_method', $contents);
+            $this->assertStringContainsString('Content-Disposition: form-data; name="avatar"; filename="foo.png', $contents = $request->getBody()->getContents());
+            $this->assertStringContainsString('Content-Disposition: form-data; name="_method', $contents);
         });
     }
-
-    /** @test */
-    public function it_can_have_addresses()
+    public function test_can_have_addresses()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -494,9 +451,7 @@ class UserTest extends TestCase
         $this->assertEquals('foo', $collection->first()->street);
         $this->assertEquals('bar', $collection->last()->street);
     }
-
-    /** @test */
-    public function it_can_have_communications()
+    public function test_can_have_communications()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -514,9 +469,7 @@ class UserTest extends TestCase
         $this->assertEquals('foo', $collection->first()->value);
         $this->assertEquals('bar', $collection->last()->value);
     }
-
-    /** @test */
-    public function it_can_have_subscriptions()
+    public function test_can_have_subscriptions()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -540,9 +493,7 @@ class UserTest extends TestCase
         $this->assertEquals(1, $collection->first()->id);
         $this->assertEquals(2, $collection->last()->id);
     }
-
-    /** @test */
-    public function it_can_list_user_abilities()
+    public function test_can_list_user_abilities()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -560,9 +511,7 @@ class UserTest extends TestCase
         $this->assertEquals('foo.create', $collection->first()->name);
         $this->assertEquals('bar.update', $collection->last()->name);
     }
-
-    /** @test */
-    public function it_can_list_user_orders()
+    public function test_can_list_user_orders()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -580,9 +529,7 @@ class UserTest extends TestCase
         $this->assertEquals('100001', $collection->first()->number);
         $this->assertEquals('100004', $collection->last()->number);
     }
-
-    /** @test */
-    public function it_can_get_reset_token_using_id()
+    public function test_can_get_reset_token_using_id()
     {
         $this->mockResponse(201, [
             'user_id' => 2,
@@ -599,9 +546,7 @@ class UserTest extends TestCase
             $this->assertEquals('id=2', $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_get_reset_token_using_email()
+    public function test_can_get_reset_token_using_email()
     {
         $this->mockResponse(201, [
             'user_id' => 2,
@@ -620,9 +565,7 @@ class UserTest extends TestCase
             ]), (string) $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_update_the_password_using_id()
+    public function test_can_update_the_password_using_id()
     {
         $this->mockResponse(204);
 
@@ -641,9 +584,7 @@ class UserTest extends TestCase
             ]), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_update_the_password_using_email()
+    public function test_can_update_the_password_using_email()
     {
         $this->mockResponse(204);
 
@@ -662,9 +603,7 @@ class UserTest extends TestCase
             ]), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_change_the_password()
+    public function test_can_change_the_password()
     {
         $this->mockResponse(204);
 
@@ -681,9 +620,7 @@ class UserTest extends TestCase
             ]), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_reset_the_password()
+    public function test_can_reset_the_password()
     {
         $this->mockResponse(204);
 
@@ -697,9 +634,7 @@ class UserTest extends TestCase
             $this->assertEmpty((string) $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_have_notes()
+    public function test_can_have_notes()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -717,9 +652,7 @@ class UserTest extends TestCase
         $this->assertEquals('foo', $collection->first()->text);
         $this->assertEquals('bar', $collection->last()->text);
     }
-
-    /** @test */
-    public function it_can_import()
+    public function test_can_import()
     {
         $this->mockResponse(201, [
             'data' => [
@@ -736,12 +669,10 @@ class UserTest extends TestCase
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('users/import', $request->getUri()->getPath());
             $this->assertInstanceOf(MultipartStream::class, $request->getBody());
-            $this->assertContains('Content-Disposition: form-data; name="file"; filename="import.xlsx', $contents = $request->getBody()->getContents());
+            $this->assertStringContainsString('Content-Disposition: form-data; name="file"; filename="import.xlsx', $contents = $request->getBody()->getContents());
         });
     }
-
-    /** @test */
-    public function it_can_get_report_configurations_for_user()
+    public function test_can_get_report_configurations_for_user()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -767,9 +698,7 @@ class UserTest extends TestCase
             $this->assertEquals('filter%5Btype%5D=subscription&page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_can_update_report_configurations_for_user()
+    public function test_can_update_report_configurations_for_user()
     {
         $this->mockResponse(200, [
             'data' => [

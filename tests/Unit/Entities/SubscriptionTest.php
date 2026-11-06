@@ -8,8 +8,7 @@ use Xingo\IDServer\Entities\Subscription;
 
 class SubscriptionTest extends TestCase
 {
-    /** @test */
-    public function it_can_check_if_it_is_active()
+    public function test_can_check_if_it_is_active()
     {
         $active = new Subscription([
             'status' => 'active',
@@ -26,9 +25,7 @@ class SubscriptionTest extends TestCase
         $this->assertTrue($active->isActive());
         $this->assertTrue($expiring->isActive());
     }
-
-    /** @test */
-    public function it_can_check_if_it_is_active_with_extended_end_date()
+    public function test_can_check_if_it_is_active_with_extended_end_date()
     {
         $active = new Subscription([
             'status' => 'active',
@@ -47,9 +44,7 @@ class SubscriptionTest extends TestCase
         $this->assertTrue($active->isActive());
         $this->assertTrue($expiring->isActive());
     }
-
-    /** @test */
-    public function it_can_check_if_it_is_not_active()
+    public function test_can_check_if_it_is_not_active()
     {
         $subscription = new Subscription([
             'status' => 'expired',
@@ -57,9 +52,7 @@ class SubscriptionTest extends TestCase
 
         $this->assertFalse($subscription->isActive());
     }
-
-    /** @test */
-    public function it_can_check_inactive_on_the_dates()
+    public function test_can_check_inactive_on_the_dates()
     {
         $subscription = new Subscription([
             'status' => 'active',
@@ -69,9 +62,7 @@ class SubscriptionTest extends TestCase
 
         $this->assertFalse($subscription->isActive());
     }
-
-    /** @test */
-    public function it_can_check_inactive_on_the_extended_dates()
+    public function test_can_check_inactive_on_the_extended_dates()
     {
         $subscription = new Subscription([
             'status' => 'active',

@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources;
 class CommunicationTest extends TestCase
 {
     use Concerns\MockResponse;
-    
-    /** @test */
-    public function it_gets_just_one_communication_by_id()
+    public function test_gets_just_one_communication_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -29,9 +27,7 @@ class CommunicationTest extends TestCase
             $this->assertEquals('communications/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_be_created_using_nested_resource()
+    public function test_can_be_created_using_nested_resource()
     {
         $this->mockResponse(201, [
             'data' => ['street' => 'foo'],
@@ -53,9 +49,7 @@ class CommunicationTest extends TestCase
             $this->assertEquals(http_build_query($params), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_created_changing_the_base_resource_to_companies()
+    public function test_can_be_created_changing_the_base_resource_to_companies()
     {
         $this->mockResponse(201, [
             'data' => ['street' => 'foo'],
@@ -77,9 +71,7 @@ class CommunicationTest extends TestCase
             $this->assertEquals(http_build_query($params), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -96,9 +88,7 @@ class CommunicationTest extends TestCase
             $this->assertEquals(http_build_query($data), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated_with_null_data()
+    public function test_can_be_updated_with_null_data()
     {
         $this->mockResponse(200);
 
@@ -114,9 +104,7 @@ class CommunicationTest extends TestCase
             $this->assertEquals('foo=&bar=0&baz=', (string)$request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
 

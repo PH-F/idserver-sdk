@@ -12,9 +12,7 @@ use Xingo\IDServer\Resources;
 class AddressTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_gets_all_addresses()
+    public function test_gets_all_addresses()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -35,9 +33,7 @@ class AddressTest extends TestCase
             $this->assertEquals('page=1&per_page=10', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_paginates_all_addresses()
+    public function test_paginates_all_addresses()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -66,9 +62,7 @@ class AddressTest extends TestCase
             $this->assertEquals('page=2&per_page=1', $request->getUri()->getQuery());
         });
     }
-
-    /** @test */
-    public function it_gets_just_one_address_by_id()
+    public function test_gets_just_one_address_by_id()
     {
         $this->mockResponse(200, ['data' => ['id' => 1]]);
 
@@ -83,9 +77,7 @@ class AddressTest extends TestCase
             $this->assertEquals('addresses/1', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_be_created_using_nested_resource()
+    public function test_can_be_created_using_nested_resource()
     {
         $this->mockResponse(201, [
             'data' => ['street' => 'foo'],
@@ -107,9 +99,7 @@ class AddressTest extends TestCase
             $this->assertEquals(http_build_query($params), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_created_changing_the_base_resource_to_companies()
+    public function test_can_be_created_changing_the_base_resource_to_companies()
     {
         $this->mockResponse(201, [
             'data' => ['street' => 'foo'],
@@ -131,9 +121,7 @@ class AddressTest extends TestCase
             $this->assertEquals(http_build_query($params), $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated()
+    public function test_can_be_updated()
     {
         $this->mockResponse(200);
 
@@ -150,9 +138,7 @@ class AddressTest extends TestCase
             $this->assertEquals('street=Somewhere+Street', $request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_updated_with_null_data()
+    public function test_can_be_updated_with_null_data()
     {
         $this->mockResponse(200);
 
@@ -168,9 +154,7 @@ class AddressTest extends TestCase
             $this->assertEquals('foo=&bar=0&baz=', (string)$request->getBody());
         });
     }
-
-    /** @test */
-    public function it_can_be_deleted()
+    public function test_can_be_deleted()
     {
         $this->mockResponse(204);
 

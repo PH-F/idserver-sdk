@@ -9,9 +9,7 @@ use Tests\TestCase;
 class TagTest extends TestCase
 {
     use Concerns\MockResponse;
-
-    /** @test */
-    public function it_can_be_created_using_nested_resource()
+    public function test_can_be_created_using_nested_resource()
     {
         $this->mockResponse(201, [
             'data' => [
@@ -30,8 +28,7 @@ class TagTest extends TestCase
             $this->assertEquals('users/1/tags', $request->getUri()->getPath());
         });
     }
-    /** @test */
-    public function it_can_be_updated_using_nested_resource()
+    public function test_can_be_updated_using_nested_resource()
     {
         $this->mockResponse(201, [
             'data' => [
@@ -50,9 +47,7 @@ class TagTest extends TestCase
             $this->assertEquals('users/1/tags', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_list_all_tags_as_a_nested_resource()
+    public function test_can_list_all_tags_as_a_nested_resource()
     {
         $this->mockResponse(200, [
             'data' => [
@@ -76,9 +71,7 @@ class TagTest extends TestCase
             $this->assertEquals('users/1/tags', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_list_all_tags()
+    public function test_can_list_all_tags()
     {
         $this->mockResponse(201, [
             'data' => [
@@ -96,9 +89,7 @@ class TagTest extends TestCase
             $this->assertEquals('tags', $request->getUri()->getPath());
         });
     }
-
-    /** @test */
-    public function it_can_filter_tags()
+    public function test_can_filter_tags()
     {
         $this->mockResponse(201, [
             'data' => [
