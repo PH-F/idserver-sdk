@@ -5,7 +5,6 @@ namespace Xingo\IDServer;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Application;
 use Illuminate\Queue\Events\JobProcessed;
@@ -15,8 +14,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Xingo\IDServer\Client\Middleware\JwtToken;
+use Xingo\IDServer\Client\Middleware\PrepareResponseBody;
 use Xingo\IDServer\Client\Middleware\TokenExpired;
-use Xingo\IDServer\Client\Support\JsonStream;
 use Xingo\IDServer\Events\TokenRefreshed;
 
 class ServiceProvider extends BaseServiceProvider
@@ -60,15 +59,7 @@ class ServiceProvider extends BaseServiceProvider
         $handler->push(new JwtToken(), 'jwt-token');
         $handler->push(new TokenExpired(), 'jwt-token-expired');
 
-        $handler->push(Middleware::mapResponse(function (Response $response) {
-            if (!$response->getBody()->isSeekable()) {
-                return $response;
-            }
-
-            $stream = new JsonStream($response->getBody());
-
-            return $response->withBody($stream);
-        }));
+        $handler->push(Middleware::mapResponse(new PrepareResponseBody()));
 
         return [
             'base_uri' => trim(config('idserver.url'), '/') . '/',
