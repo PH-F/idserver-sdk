@@ -22,4 +22,16 @@ class Floating extends Resource
 
         return $this->makeCollection();
     }
+
+    /**
+     * Status of the running floating job, e.g. ids()->floatings->status().
+     *
+     * @return array ['running' => bool, 'type', 'user', 'started_at', 'processed', 'total']
+     */
+    public function status(): array
+    {
+        $this->call('GET', 'floatings/status');
+
+        return $this->contents['data'] ?? ['running' => false];
+    }
 }
