@@ -44,8 +44,12 @@ class Grid extends Resource
         ]);
 
         return function () use ($body) {
-            while (!$body->eof()) {
-                echo $body->read(1024);
+            try {
+                while (!$body->eof()) {
+                    echo $body->read(1024);
+                }
+            } finally {
+                $body->close();
             }
         };
     }
